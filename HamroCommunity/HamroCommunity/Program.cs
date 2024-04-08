@@ -1,5 +1,4 @@
 
-
 using Microsoft.OpenApi.Models;
 using Project.BLL;
 using Project.DLL;
@@ -54,30 +53,11 @@ option =>
 );
     #endregion
 
-
-
-
-
-
-
-
-
+    builder.Host.UseSerilog();
 
     var app = builder.Build();
 
-    // Configure the HTTP request pipeline.
-
-
-  
-
-    app.UseHttpsRedirection();
-
-    app.UseAuthorization();
-
-    app.MapControllers();
-
-  
-
+   
 
     #region RedirectSwagger
     //Redirect request from the root Url to swagger UI
@@ -108,6 +88,31 @@ option =>
     }
 
     #endregion
+
+    #region SeriaLogConfiguration
+    Log.Logger = new LoggerConfiguration()
+       .ReadFrom.Configuration(builder.Configuration).CreateLogger();
+    #region UseSerialog for DI
+    // Register Serilog with DI
+    //Use both serialog and BuildIn Parallery
+    builder.Services.AddLogging(loggingBuilder =>
+    {
+        loggingBuilder.ClearProviders();
+        loggingBuilder.AddSerilog(dispose: true);
+    });
+    #endregion
+    app.UseSerilogRequestLogging();
+    #endregion
+
+
+    // Configure the HTTP request pipeline.
+
+    app.UseHttpsRedirection();
+
+    app.UseAuthorization();
+
+    app.MapControllers();
+
 
 
     app.Run();
