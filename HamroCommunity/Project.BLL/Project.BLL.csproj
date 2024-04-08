@@ -6,4 +6,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Project.DLL\Project.DLL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Abstraction\" />
+    <Folder Include="DTOs\" />
+    <Folder Include="Static\Roles\" />
+    <Folder Include="Validator\" />
+  </ItemGroup>
+
 </Project>
