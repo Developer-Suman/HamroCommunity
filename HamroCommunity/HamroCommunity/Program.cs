@@ -1,17 +1,39 @@
-var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
-builder.Services.AddControllers();
+using Project.BLL;
+using Project.DLL;
+using Serilog;
 
-var app = builder.Build();
+try
+{
+    var builder = WebApplication.CreateBuilder(args);
 
-// Configure the HTTP request pipeline.
+    ConfigurationManager configuration = builder.Configuration;
+    builder.Services
+        .AddBLL()
+        .AddDAL(configuration);
 
-app.UseHttpsRedirection();
+    // Add services to the container.
 
-app.UseAuthorization();
+    builder.Services.AddControllers();
 
-app.MapControllers();
+    var app = builder.Build();
 
-app.Run();
+    // Configure the HTTP request pipeline.
+
+    app.UseHttpsRedirection();
+
+    app.UseAuthorization();
+
+    app.MapControllers();
+
+    app.Run();
+}
+catch(Exception ex)
+{
+    Log.Error("The following {Exception} was thrown during Application Startup", ex);
+}
+finally
+{
+    Log.CloseAndFlush();
+}
