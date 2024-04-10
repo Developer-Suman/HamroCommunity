@@ -1,4 +1,5 @@
 
+using HamroCommunity.CustomMiddleware.GlobalErrorHandling;
 using Microsoft.OpenApi.Models;
 using Project.BLL;
 using Project.DLL;
@@ -95,11 +96,11 @@ option =>
     #region UseSerialog for DI
     // Register Serilog with DI
     //Use both serialog and BuildIn Parallery
-    builder.Services.AddLogging(loggingBuilder =>
-    {
-        loggingBuilder.ClearProviders();
-        loggingBuilder.AddSerilog(dispose: true);
-    });
+    //builder.Services.AddLogging(loggingBuilder =>
+    //{
+    //    loggingBuilder.ClearProviders();
+    //    loggingBuilder.AddSerilog(dispose: true);
+    //});
     #endregion
     app.UseSerilogRequestLogging();
     #endregion
@@ -111,7 +112,11 @@ option =>
 
     app.UseAuthorization();
 
+    app.UseMiddleware<ExceptionMiddleware>();
+
     app.MapControllers();
+
+    //app.UseErrorHandlingMiddleware();
 
 
 
