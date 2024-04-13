@@ -24,6 +24,12 @@ namespace Project.DLL
             services.AddIdentity<ApplicationUsers, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+
+
+
+
+
             return services;
 
         }
