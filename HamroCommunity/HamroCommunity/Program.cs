@@ -1,4 +1,5 @@
 
+using HamroCommunity.Configs;
 using HamroCommunity.CustomMiddleware.GlobalErrorHandling;
 using Microsoft.OpenApi.Models;
 using Project.BLL;
@@ -16,109 +17,13 @@ try
         .AddDAL(configuration);
 
     // Add services to the container.
-
-    builder.Services.AddControllers();
-
-
-    builder.Services.AddEndpointsApiExplorer();
-
-    #region ConfigureSwaggerForAuthentication
-    builder.Services.AddSwaggerGen(
-option =>
-{
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "HAMROCOMMUNITY API", Version = "V1" });
-    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Description = "Please enter a valid token",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "Bearer"
-    });
-    option.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-                        {
-                            new OpenApiSecurityScheme
-                            {
-                                Reference = new OpenApiReference
-                                {
-                                    Type=ReferenceType.SecurityScheme,
-                                    Id="Bearer"
-                                }
-                            },
-                            Array.Empty<string>()
-                        }
-    });
-}
-);
-    #endregion
+    Dependencies.Inject(builder);
 
     builder.Host.UseSerilog();
 
     var app = builder.Build();
-
    
-
-    #region RedirectSwagger
-    //Redirect request from the root Url to swagger UI
-    app.Use(async (context, next) =>
-    {
-        if (context.Request.Path == "/")
-        {
-            context.Response.Redirect("/swagger/index.html");
-            return;
-        }
-
-        await next();
-
-    });
-    #endregion
-
-    #region HttpRequestPipeLine For Swagger
-    if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
-    {
-        app.UseSwagger();
-        app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Simple Api");
-            c.DocExpansion(DocExpansion.None);
-
-        });
-
-    }
-
-    #endregion
-
-    #region SeriaLogConfiguration
-    Log.Logger = new LoggerConfiguration()
-       .ReadFrom.Configuration(builder.Configuration).CreateLogger();
-    #region UseSerialog for DI
-    // Register Serilog with DI
-    //Use both serialog and BuildIn Parallery
-    //builder.Services.AddLogging(loggingBuilder =>
-    //{
-    //    loggingBuilder.ClearProviders();
-    //    loggingBuilder.AddSerilog(dispose: true);
-    //});
-    #endregion
-    app.UseSerilogRequestLogging();
-    #endregion
-
-
-    // Configure the HTTP request pipeline.
-
-    app.UseHttpsRedirection();
-
-    app.UseAuthorization();
-
-    app.UseMiddleware<ExceptionMiddleware>();
-
-    app.MapControllers();
-
-    //app.UseErrorHandlingMiddleware();
-
-
+    ApplicationConfiguration.Configure(app); //Configurations
 
     app.Run();
 }
