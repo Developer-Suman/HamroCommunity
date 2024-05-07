@@ -1,6 +1,7 @@
 using HamroCommunity.CustomMiddleware.CustomException;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using System.Text.Json;
 
 namespace HamroCommunity.Controllers
 {
@@ -23,7 +24,10 @@ namespace HamroCommunity.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            throw new NotFoundException("Custom Exception");
+           
+            _logger.LogInformation("You requested the Get Action of WeatherForecasting");
+
+            //throw new Exception("An error occured");
             var result =  Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
@@ -32,7 +36,8 @@ namespace HamroCommunity.Controllers
             })
             .ToArray();
 
-            Log.Information("Weather Forecasting=> {@result}", result);
+            var resultJson = JsonSerializer.Serialize(result);
+            _logger.LogInformation("Weather Forecasting => {@result}", resultJson);
 
             return result;
         }

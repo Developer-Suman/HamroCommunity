@@ -25,11 +25,6 @@ namespace Project.DLL
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-
-
-
-
-
             return services;
 
         }

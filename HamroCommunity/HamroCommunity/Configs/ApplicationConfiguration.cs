@@ -1,5 +1,6 @@
 ﻿using HamroCommunity.CustomMiddleware.GlobalErrorHandling;
 using Serilog;
+using Serilog.Events;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace HamroCommunity.Configs
@@ -8,6 +9,7 @@ namespace HamroCommunity.Configs
     {
         public static void Configure(WebApplication app)
         {
+            //app.UseSerilogRequestLogging();
             app.Use((context, next) =>
             {
                 context.Response.Headers.Remove("X-Powered-By");
@@ -46,11 +48,46 @@ namespace HamroCommunity.Configs
 
             #endregion
 
+            // Use Serilog for logging
+            //app.UseSerilogRequestLogging(options =>
+            //{
+            //    options.GetLevel = (httpContext, elapsed, ex) =>
+            //    {
+            //        // Customize log level based on request
+            //        if (httpContext.Response.StatusCode > 499)
+            //        {
+            //            return LogEventLevel.Error;
+            //        }
+            //        else if (httpContext.Response.StatusCode > 399)
+            //        {
+            //            return LogEventLevel.Warning;
+            //        }
+
+            //        return LogEventLevel.Information;
+            //    };
+
+            //    options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+            //    {
+            //        // Include custom properties in the log context
+            //        // Include properties you need
+            //        diagnosticContext.Set("RequestHost", httpContext.Request.Host);
+            //        diagnosticContext.Set("RequestMethod", httpContext.Request.Method);
+            //        diagnosticContext.Set("RequestPath", httpContext.Request.Path);
+            //        diagnosticContext.Set("StatusCode", httpContext.Response.StatusCode);
+            //        diagnosticContext.Set("ElapsedMilliseconds", httpContext.Response.Headers["X-Request-ElapsedMs"]);
+
+            //        // Add more properties as needed
+            //    };
+
+            //});
+
             // Configure the HTTP request pipeline.
 
             app.UseHttpsRedirection();
 
             app.UseStaticFiles();
+
+            //app.UseSerilogRequestLogging();
 
             app.UseCors("AllowAllOrigins"); //UseCors must be placed after UseRouting an before UseAuthorization
             //This is to ensure the cors headers are included in the response for both authorized and unauthorized calls
@@ -59,7 +96,7 @@ namespace HamroCommunity.Configs
 
             app.UseAuthorization();
 
-            app.UseSerilogRequestLogging();
+            
 
             app.UseMiddleware<ExceptionMiddleware>();
 
