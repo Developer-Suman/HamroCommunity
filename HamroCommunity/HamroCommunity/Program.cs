@@ -19,7 +19,15 @@ try
     // Add services to the container.
     Dependencies.Inject(builder);
 
-    builder.Host.UseSerilog();
+    Log.Information("Application StartUp");
+    //builder.Services.ServiceCollectionConfiguration();
+    //builder.Host.UseSerilog((context, loggerconfig) =>
+    //{
+    //    loggerconfig.ReadFrom.Configuration(context.Configuration);
+
+    //});
+
+    
 
     var app = builder.Build();
    

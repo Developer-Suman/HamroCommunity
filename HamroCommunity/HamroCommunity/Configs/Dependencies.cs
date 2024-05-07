@@ -17,13 +17,13 @@ namespace HamroCommunity.Configs
             #region UseSerialog for DI
             // Register Serilog with DI
             //Use both serialog and BuildIn Parallery
-            //builder.Services.AddLogging(loggingBuilder =>
-            //{
-            //    loggingBuilder.ClearProviders();
-            //    loggingBuilder.AddSerilog(dispose: true);
-            //});
+            builder.Services.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.ClearProviders();
+                loggingBuilder.AddSerilog(dispose: true);
+            });
             #endregion
-          
+
             #endregion
 
             #region ConfigureSwaggerForAuthentication
@@ -58,7 +58,10 @@ namespace HamroCommunity.Configs
             );
             #endregion
 
-            builder.Host.UseSerilog();
+            //builder.Host.UseSerilog();
+
+
+
 
         }
     }

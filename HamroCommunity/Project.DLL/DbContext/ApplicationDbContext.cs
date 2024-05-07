@@ -15,5 +15,7 @@ namespace Project.DLL.DbContext
         {
             
         }
+
+        public DbSet<ApplicationUsers> ApplicationUsers { get; set; }
     }
 }
