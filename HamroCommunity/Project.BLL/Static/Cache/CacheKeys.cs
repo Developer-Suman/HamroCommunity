@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Project.BLL.Static.Cache
 {
-    internal class CacheKeys
+    public static class CacheKeys
     {
+        public const string User = "UserCacheKey";
     }
 }
