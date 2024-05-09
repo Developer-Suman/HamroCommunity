@@ -12,9 +12,12 @@
 
   <ItemGroup>
     <Folder Include="Abstraction\" />
-    <Folder Include="DTOs\" />
     <Folder Include="Static\Roles\" />
     <Folder Include="Validator\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
   </ItemGroup>
 
 </Project>
