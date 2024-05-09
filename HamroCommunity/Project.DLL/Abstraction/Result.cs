@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Project.BLL.Abstraction
+namespace Project.DLL.Abstraction
 {
     public class Result<T>
     {
@@ -12,7 +12,7 @@ namespace Project.BLL.Abstraction
         public IEnumerable<string> Errors { get; }
         public T Data { get; }
 
-        protected Result(bool isSuccess, IEnumerable<string> errors, T data= default!)
+        protected Result(bool isSuccess, IEnumerable<string> errors, T data = default!)
         {
             IsSuccess = isSuccess;
             Errors = errors ?? Enumerable.Empty<string>();
@@ -36,7 +36,7 @@ namespace Project.BLL.Abstraction
 
         public static Result<T> Failure(string errors)
         {
-            return new Result<T>(false, new List<string>() { errors});
+            return new Result<T>(false, new List<string> { errors });
 
         }
     }

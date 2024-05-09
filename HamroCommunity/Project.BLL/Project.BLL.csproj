@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Abstraction\" />
     <Folder Include="DTOs\" />
     <Folder Include="Static\Roles\" />
     <Folder Include="Validator\" />

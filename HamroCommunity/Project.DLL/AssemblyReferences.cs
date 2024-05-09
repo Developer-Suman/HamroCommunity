@@ -25,6 +25,9 @@ namespace Project.DLL
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+
+            services.AddAuthentication(JwtBearerDefaults)
+
             return services;
 
         }
