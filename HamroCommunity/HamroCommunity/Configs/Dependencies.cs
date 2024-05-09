@@ -58,7 +58,7 @@ namespace HamroCommunity.Configs
             );
             #endregion
 
-            //builder.Host.UseSerilog();
+
 
 
 
