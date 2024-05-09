@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Project.BLL.DTOs;
 using Project.BLL.Services.Interface;
+using Project.BLL.Static.Cache;
 using Project.DLL.Models;
 using System;
 using System.Collections.Generic;
@@ -16,13 +18,14 @@ namespace Project.BLL.Services.Implementation
         private readonly UserManager<ApplicationUsers> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
+        private readonly IMemoryCacheRepository _memoryCacheRepository;
 
-        public AuthenticationRepository(UserManager<ApplicationUsers> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
+        public AuthenticationRepository(UserManager<ApplicationUsers> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IMemoryCacheRepository memoryCacheRepository)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _mapper = mapper;
-            
+            _memoryCacheRepository = memoryCacheRepository;
         }
         public async Task<IdentityResult> AssignRoles(ApplicationUsers user, string rolename)
         {
@@ -79,14 +82,54 @@ namespace Project.BLL.Services.Implementation
             return user;
         }
 
-        public Task<List<UserDTOs>> GetAllUsersAsync(int page, int pageSize, CancellationToken cancellationToken)
+        public async Task<List<UserDTOs>> GetAllUsersAsync(int page, int pageSize, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var cacheKey = CacheKeys.User;
+            var cacheData = await _memoryCacheRepository.GetCacheKey<List<UserDTOs>>(cacheKey);
+
+            if(cacheData is not null && cacheData.Count > 0)
+            {
+                return cacheData;
+            }
+
+            var users = await _userManager.Users.AsNoTracking()
+                .OrderByDescending(x=>x.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+
+            await _memoryCacheRepository.SetAsync(cacheKey, users, new Microsoft.Extensions.Caching.Memory.MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(30)
+            }, cancellationToken) ;
+
+            var userDTOs = _mapper.Map<List<UserDTOs>>(users);
+            return userDTOs;
         }
 
-        public Task<UserDTOs> GetById(string id, CancellationToken cancellationToken)
+        public async Task<UserDTOs> GetById(string id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var cacheKey = $"GetById{id}";
+            var cacheData = await _memoryCacheRepository.GetCacheKey<UserDTOs>(cacheKey);
+            if(cacheData is not null)
+            {
+                return cacheData;
+            }
+
+            var user = await _userManager.FindByIdAsync(id);
+            if(user is null)
+            {
+                return default!;
+            }
+
+            var userDTOs = _mapper.Map<UserDTOs>(user);
+
+            await _memoryCacheRepository.SetAsync(cacheKey, userDTOs, new Microsoft.Extensions.Caching.Memory.MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(5)
+            }, cancellationToken);
+
+            return userDTOs;
         }
 
         public async Task<IList<string>> GetRolesAsync(ApplicationUsers username)
