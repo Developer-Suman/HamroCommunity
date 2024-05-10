@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Project.BLL.DTOs;
 using Project.BLL.Services.Interface;
+using Project.BLL.Validator;
 using Project.DLL.Abstraction;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,14 @@ namespace Project.BLL.Services.Implementation
         {
             try
             {
+                #region Validation
+                var validationError = LogInValidator.LogInValidate(logInDTOs);
+                if(validationError.Any())
+                {
+                    return Result<TokenDTOs>.Failure(validationError.ToArray());
+                }
+
+                #endregion
                 var user = await _authenticationRepository.FindByEmailAsync(logInDTOs.Email);
                 if(user == null)
                 {
