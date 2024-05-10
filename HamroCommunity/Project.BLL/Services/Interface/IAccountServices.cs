@@ -1,4 +1,4 @@
-﻿using Project.BLL.DTOs;
+﻿using Project.BLL.DTOs.Authentication;
 using Project.DLL.Abstraction;
 using System;
 using System.Collections.Generic;
@@ -12,5 +12,11 @@ namespace Project.BLL.Services.Interface
     {
         Task<Result<RegistrationCreateDTOs>> RegisterUser (RegistrationCreateDTOs userModel);
         Task<Result<TokenDTOs>> LoginUser (LogInDTOs logInDTOs);
+
+        Task<Result<string>> CreateRoles(string rolename);
+        Task<Result<AssignRolesDTOs>> AssignRoles(AssignRolesDTOs assignRolesDTOs);
+        Task<Result<TokenDTOs>> GetNewToken(TokenDTOs tokenDTOs);
+        Task<Result<List<UserDTOs>>> GetAllUsers(int page, int pageSize, CancellationToken cancellationToken);
+        Task<Result<UserDTOs>> GetByUserId(string userId, CancellationToken cancellationToken);
     }
 }

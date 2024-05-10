@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Project.BLL.DTOs;
+using Project.BLL.DTOs.Authentication;
 using Project.BLL.Services.Interface;
 using Project.BLL.Static.Cache;
 using Project.DLL.Models;
