@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Project.BLL.DTOs.Authentication;
+using Project.DLL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +13,8 @@ namespace Project.BLL.Abstraction
     {
         public MappingProfile() 
         {
+            CreateMap<RegistrationCreateDTOs, ApplicationUsers>().ReverseMap();
+            CreateMap<UserDTOs, ApplicationUsers>().ReverseMap();
 
         }
     }

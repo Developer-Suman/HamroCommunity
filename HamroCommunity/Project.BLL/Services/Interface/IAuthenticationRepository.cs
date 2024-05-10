@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Project.BLL.DTOs;
+using Project.BLL.DTOs.Authentication;
 using Project.DLL.Models;
 using System;
 using System.Collections.Generic;

@@ -1,14 +1,16 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
-using Project.BLL.DTOs;
+using Project.BLL.DTOs.Authentication;
 using Project.BLL.Services.Interface;
 using Project.BLL.Validator;
 using Project.DLL.Abstraction;
+using Project.DLL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace Project.BLL.Services.Implementation
 {
@@ -79,7 +81,139 @@ namespace Project.BLL.Services.Implementation
             }
         }
 
-        public Task<Result<RegistrationCreateDTOs>> RegisterUser(RegistrationCreateDTOs userModel)
+        public async Task<Result<RegistrationCreateDTOs>> RegisterUser(RegistrationCreateDTOs userModel)
+        {
+            using(var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                try
+                {
+                    var userExists = await _authenticationRepository.FindByNameAsync(userModel.Username);
+                    if(userExists is not null)
+                    {
+                        return Result<RegistrationCreateDTOs>.Failure("Conflict", "User Already Exists");
+
+                    }
+
+                    var emailExists = await _authenticationRepository.FindByEmailAsync(userModel.Email);
+                    if(emailExists is not null)
+                    {
+                        return Result<RegistrationCreateDTOs>.Failure("Conflict", "Email Already Exists");
+                    }
+
+                    var user = _mapper.Map<ApplicationUsers>(userModel);
+
+                    var result = await _authenticationRepository.CreateUserAsync(user, userModel.Password);
+
+                    if(!result.Succeeded)
+                    {
+                        scope.Dispose();
+                        return Result<RegistrationCreateDTOs>.Failure("Conflict", "User Creation Failed");
+                    }
+
+                    //Add User to Desired Role
+                    if(!string.IsNullOrEmpty(userModel.Role))
+                    {
+                        await _authenticationRepository.AssignRoles(user, userModel.Role);
+                    }
+
+                    //If Everything succeed Commit the transaction
+                    scope.Complete();
+
+                    var userDisplay = _mapper.Map<RegistrationCreateDTOs>(userModel);
+
+                    return Result<RegistrationCreateDTOs>.Success(userDisplay);
+
+                }catch(Exception ex)
+                {
+                    throw new Exception("Something went wrong during user creation");
+                }
+            }
+        }
+
+        public async Task<Result<string>> CreateRoles(string rolename)
+        {
+            try
+            {
+                var roleExists = await _authenticationRepository.CheckRolesAsync(rolename);
+                if (roleExists)
+                {
+                    return Result<string>.Failure("Conflict", "Roles Already Exists");
+                }
+                var result = await _authenticationRepository.CreateRoles(rolename);
+                return Result<string>.Success(rolename);
+
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("Failed to create Role");
+            }
+        }
+
+        public async Task<Result<AssignRolesDTOs>> AssignRoles(AssignRolesDTOs assignRolesDTOs)
+        {
+            try
+            {
+                var user = await _authenticationRepository.FindByIdAsync(assignRolesDTOs.UserId);
+                if(user is null)
+                {
+                    return Result<AssignRolesDTOs>.Failure("NotFound", "User not Found to assign Roles");
+                }
+                var result = await _authenticationRepository.AssignRoles(user, assignRolesDTOs.RoleName);
+                return Result<AssignRolesDTOs>.Success(assignRolesDTOs);
+
+            }catch(Exception ex)
+            {
+                throw new Exception("Failed to Assign Roles");
+            }
+        }
+
+        public async Task<Result<TokenDTOs>> GetNewToken(TokenDTOs tokenDTOs)
+        {
+            try
+            {
+                var principal = _jwtProviders.GetPrincipalFromExpiredToken(tokenDTOs.Token);
+                if(principal is null)
+                {
+                    return Result<TokenDTOs>.Failure("Unauthorized", "Invalid Token");
+                }
+
+                string username = principal.Identity!.Name!;
+                if(username is null)
+                {
+                    return Result<TokenDTOs>.Failure("Unauthorized", "Invalid Token");
+                }
+
+                var user = await _authenticationRepository.FindByNameAsync(username);
+
+                if (user is null || user.RefreshToken != tokenDTOs.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+                {
+                    return Result<TokenDTOs>.Failure("Unauthorized", "Invalid Access Token and refresh Token");
+                }
+
+                var roles = await _authenticationRepository.GetRolesAsync(user);
+                var newToken = _jwtProviders.Generate(user, roles);
+
+                var newRefreshToken = _jwtProviders.GenerateRefreshToken();
+                user.RefreshToken = newRefreshToken;
+                await _authenticationRepository.UpdateUserAsync(user);
+
+                tokenDTOs.Token = newToken;
+                tokenDTOs.RefreshToken = newRefreshToken;
+
+                return Result<TokenDTOs>.Success(tokenDTOs);
+
+            }catch(Exception ex )
+            {
+                throw new Exception("Failed to create New RefreshToken");
+            }
+        }
+
+        public Task<Result<List<UserDTOs>>> GetAllUsers(int page, int pageSize, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Result<UserDTOs>> GetByUserId(string userId, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
