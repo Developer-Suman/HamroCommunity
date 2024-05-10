@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <Folder Include="Static\Roles\" />
-    <Folder Include="Validator\" />
   </ItemGroup>
 
   <ItemGroup>
