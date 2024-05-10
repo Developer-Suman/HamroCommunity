@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Project.BLL.DTOs.Authentication;
 using Project.BLL.Services.Interface;
+using Project.BLL.Static.Cache;
 using Project.BLL.Validator;
 using Project.DLL.Abstraction;
 using Project.DLL.Models;
@@ -20,15 +21,16 @@ namespace Project.BLL.Services.Implementation
         private readonly IJwtProviders _jwtProviders;
         private readonly IConfiguration _config;
         private readonly IAuthenticationRepository _authenticationRepository;
+        private readonly IMemoryCacheRepository _memoryCacheRepository;
 
 
-        public AccountServices(IMapper mapper, IJwtProviders jwtProviders, IConfiguration configuration, IAuthenticationRepository authenticationRepository)
+        public AccountServices(IMapper mapper, IJwtProviders jwtProviders, IConfiguration configuration, IAuthenticationRepository authenticationRepository, IMemoryCacheRepository memoryCacheRepository)
         {
             _mapper = mapper;
             _jwtProviders = jwtProviders;
             _config = configuration;
             _authenticationRepository = authenticationRepository;
-            
+            _memoryCacheRepository = memoryCacheRepository;
         }
         public async Task<Result<TokenDTOs>> LoginUser(LogInDTOs logInDTOs)
         {
@@ -208,14 +210,65 @@ namespace Project.BLL.Services.Implementation
             }
         }
 
-        public Task<Result<List<UserDTOs>>> GetAllUsers(int page, int pageSize, CancellationToken cancellationToken)
+        public async Task<Result<List<UserDTOs>>> GetAllUsers(int page, int pageSize, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var cacheKey = CacheKeys.User;
+                var cacheData = await _memoryCacheRepository.GetCacheKey<List<UserDTOs>>(cacheKey);
+
+                if(cacheData is not null && cacheData.Count > 0)
+                {
+                    return Result<List<UserDTOs>>.Success(cacheData);
+                }
+
+                var allUser = await _authenticationRepository.GetAllUsersAsync(page, pageSize, cancellationToken);
+                if(allUser is null)
+                {
+                    return Result<List<UserDTOs>>.Failure("NotFound", "User are Not Found");
+                }
+
+                await _memoryCacheRepository.SetAsync(cacheKey, allUser, new Microsoft.Extensions.Caching.Memory.MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(30)
+                }, cancellationToken);
+
+                return Result<List<UserDTOs>>.Success(allUser);
+
+            }catch(Exception)
+            {
+                throw new Exception("Failed to fetch all the users");
+            }
         }
 
-        public Task<Result<UserDTOs>> GetByUserId(string userId, CancellationToken cancellationToken)
+        public async Task<Result<UserDTOs>> GetByUserId(string userId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var cacheKey = $"GetByUserId{userId}";
+                var cacheData = await _memoryCacheRepository.GetCacheKey<UserDTOs>(cacheKey);
+
+                if(cacheData is not null)
+                {
+                    return Result<UserDTOs>.Success(cacheData);
+                }
+                var user = await _authenticationRepository.GetById(userId, cancellationToken);
+                if(user is null)
+                {
+                    return Result<UserDTOs>.Failure("NotFound", "User are Not Found");
+                }
+
+                await _memoryCacheRepository.SetAsync(cacheKey, user, new Microsoft.Extensions.Caching.Memory.MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(30)
+                }, cancellationToken);
+                return Result<UserDTOs>.Success(user);
+
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("Failed to get User By UserId");
+            }
         }
     }
 }

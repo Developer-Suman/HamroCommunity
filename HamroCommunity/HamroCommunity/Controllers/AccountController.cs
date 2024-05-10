@@ -51,7 +51,7 @@ namespace HamroCommunity.Controllers
 
         #region Registration
         [HttpPost("Register")]
-        public async Task<IActionResult> Register(RegistrationCreateDTOs registrationCreateDTOs)
+        public async Task<IActionResult> Register([FromBody] RegistrationCreateDTOs registrationCreateDTOs)
         {
             var registrationResult = await _accountServices.RegisterUser(registrationCreateDTOs);
 
@@ -68,7 +68,7 @@ namespace HamroCommunity.Controllers
 
         #region Create Roles
         [HttpPost("CreateRole")]
-        public async Task<IActionResult> CreateRoles(string rolename)
+        public async Task<IActionResult> CreateRoles([FromQuery] string rolename)
         {
             var roleResult = await _accountServices.CreateRoles(rolename);
             #region switch Statement
@@ -83,6 +83,7 @@ namespace HamroCommunity.Controllers
         #endregion
 
         #region Assign Roles
+        [HttpPost("AssignRoles")]
         public async Task<IActionResult> AssignRoles(AssignRolesDTOs assignRolesDTOs)
         {
             var assignRolesResult = await _accountServices.AssignRoles(assignRolesDTOs);
@@ -101,7 +102,8 @@ namespace HamroCommunity.Controllers
         #endregion
 
         #region New RefreshToken
-        public async Task<IActionResult> GetNewToken(TokenDTOs tokenDTOs)
+        [HttpPost("GetNewToken")]
+        public async Task<IActionResult> GetNewToken([FromBody] TokenDTOs tokenDTOs)
         {
             var getNewTokenResult = await _accountServices.GetNewToken(tokenDTOs);
 
@@ -114,6 +116,47 @@ namespace HamroCommunity.Controllers
                 }),
                 { IsSuccess: false, Errors: not null } => HandleFailureResult(getNewTokenResult.Errors),
                 _ => BadRequest("Invalid accesstoken and refreshtoken Fields ")
+            };
+            #endregion
+        }
+        #endregion
+
+
+        #region GetAllUser
+        [HttpGet("GetAllUser")]
+        public async Task<IActionResult> GetAllUser(int page, int pageSize, CancellationToken cancellationToken)
+        {
+            var getAllUserResult =await _accountServices.GetAllUsers(page, pageSize, cancellationToken);
+            #region Switch Statement
+            return getAllUserResult switch
+            {
+                { IsSuccess: true, Data: not null } => new JsonResult(getAllUserResult.Data, new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                }),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(getAllUserResult.Errors),
+                _ => BadRequest("Invalid page and pageSize Fields ")
+            };
+            #endregion
+        }
+        #endregion
+
+
+        #region GetByUserId
+        [HttpGet("GetByUserId")]
+        public async Task<IActionResult> GetByUserId(string Id, CancellationToken cancellationToken)
+        {
+            var getbyUserIdResult = await _accountServices.GetByUserId(Id, cancellationToken);
+
+            #region Switch Statement
+            return getbyUserIdResult switch
+            {
+                { IsSuccess: true, Data: not null } => new JsonResult(getbyUserIdResult.Data, new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                }),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(getbyUserIdResult.Errors),
+                _ => BadRequest("Invalid page and pageSize Fields ")
             };
             #endregion
         }
