@@ -1,6 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Project.BLL.Abstraction;
+using Project.BLL.Repository.Implementation;
+using Project.BLL.Repository.Interface;
+using Project.BLL.Services.Implementation;
+using Project.BLL.Services.Interface;
+using Project.DLL.Abstraction;
+using Project.DLL.JWT;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +42,19 @@ namespace Project.BLL
 
             IMapper mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
+            #endregion
+
+            #region InjectDependency
+            services.AddAuthorization();
+            //builder.Services.AddAuthorization();
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IJwtProviders, JwtProviders>();
+            services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
+            services.AddScoped<IAccountServices, AccountServices>();
+            services.AddMemoryCache();
+            services.AddScoped<IMemoryCacheRepository, MemoryCacheRepository>();
+
             #endregion
             return services;
         }

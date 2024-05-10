@@ -34,14 +34,18 @@ namespace Project.BLL.Services.Implementation
                 var user = await _authenticationRepository.FindByEmailAsync(logInDTOs.Email);
                 if(user == null)
                 {
-                    return Result<TokenDTOs>.Failure("Unauthorized: Invalid Credentials");
+                    return Result<TokenDTOs>.Failure("Unauthorized","Invalid Credentials");
                 }
                 if(!await _authenticationRepository.CheckPasswordAsync(user, logInDTOs.Password))
                 {
-                    return Result<TokenDTOs>.Failure("Unauthorized: Invalid Credentials");
+                    return Result<TokenDTOs>.Failure("Unauthorized","Invalid Password");
                 }
 
                 var roles = await _authenticationRepository.GetRolesAsync(user);
+                if(roles is null)
+                {
+                    return Result<TokenDTOs>.Failure("NotFound", "Roles are not found");
+                }
                 string token = _jwtProviders.Generate(user,roles);
 
                 string refreshToken = _jwtProviders.GenerateRefreshToken();

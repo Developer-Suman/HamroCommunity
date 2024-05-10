@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HamroCommunity.Configs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Project.BLL.DTOs;
@@ -10,7 +11,7 @@ namespace HamroCommunity.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountController : HamroCommunityBaseController
     {
         private readonly IAccountServices _accountServices;
         private readonly IAuthenticationRepository _authenticationRepository;
@@ -26,18 +27,11 @@ namespace HamroCommunity.Controllers
         }
 
         #region LogIn
+        [HttpPost("Login")]
         public async Task<IActionResult> LogIn([FromBody] LogInDTOs logInDTOs)
         {
             var logInResult = await _accountServices.LoginUser(logInDTOs);
-            //if(logInResult.Data is not null)
-            //{
-            //    return Ok(logInResult.Data);
-            //}
-            //else
-            //{
-            //    return Unauthorized(logInResult.Errors);
-            //}
-
+        
             #region Switch Statement
             return logInResult switch
             {
@@ -45,9 +39,9 @@ namespace HamroCommunity.Controllers
                 {
                     DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
                 }),
-           
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(logInResult.Errors),
                 _ => BadRequest("Invalid Username and Password")
-            };;
+            };
 
             #endregion
         }
