@@ -207,5 +207,25 @@ namespace HamroCommunity.Controllers
         }
 
         #endregion
+
+        #region ChangePassword
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTOs changePasswordDTOs)
+        {
+            await GetCurrentUser();
+            var changePasswordResult = await _accountServices.ChangePassword(_currentUser!.Id.ToString(), changePasswordDTOs);
+            #region Switch Statement
+            return changePasswordResult switch
+            {
+                { IsSuccess: true, Data: not null } => new JsonResult(changePasswordResult.Data, new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                }),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(changePasswordResult.Errors),
+                _ => BadRequest("Invalid page and pageSize Fields ")
+            };
+            #endregion
+        }
+        #endregion
     }
 }
