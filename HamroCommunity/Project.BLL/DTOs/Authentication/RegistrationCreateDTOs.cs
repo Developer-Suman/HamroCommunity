@@ -15,5 +15,9 @@ namespace Project.BLL.DTOs.Authentication
         [Required(ErrorMessage = "Email is Required")]
         public string Password { get; set; }
         public string Role { get; set; }
+        //public string? DepartmentId { get; set; }
+        //public string? ProfilePictureName { get; set; }
+        //public string? ProfilePictureUrl { get; set; }
+        //public bool IsActive { get; set; }
     }
 }

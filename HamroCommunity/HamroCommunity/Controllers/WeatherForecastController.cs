@@ -1,13 +1,19 @@
+using AutoMapper;
+using HamroCommunity.Configs;
 using HamroCommunity.CustomMiddleware.CustomException;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Project.DLL.Models;
 using Serilog;
 using System.Text.Json;
 
 namespace HamroCommunity.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class WeatherForecastController : HamroCommunityBaseController
     {
         private static readonly string[] Summaries = new[]
         {
@@ -16,7 +22,7 @@ namespace HamroCommunity.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IMapper mapper, UserManager<ApplicationUsers> userManager, RoleManager<IdentityRole> roleManager) : base(mapper, userManager, roleManager) 
         {
             _logger = logger;
         }
@@ -24,7 +30,8 @@ namespace HamroCommunity.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-           
+            var user = GetCurrentUser();
+            var Roles = GetCurrentUserRoles();
             _logger.LogInformation("You requested the Get Action of WeatherForecasting");
 
             //throw new Exception("An error occured");
