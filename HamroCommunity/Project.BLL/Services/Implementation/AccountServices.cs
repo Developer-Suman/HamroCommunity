@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Project.BLL.DTOs.Authentication;
 using Project.BLL.Services.Interface;
@@ -269,6 +270,44 @@ namespace Project.BLL.Services.Implementation
             catch(Exception ex)
             {
                 throw new Exception("Failed to get User By UserId");
+            }
+        }
+
+        public async Task<Result<List<RoleDTOs>>> GetAllRoles(int page, int pageSize, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var roles = await _authenticationRepository.GetAllRolesAsync(page, pageSize, cancellationToken);
+                if(roles is null && roles.Count() < 0)
+                {
+                    return Result<List<RoleDTOs>>.Failure("NotFound", "Roles are not Found");
+                }
+
+                var rolesList = _mapper.Map<List<RoleDTOs>>(roles);
+                return Result<List<RoleDTOs>>.Success(rolesList);
+
+            }catch(Exception ex)
+            {
+                throw new Exception("Failed to get All Roles");
+            }
+        }
+
+        public async Task<Result<object>> LogoutUser(string userId)
+        {
+            try
+            {
+                var user = await _authenticationRepository.FindByIdAsync(userId);
+                if(user is null)
+                {
+                    return Result<object>.Failure("NotFound", "User is not Found");
+                }
+                user.RefreshToken = null;
+                await _authenticationRepository.UpdateUserAsync(user);
+                return Result<object>.Success(true);
+
+            }catch(Exception ex) 
+            {
+                throw new Exception("Failed to LogOut User");
             }
         }
     }

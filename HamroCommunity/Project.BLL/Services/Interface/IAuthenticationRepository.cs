@@ -19,7 +19,7 @@ namespace Project.BLL.Services.Interface
         Task<IdentityResult> CreateUserAsync(ApplicationUsers user, string password);
         Task UpdateUserAsync(ApplicationUsers user);
         Task<IdentityResult> CreateRoles(string roles);
-        Task<List<RoleDTOs>> GetAllRolesAsync();
+        Task<List<RoleDTOs>> GetAllRolesAsync(int page, int pageSize, CancellationToken cancellationToken);
         Task<IdentityResult> AssignRoles(ApplicationUsers user, string rolename);
         Task<bool> CheckRolesAsync(string role);
         Task<List<UserDTOs>> GetAllUsersAsync(int page, int pageSize, CancellationToken cancellationToken);

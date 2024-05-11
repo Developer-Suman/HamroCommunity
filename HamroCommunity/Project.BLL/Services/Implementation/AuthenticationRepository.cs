@@ -82,10 +82,14 @@ namespace Project.BLL.Services.Implementation
             return user;
         }
 
-        public async Task<List<RoleDTOs>> GetAllRolesAsync()
+        public async Task<List<RoleDTOs>> GetAllRolesAsync(int page, int pageSize, CancellationToken cancellationToken)
         {
-            List<RoleDTOs> roleDTOs = new List<RoleDTOs>();
-            var roles = await _roleManager.Roles.Where(x => x.Name != "superadmin").ToListAsync();
+            var roles = await _roleManager.Roles
+                .Where(x => x.Name != "superadmin")
+                .AsNoTracking()
+                .Skip((page - 1)*pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
             if(roles != null && roles.Count() > 0)
             {
                 var rolesList = _mapper.Map<List<RoleDTOs>>(roles);
@@ -99,6 +103,7 @@ namespace Project.BLL.Services.Implementation
             //    : new List<RoleDTOs>();
 
         }
+
 
         public async Task<List<UserDTOs>> GetAllUsersAsync(int page, int pageSize, CancellationToken cancellationToken)
         {

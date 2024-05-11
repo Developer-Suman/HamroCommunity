@@ -13,7 +13,7 @@ namespace HamroCommunity.Configs
     [ApiController]
     public class HamroCommunityBaseController : ControllerBase
     {
-        private UserDTOs? _currentUser;
+        public UserDTOs? _currentUser;
         private string _userRole;
         private readonly UserManager<ApplicationUsers> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;

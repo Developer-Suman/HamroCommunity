@@ -185,5 +185,27 @@ namespace HamroCommunity.Controllers
 
         }
         #endregion
+
+        #region LogOutUser
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpGet("LogOut")]
+        public async Task<IActionResult> logOut()
+        {
+            await GetCurrentUser();
+            var LogOutResult = await _accountServices.LogoutUser(_currentUser!.Id.ToString());
+            #region Switch Statement
+            return LogOutResult switch
+            {
+                { IsSuccess: true, Data: not null } => new JsonResult(LogOutResult.Data, new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                }),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(LogOutResult.Errors),
+                _ => BadRequest("Invalid page and pageSize Fields ")
+            };
+            #endregion
+        }
+
+        #endregion
     }
 }
