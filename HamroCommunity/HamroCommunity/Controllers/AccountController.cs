@@ -165,5 +165,25 @@ namespace HamroCommunity.Controllers
             #endregion
         }
         #endregion
+
+        #region GetAllRoles
+        [HttpGet("GetAllRoles")]
+        public async Task<IActionResult> GetAllUserRoles(int page, int pageSize, CancellationToken cancellationToken)
+        {
+            var getAllUserRolesResult = await _accountServices.GetAllRoles(page, pageSize, cancellationToken);
+            #region Switch Statement
+            return getAllUserRolesResult switch
+            {
+                { IsSuccess: true, Data: not null } => new JsonResult(getAllUserRolesResult.Data, new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                }),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(getAllUserRolesResult.Errors),
+                _ => BadRequest("Invalid page and pageSize Fields ")
+            };
+            #endregion
+
+        }
+        #endregion
     }
 }

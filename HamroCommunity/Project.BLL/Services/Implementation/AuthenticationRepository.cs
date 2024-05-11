@@ -82,6 +82,24 @@ namespace Project.BLL.Services.Implementation
             return user;
         }
 
+        public async Task<List<RoleDTOs>> GetAllRolesAsync()
+        {
+            List<RoleDTOs> roleDTOs = new List<RoleDTOs>();
+            var roles = await _roleManager.Roles.Where(x => x.Name != "superadmin").ToListAsync();
+            if(roles != null && roles.Count() > 0)
+            {
+                var rolesList = _mapper.Map<List<RoleDTOs>>(roles);
+                return rolesList;
+            }
+            return new List<RoleDTOs>();
+
+            //Ternery Operator
+            //return roles != null && roles.Any()
+            //    ? _mapper.Map<List<RoleDTOs>>(roles)
+            //    : new List<RoleDTOs>();
+
+        }
+
         public async Task<List<UserDTOs>> GetAllUsersAsync(int page, int pageSize, CancellationToken cancellationToken)
         {
             var cacheKey = CacheKeys.User;

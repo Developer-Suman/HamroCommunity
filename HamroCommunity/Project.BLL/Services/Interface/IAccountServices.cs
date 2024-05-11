@@ -16,6 +16,7 @@ namespace Project.BLL.Services.Interface
         Task<Result<string>> CreateRoles(string rolename);
         Task<Result<AssignRolesDTOs>> AssignRoles(AssignRolesDTOs assignRolesDTOs);
         Task<Result<TokenDTOs>> GetNewToken(TokenDTOs tokenDTOs);
+        Task<Result<List<RoleDTOs>>> GetAllRoles();
         Task<Result<List<UserDTOs>>> GetAllUsers(int page, int pageSize, CancellationToken cancellationToken);
         Task<Result<UserDTOs>> GetByUserId(string userId, CancellationToken cancellationToken);
     }
