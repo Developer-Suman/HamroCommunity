@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Project.BLL.DTOs.Authentication;
+using Project.DLL.Models;
+using System.Security.Claims;
 
 namespace HamroCommunity.Configs
 {
@@ -8,6 +13,49 @@ namespace HamroCommunity.Configs
     [ApiController]
     public class HamroCommunityBaseController : ControllerBase
     {
+        private UserDTOs? _currentUser;
+        private string _userRole;
+        private readonly UserManager<ApplicationUsers> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IMapper _mapper;
+        public HamroCommunityBaseController(IMapper mapper, UserManager<ApplicationUsers> userManager, RoleManager<IdentityRole> roleManager)
+        {
+            _roleManager = roleManager;
+            _userManager = userManager;
+            _mapper = mapper;
+            
+        }
+
+        protected async Task<UserDTOs> GetCurrentUser()
+        {
+            if(_currentUser is null)
+            {
+                var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(nameIdentifier))
+                {
+                    throw new InvalidDataException("Current user not Found");
+                }
+                var dbUser = _userManager.Users.FirstOrDefault(x=>x.Id == nameIdentifier);
+                _currentUser = _mapper.Map<UserDTOs>(dbUser);
+            }         
+            return _currentUser;
+        }
+
+        protected string GetCurrentUserRoles()
+        {
+            if(_userRole is null)
+            {
+                var rolesIdentifier = User.FindFirst(ClaimTypes.Role)?.Value;
+                if(string.IsNullOrEmpty(rolesIdentifier))
+                {
+                    throw new InvalidDataException("CurrentUser roles Not Found");
+                }
+
+                var UserRoles = _roleManager.Roles.FirstOrDefault(x=>x.Name == rolesIdentifier);
+                _userRole = UserRoles.ToString();
+            }
+            return _userRole;
+        }
 
         protected IActionResult HandleFailureResult(IEnumerable<string> errors)
         {

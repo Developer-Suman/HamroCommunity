@@ -26,9 +26,10 @@ namespace Project.DLL.JWT
         {
             var claims = new List<Claim>()
             {
-                new Claim(JwtRegisteredClaimNames.Sub, users.Id),
+                new Claim(JwtRegisteredClaimNames.Sub, users.Id.ToString()),
                 new Claim(ClaimTypes.Name, users.UserName!),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                //new Claim("depId", users.DepartmentId!)
 
             };
 

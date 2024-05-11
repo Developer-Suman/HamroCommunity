@@ -1,29 +1,31 @@
 ﻿using AutoMapper;
 using HamroCommunity.Configs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
 using Project.BLL.DTOs.Authentication;
 using Project.BLL.Services.Interface;
 using Project.DLL.Abstraction;
+using Project.DLL.Models;
 using System.Text.Json;
 
 namespace HamroCommunity.Controllers
 {
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : HamroCommunityBaseController
     {
         private readonly IAccountServices _accountServices;
         private readonly IAuthenticationRepository _authenticationRepository;
-        private readonly IMapper _mapper;
         private readonly IJwtProviders _jwtProviders;
 
-        public AccountController(IAccountServices accountServices, IAuthenticationRepository authenticationRepository, IMapper mapper, IJwtProviders jwtProviders)
+        public AccountController(IAccountServices accountServices, IAuthenticationRepository authenticationRepository,IJwtProviders jwtProviders, IMapper mapper, UserManager<ApplicationUsers> userManager, RoleManager<IdentityRole> roleManager) : base(mapper, userManager, roleManager)
         {
             _accountServices = accountServices;
             _authenticationRepository = authenticationRepository;
-            _mapper = mapper;
             _jwtProviders = jwtProviders;      
         }
 
@@ -126,6 +128,8 @@ namespace HamroCommunity.Controllers
         [HttpGet("GetAllUser")]
         public async Task<IActionResult> GetAllUser(int page, int pageSize, CancellationToken cancellationToken)
         {
+
+            var userRoles = GetCurrentUserRoles();
             var getAllUserResult =await _accountServices.GetAllUsers(page, pageSize, cancellationToken);
             #region Switch Statement
             return getAllUserResult switch

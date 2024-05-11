@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Project.BLL.DTOs.Authentication;
 using Project.DLL.Models;
 using System;
@@ -15,6 +16,7 @@ namespace Project.BLL.Abstraction
         {
             CreateMap<RegistrationCreateDTOs, ApplicationUsers>().ReverseMap();
             CreateMap<UserDTOs, ApplicationUsers>().ReverseMap();
+            CreateMap<UserDTOs, IdentityRole>().ReverseMap();
 
         }
     }
