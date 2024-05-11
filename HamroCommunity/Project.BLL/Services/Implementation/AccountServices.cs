@@ -310,5 +310,24 @@ namespace Project.BLL.Services.Implementation
                 throw new Exception("Failed to LogOut User");
             }
         }
+
+        public async Task<Result<ChangePasswordDTOs>> ChangePassword(string userId,ChangePasswordDTOs changePasswordDTOs)
+        {
+            try
+            {
+                var user = await _authenticationRepository.FindByIdAsync(userId);
+                if( user is null)
+                {
+                    return Result<ChangePasswordDTOs>.Failure("NotFound", "User is not Found");
+                }
+                var changePasswordResult = await _authenticationRepository.ChangePassword(user, changePasswordDTOs.CurrentPassword!, changePasswordDTOs.NewPassword!);
+                var changePassword = _mapper.Map<ChangePasswordDTOs>(changePasswordResult);
+                return Result<ChangePasswordDTOs>.Success(changePassword);
+
+            }catch(Exception ex)
+            {
+                throw new Exception("Failed to change Password");
+            }
+        }
     }
 }

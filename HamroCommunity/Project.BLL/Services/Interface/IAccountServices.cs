@@ -13,7 +13,7 @@ namespace Project.BLL.Services.Interface
         Task<Result<RegistrationCreateDTOs>> RegisterUser (RegistrationCreateDTOs userModel);
         Task<Result<TokenDTOs>> LoginUser (LogInDTOs logInDTOs);
         Task<Result<object>> LogoutUser(string userId);
-
+        Task<Result<ChangePasswordDTOs>> ChangePassword(string userId,ChangePasswordDTOs changePasswordDTOs);
         Task<Result<string>> CreateRoles(string rolename);
         Task<Result<AssignRolesDTOs>> AssignRoles(AssignRolesDTOs assignRolesDTOs);
         Task<Result<TokenDTOs>> GetNewToken(TokenDTOs tokenDTOs);
