@@ -19,5 +19,6 @@ namespace Project.DLL.Models
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
+        public ICollection<UserDepartment> UserDepartments { get; set; }
     }
 }
