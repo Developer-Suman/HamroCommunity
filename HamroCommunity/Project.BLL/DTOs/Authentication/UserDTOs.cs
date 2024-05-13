@@ -14,5 +14,6 @@ namespace Project.BLL.DTOs.Authentication
         public string UserName { get; set; }
         public string Address { get; set; }
         public string Email { get; set; }
+
     }
 }

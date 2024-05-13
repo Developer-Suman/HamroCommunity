@@ -55,6 +55,10 @@ namespace Project.BLL
             services.AddMemoryCache();
             services.AddScoped<IMemoryCacheRepository, MemoryCacheRepository>();
 
+         
+
+
+
             #endregion
             return services;
         }

@@ -20,7 +20,7 @@ namespace Project.DLL
         {
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), 
-            x=>x.MigrationsAssembly("Project.DAL"))
+            x=>x.MigrationsAssembly("Project.DLL"))
             );
 
             services.AddIdentity<ApplicationUsers, IdentityRole>()
