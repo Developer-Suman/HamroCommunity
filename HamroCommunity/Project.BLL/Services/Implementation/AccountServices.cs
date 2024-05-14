@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Project.BLL.Services.Implementation
 {
@@ -128,6 +129,7 @@ namespace Project.BLL.Services.Implementation
 
                 }catch(Exception ex)
                 {
+  
                     throw new Exception("Something went wrong during user creation");
                 }
             }
