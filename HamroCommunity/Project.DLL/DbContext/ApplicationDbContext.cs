@@ -20,6 +20,7 @@ namespace Project.DLL.DbContext
 
         public DbSet<ApplicationUsers> ApplicationUsers { get; set; }
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Nashu> Nashu { get; set; }
         public DbSet<UserDepartment> UserDepartments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

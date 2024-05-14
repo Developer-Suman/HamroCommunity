@@ -55,6 +55,7 @@
   },
   "firstRun": {
     "adminPasswordHash": null,
+    "adminPassword": null,
     "adminUsername": null,
     "requireAuthenticationForHttpIngestion": false
   },

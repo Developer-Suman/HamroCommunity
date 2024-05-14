@@ -62,7 +62,7 @@ namespace Project.BLL.Repository.Implementation
             return await _dbSet.AsNoTracking().ToListAsync();
         }
 
-        public async Task<TEntity> GetByIdAsync(Guid id) => await _dbSet.FindAsync(id);
+        public async Task<TEntity> GetByIdAsync(string id) => await _dbSet.FindAsync(id);
         
 
         public async Task<IEnumerable<TEntity>> GetConditonalAsync(Expression<Func<TEntity, bool>> predicate)
