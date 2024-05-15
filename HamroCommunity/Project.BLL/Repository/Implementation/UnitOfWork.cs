@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
-using Project.BLL.Repository.Interface;
 using Project.DLL.DbContext;
+using Project.DLL.RepoInterface;
 using System;
 using System.Collections;
 using System.Collections.Generic;

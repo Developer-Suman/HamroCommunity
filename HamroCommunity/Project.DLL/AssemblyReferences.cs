@@ -45,6 +45,11 @@ namespace Project.DLL
                      };
                  });
 
+            #region DataSeeder
+        
+
+            #endregion
+
             return services;
 
         }

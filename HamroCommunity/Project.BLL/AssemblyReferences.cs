@@ -2,11 +2,12 @@
 using Microsoft.Extensions.DependencyInjection;
 using Project.BLL.Abstraction;
 using Project.BLL.Repository.Implementation;
-using Project.BLL.Repository.Interface;
 using Project.BLL.Services.Implementation;
 using Project.BLL.Services.Interface;
 using Project.DLL.Abstraction;
 using Project.DLL.JWT;
+using Project.DLL.RepoInterface;
+using Project.DLL.Seed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,6 +55,7 @@ namespace Project.BLL
             services.AddScoped<IAccountServices, AccountServices>();
             services.AddMemoryCache();
             services.AddScoped<IMemoryCacheRepository, MemoryCacheRepository>();
+            services.AddTransient<DataSeeder>();
 
          
 

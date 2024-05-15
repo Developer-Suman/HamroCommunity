@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Project.BLL.DTOs.Authentication;
 using Project.BLL.Services.Interface;
-using Project.BLL.Static.Cache;
 using Project.BLL.Validator;
 using Project.DLL.Abstraction;
 using Project.DLL.Models;
+using Project.DLL.Static.Cache;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -227,7 +227,7 @@ namespace Project.BLL.Services.Implementation
                 }
 
                 var allUser = await _authenticationRepository.GetAllUsersAsync(page, pageSize, cancellationToken);
-                if(allUser is null)
+                if(allUser is null && allUser.Count() <= 0)
                 {
                     return Result<List<UserDTOs>>.Failure("NotFound", "User are Not Found");
                 }

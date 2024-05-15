@@ -129,7 +129,7 @@ namespace HamroCommunity.Controllers
         public async Task<IActionResult> GetAllUser(int page, int pageSize, CancellationToken cancellationToken)
         {
 
-            var userRoles = GetCurrentUserRoles();
+            //var userRoles = GetCurrentUserRoles();
             var getAllUserResult =await _accountServices.GetAllUsers(page, pageSize, cancellationToken);
             #region Switch Statement
             return getAllUserResult switch
