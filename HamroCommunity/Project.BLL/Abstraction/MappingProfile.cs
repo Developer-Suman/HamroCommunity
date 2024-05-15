@@ -18,6 +18,7 @@ namespace Project.BLL.Abstraction
             CreateMap<UserDTOs, ApplicationUsers>().ReverseMap();
             CreateMap<UserDTOs, IdentityRole>().ReverseMap();
             CreateMap<ChangePasswordDTOs, IdentityRole>().ReverseMap();
+            CreateMap<RoleDTOs, IdentityRole>().ReverseMap();
 
         }
     }

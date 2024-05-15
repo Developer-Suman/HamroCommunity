@@ -4,6 +4,7 @@ using HamroCommunity.CustomMiddleware.GlobalErrorHandling;
 using Microsoft.OpenApi.Models;
 using Project.BLL;
 using Project.DLL;
+using Project.DLL.Seed;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
@@ -20,16 +21,14 @@ try
     Dependencies.Inject(builder);
 
     Log.Information("Application StartUp");
-    //builder.Services.ServiceCollectionConfiguration();
-    //builder.Host.UseSerilog((context, loggerconfig) =>
-    //{
-    //    loggerconfig.ReadFrom.Configuration(context.Configuration);
-
-    //});
-
-    
 
     var app = builder.Build();
+
+    using(var scope = app.Services.CreateScope())
+    {
+        var dataSeeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+        await dataSeeder.Seed();
+    }
    
     ApplicationConfiguration.Configure(app); //Configurations
 

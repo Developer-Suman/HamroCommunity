@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Project.BLL.DTOs.Nashu;
-using Project.BLL.Repository.Interface;
 using Project.BLL.Services.Interface;
 using Project.DLL.Abstraction;
 using Project.DLL.DbContext;
 using Project.DLL.Models;
+using Project.DLL.RepoInterface;
 using System;
 using System.Collections.Generic;
 using System.Linq;

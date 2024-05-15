@@ -8,7 +8,8 @@ namespace Project.BLL.DTOs.Authentication
 {
     public class RoleDTOs
     {
-        public string? RoleId { get; set; }
-        public string? RoleName { get; set;}
+        public string? Id { get; set; }
+        public string? Name { get; set;}
+        public string? NormalizedName { get; set;}
     }
 }

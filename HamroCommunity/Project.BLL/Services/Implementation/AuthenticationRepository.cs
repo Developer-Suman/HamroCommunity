@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Project.BLL.DTOs.Authentication;
 using Project.BLL.Services.Interface;
-using Project.BLL.Static.Cache;
 using Project.DLL.Models;
+using Project.DLL.Static.Cache;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -95,7 +95,7 @@ namespace Project.BLL.Services.Implementation
                 .Skip((page - 1)*pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);
-            if(roles != null && roles.Count() > 0)
+            if(roles != null && roles.Count() > 0) 
             {
                 var rolesList = _mapper.Map<List<RoleDTOs>>(roles);
                 return rolesList;
@@ -111,52 +111,24 @@ namespace Project.BLL.Services.Implementation
 
 
         public async Task<List<UserDTOs>> GetAllUsersAsync(int page, int pageSize, CancellationToken cancellationToken)
-        {
-            var cacheKey = CacheKeys.User;
-            var cacheData = await _memoryCacheRepository.GetCacheKey<List<UserDTOs>>(cacheKey);
-
-            if(cacheData is not null && cacheData.Count > 0)
-            {
-                return cacheData;
-            }
-
+        {        
             var users = await _userManager.Users.AsNoTracking()
                 .OrderByDescending(x=>x.CreatedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .ToListAsync(cancellationToken);
-
-            await _memoryCacheRepository.SetAsync(cacheKey, users, new Microsoft.Extensions.Caching.Memory.MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(30)
-            }, cancellationToken) ;
-
+                .ToListAsync(cancellationToken);         
             var userDTOs = _mapper.Map<List<UserDTOs>>(users);
             return userDTOs;
         }
 
         public async Task<UserDTOs> GetById(string id, CancellationToken cancellationToken)
         {
-            var cacheKey = $"GetById{id}";
-            var cacheData = await _memoryCacheRepository.GetCacheKey<UserDTOs>(cacheKey);
-            if(cacheData is not null)
-            {
-                return cacheData;
-            }
-
             var user = await _userManager.FindByIdAsync(id);
             if(user is null)
             {
                 return default!;
             }
-
             var userDTOs = _mapper.Map<UserDTOs>(user);
-
-            await _memoryCacheRepository.SetAsync(cacheKey, userDTOs, new Microsoft.Extensions.Caching.Memory.MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(5)
-            }, cancellationToken);
-
             return userDTOs;
         }
 
