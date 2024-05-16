@@ -56,6 +56,7 @@ namespace Project.BLL
             services.AddMemoryCache();
             services.AddScoped<IMemoryCacheRepository, MemoryCacheRepository>();
             services.AddTransient<DataSeeder>();
+            services.AddScoped<INashuRepository, NashuRepository>();
 
          
 

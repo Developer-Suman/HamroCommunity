@@ -81,6 +81,10 @@ namespace HamroCommunity.Configs
             {
                 return Conflict(errors);
             }
+            else if(errors.Any(errors => errors.Contains("NoContent")))
+            {
+                return StatusCode(204, new { Message = "No content available.", Errors = errors });
+            }
             else
             {
                 return BadRequest(errors);

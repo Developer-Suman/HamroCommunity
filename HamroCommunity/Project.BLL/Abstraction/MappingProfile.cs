@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Project.BLL.DTOs.Authentication;
+using Project.BLL.DTOs.Nashu;
 using Project.DLL.Models;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,9 @@ namespace Project.BLL.Abstraction
             CreateMap<UserDTOs, IdentityRole>().ReverseMap();
             CreateMap<ChangePasswordDTOs, IdentityRole>().ReverseMap();
             CreateMap<RoleDTOs, IdentityRole>().ReverseMap();
+            CreateMap<NashuCreateDTOs, NashuGetDTOs>().ReverseMap();
+            CreateMap<Nashu,NashuCreateDTOs>().ReverseMap();
+            CreateMap<Nashu, NashuGetDTOs>().ReverseMap();
 
         }
     }
