@@ -2,18 +2,12 @@ name: cicd-test
 
 on:
   push:
-    branches: [ main]
+    branches:
+      - main
 
 jobs:
   deploy:
-    runs-on: [self-hosted]
+    runs-on: [ubuntu-latest]
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup
-      uses: microsoft/setup-msbuild@v1.1
-      with:
-        dotnet-version: 7.0.x
-    - name: Build
-      run: |
-         cd WebAPI
-         msbuild 
+      - name: Echo Hello World
+        run: echo "Hello World"
