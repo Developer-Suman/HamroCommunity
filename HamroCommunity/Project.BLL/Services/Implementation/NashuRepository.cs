@@ -5,6 +5,7 @@ using Project.DLL.Abstraction;
 using Project.DLL.DbContext;
 using Project.DLL.Models;
 using Project.DLL.RepoInterface;
+using Project.DLL.Static.Cache;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,7 @@ namespace Project.BLL.Services.Implementation
         {
             try
             {
+                await _cacheRepository.RemoveAsync(CacheKeys.Nashu);
                 var nashuData = await _unitOfWork.Repository<Nashu>().GetByIdAsync(NashuId);
                 if(nashuData is null)
                 {
@@ -52,13 +54,26 @@ namespace Project.BLL.Services.Implementation
 
         public async Task<Result<List<NashuGetDTOs>>> GetAllNashuData(int page, int pageSize, CancellationToken cancellationToken)
         {
+
             try
             {
+                var cacheKeys = CacheKeys.Nashu;
+                var cacheData = await _cacheRepository.GetCacheKey<List<NashuGetDTOs>>(cacheKeys);
+
+                if(cacheData is not null && cacheData.Count > 0)
+                {
+                    return Result<List<NashuGetDTOs>>.Success(cacheData);
+                }
                 var nashuData = await _unitOfWork.Repository<Nashu>().GetAllAsync();
                 if(nashuData is null && !nashuData.Any())
                 {
                     return Result<List<NashuGetDTOs>>.Failure("NoContent", "Nashu Data are not found");
                 };
+
+                await _cacheRepository.SetAsync(cacheKeys, nashuData, new Microsoft.Extensions.Caching.Memory.MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(30)
+                }, cancellationToken) ;
 
                 return Result<List<NashuGetDTOs>>.Success(_mapper.Map<List<NashuGetDTOs>>(nashuData));
 
@@ -70,26 +85,37 @@ namespace Project.BLL.Services.Implementation
 
         public async Task<Result<NashuGetDTOs>> GetNashuDataById(string NashuId, CancellationToken cancellationToken)
         {
-            using(var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+          
+            try
             {
-                try
-                {
-                    if(NashuId is null)
-                    {
-                        return Result<NashuGetDTOs>.Failure("Please provide NashuId");
+                var cacheKeys = $"GetNashuDataById{NashuId}";
+                var cacheData = await _cacheRepository.GetCacheKey<NashuGetDTOs>(cacheKeys);
 
-                    }
-                    var nashuData = await _unitOfWork.Repository<Nashu>().GetConditonalAsync(x=>x.NashuId == NashuId);
-                    _mapper.Map<NashuGetDTOs>(nashuData);
-                    scope.Complete();
-                    return Result<NashuGetDTOs>.Success(_mapper.Map<NashuGetDTOs>(nashuData));
+                if (cacheData is not null)
+                {
+                    return Result<NashuGetDTOs>.Success(cacheData);
+                }
+                if(NashuId is null)
+                {
+                    return Result<NashuGetDTOs>.Failure("Please provide NashuId");
 
                 }
-                catch(Exception e)
+                //var nashuData = await _unitOfWork.Repository<Nashu>().GetConditonalAsync(x=>x.NashuId == NashuId);
+                var nashuData = await _unitOfWork.Repository<Nashu>().GetByIdAsync(NashuId);
+
+                await _cacheRepository.SetAsync(cacheKeys, nashuData, new Microsoft.Extensions.Caching.Memory.MemoryCacheEntryOptions
                 {
-                    throw new Exception("An error occured while fetching nashu data");
-                }
+                    AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(30)
+                }, cancellationToken);
+           
+                return Result<NashuGetDTOs>.Success(_mapper.Map<NashuGetDTOs>(nashuData));
+
             }
+            catch(Exception ex)
+            {
+                throw new Exception("An error occured while fetching nashu data");
+            }
+            
         }
 
         public async Task<Result<NashuGetDTOs>> SaveNashuData(NashuCreateDTOs nashuCreateDTOs)
@@ -98,11 +124,14 @@ namespace Project.BLL.Services.Implementation
             {
                 try
                 {
+                    await _cacheRepository.RemoveAsync(CacheKeys.Nashu);
                     var nashuData = _mapper.Map<Nashu>(nashuCreateDTOs);
                     if (nashuData is null)
                     {
                         return Result<NashuGetDTOs>.Failure("Error occured while mapping Entity");
                     }
+
+
                     nashuData.NashuId = Guid.NewGuid().ToString();
                     await _unitOfWork.Repository<Nashu>().AddAsync(nashuData);
                     await _unitOfWork.SaveChangesAsync();
@@ -114,6 +143,7 @@ namespace Project.BLL.Services.Implementation
                 catch (Exception ex)
                 {
                     scope.Dispose();
+                   
                     throw new Exception("An exception occured while Adding Nashu Data");
                 }
 
@@ -127,6 +157,7 @@ namespace Project.BLL.Services.Implementation
             {
                 try
                 {
+                    await _cacheRepository.RemoveAsync(CacheKeys.Nashu);
                     if(!nashuUpdateDTOs.NashuId.Any())
                     {
                         return Result<NashuGetDTOs>.Failure("Please provide a valid NashuId");
