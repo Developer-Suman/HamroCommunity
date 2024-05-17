@@ -68,9 +68,28 @@ namespace Project.BLL.Services.Implementation
             }
         }
 
-        public Task<Result<NashuGetDTOs>> GetNashuDataById(string NashuId, CancellationToken cancellationToken)
+        public async Task<Result<NashuGetDTOs>> GetNashuDataById(string NashuId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            using(var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                try
+                {
+                    if(NashuId is null)
+                    {
+                        return Result<NashuGetDTOs>.Failure("Please provide NashuId");
+
+                    }
+                    var nashuData = await _unitOfWork.Repository<Nashu>().GetConditonalAsync(x=>x.NashuId == NashuId);
+                    _mapper.Map<NashuGetDTOs>(nashuData);
+                    scope.Complete();
+                    return Result<NashuGetDTOs>.Success(_mapper.Map<NashuGetDTOs>(nashuData));
+
+                }
+                catch(Exception e)
+                {
+                    throw new Exception("An error occured while fetching nashu data");
+                }
+            }
         }
 
         public async Task<Result<NashuGetDTOs>> SaveNashuData(NashuCreateDTOs nashuCreateDTOs)
@@ -102,9 +121,35 @@ namespace Project.BLL.Services.Implementation
            
         }
 
-        public Task<Result<NashuGetDTOs>> UpdateNashuData(NashuUpdateDTOs nashuUpdateDTOs)
+        public async Task<Result<NashuGetDTOs>> UpdateNashuData(NashuUpdateDTOs nashuUpdateDTOs)
         {
-            throw new NotImplementedException();
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                try
+                {
+                    if(!nashuUpdateDTOs.NashuId.Any())
+                    {
+                        return Result<NashuGetDTOs>.Failure("Please provide a valid NashuId");
+                    }
+                    var nashuDataToBeUpdated = await _unitOfWork.Repository<Nashu>().GetByIdAsync(nashuUpdateDTOs.NashuId);
+                    if(nashuDataToBeUpdated is null)
+                    {
+                        return Result<NashuGetDTOs>.Failure("NotFound", "NashuData are not Found");
+                    }
+                    _mapper.Map(nashuUpdateDTOs, nashuDataToBeUpdated);
+                    await _unitOfWork.SaveChangesAsync();
+                    scope.Complete();
+                    return Result<NashuGetDTOs>.Success(_mapper.Map<NashuGetDTOs>(nashuUpdateDTOs));
+
+                }
+                catch (Exception ex)
+                {
+                    scope.Dispose();
+                    throw new Exception("An exception occured while Updating Nashu Data");
+                }
+
+            }
+          
         }
     }
 }
