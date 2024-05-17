@@ -9,5 +9,6 @@ namespace Project.DLL.Static.Cache
     public static class CacheKeys
     {
         public const string User = "UserCacheKey";
+        public const string Nashu = "NashuCacheKey";
     }
 }
