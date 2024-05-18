@@ -119,6 +119,8 @@ namespace Project.BLL.Services.Implementation
             
         }
 
+
+
         public async Task<Result<NashuGetDTOs>> SaveNashuData(NashuCreateDTOs nashuCreateDTOs)
         {
             using(var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
@@ -132,6 +134,7 @@ namespace Project.BLL.Services.Implementation
                         return Result<NashuGetDTOs>.Failure("Error occured while mapping Entity");
                     }
 
+                    var data = "Test";
 
                     nashuData.NashuId = Guid.NewGuid().ToString();
                     await _unitOfWork.Repository<Nashu>().AddAsync(nashuData);
