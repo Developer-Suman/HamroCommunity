@@ -17,6 +17,6 @@ jobs:
       run: ls HamroCommunity
 
     - name: Build the Docker image
-      run:  ddotnet publish -c Release -o ./app
+      run:  dotnet publish -c Release -o ./app
             docker build -t fullstack .
         
