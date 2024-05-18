@@ -42,7 +42,7 @@ namespace HamroCommunity.Controllers
         }
 
         [HttpGet("DeleteNashu/{NashuId}")]
-        public async Task<IActionResult> DeleteNashu(string NashuId)
+        public async Task<IActionResult> DeleteNashu([FromRoute] string NashuId)
         {
             var deleteNashuResult = await _nashuRepository.DeleteNashuData(NashuId);
 
@@ -58,9 +58,9 @@ namespace HamroCommunity.Controllers
         }
 
         [HttpPatch("UpdateNashu/{NashuId}")]
-        public async Task<IActionResult> UpdateNashu(NashuUpdateDTOs updateDTOs)
+        public async Task<IActionResult> UpdateNashu([FromRoute] string NashuId, [FromBody] NashuUpdateDTOs updateDTOs)
         {
-            var updateNashuResult = await _nashuRepository.UpdateNashuData(updateDTOs);
+            var updateNashuResult = await _nashuRepository.UpdateNashuData(NashuId,updateDTOs);
 
             #region switch
             return updateNashuResult switch
@@ -97,7 +97,7 @@ namespace HamroCommunity.Controllers
             #endregion
         }
 
-        [HttpGet("get-nashudatabyId/{NashuId}")]
+        [HttpGet("get-nashudata-byId/{NashuId}")]
         public async Task<IActionResult> GetNashuDataById(string NashuId, CancellationToken cancellationToken)
         {
             var getbyIdResult = await _nashuRepository.GetNashuDataById(NashuId, cancellationToken);
