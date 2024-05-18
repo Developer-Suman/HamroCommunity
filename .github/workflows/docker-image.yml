@@ -15,4 +15,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
+
+    - name: Getting Present working directory
+      run: pwd
+
+    - name:  Build Docker File
       run: docker build -t fullstack . 
