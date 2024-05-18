@@ -20,11 +20,9 @@ jobs:
       - name: Display Current Directory
         run: ls
         
-      - name: Change to project directory
-        run: cd HamroCommunity
-
-      - name: Build Docker Image
+      - name: Change to project directory and build
         run: |
+          cd HamroCommunity
           dotnet publish -c Release -o ./app
           docker build -t fullstack .
 
@@ -34,11 +32,8 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker Image
-        run: docker build -t fullstack .
-
       - name: Tag Docker Image
-        run: docker tag hamrocommunity ${{ secrets.DOCKER_USERNAME }}/fullstack:latest
+        run: cd HamroCommunity && docker tag hamrocommunity ${{ secrets.DOCKER_USERNAME }}/fullstack:latest
 
       - name: Push Docker Image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/fullstack:latest
