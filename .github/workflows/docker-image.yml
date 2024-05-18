@@ -17,5 +17,6 @@ jobs:
       run: ls HamroCommunity
 
     - name: Build the Docker image
-      run:  docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run:  ddotnet publish -c Release -o ./app
+            docker build -t fullstack .
         
