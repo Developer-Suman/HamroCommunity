@@ -24,4 +24,4 @@ jobs:
         run: |
           cd HamroCommunity
           dotnet publish -c Release -o ./app
-          docker build -t fullstack .
+          docker build --no-cache --progress=plain -t fullstack .
