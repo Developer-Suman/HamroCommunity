@@ -18,5 +18,7 @@ jobs:
 
     - name: Build the Docker image
       run:  dotnet publish -c Release -o ./app
-            docker build -t fullstack .
+
+    - name: Build the Docker image
+      run:  docker build -t fullstack .
         
