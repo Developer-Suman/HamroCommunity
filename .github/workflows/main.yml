@@ -25,5 +25,5 @@ jobs:
           cd HamroCommunity
           dotnet publish -c Release -o ./app
           docker build --no-cache --progress=plain -t ${{ secrets.DOCKER_USERNAME }}/fullstack .
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker push ${{ secrets.DOCKER_USERNAME }}/fullstack
+      - name: Run Docker Image
+        run: docker run --name fullstack-container -d -p 8080:80 ${{ secrets.DOCKER_USERNAME }}/fullstack:latest
