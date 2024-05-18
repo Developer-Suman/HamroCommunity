@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HamroCommunity", "HamroCommunity\HamroCommunity.csproj", "{3411C419-38EA-4054-87B5-80D368929C0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HamroCommunity", "HamroCommunity\HamroCommunity.csproj", "{3411C419-38EA-4054-87B5-80D368929C0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project.BLL", "Project.BLL\Project.BLL.csproj", "{FF24B2D2-F058-4B4C-B6DB-BD9A2EEAD2D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project.BLL", "Project.BLL\Project.BLL.csproj", "{FF24B2D2-F058-4B4C-B6DB-BD9A2EEAD2D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project.DLL", "Project.DLL\Project.DLL.csproj", "{DA77449A-F6EE-446D-B18B-0668D25081EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project.DLL", "Project.DLL\Project.DLL.csproj", "{DA77449A-F6EE-446D-B18B-0668D25081EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project.TEST", "Project.TEST\Project.TEST.csproj", "{4C9E1537-B198-4BBA-B02C-38CAF189E281}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project.TEST", "Project.TEST\Project.TEST.csproj", "{4C9E1537-B198-4BBA-B02C-38CAF189E281}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

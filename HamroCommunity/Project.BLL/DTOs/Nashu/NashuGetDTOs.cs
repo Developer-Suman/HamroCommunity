@@ -9,7 +9,6 @@ namespace Project.BLL.DTOs.Nashu
     public class NashuGetDTOs
     {
         public string NashuId { get; set; }
-        public string NashuName { get; }
         public string FirstName { get; set; }
         public string? MiddleName { get; set; }
         public string LastName { get; set; }

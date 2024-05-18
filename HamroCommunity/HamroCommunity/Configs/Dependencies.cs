@@ -7,7 +7,7 @@ namespace HamroCommunity.Configs
     {
         public static void Inject(WebApplicationBuilder builder)
         {
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddNewtonsoftJson();
 
             builder.Services.AddEndpointsApiExplorer();
 

@@ -12,7 +12,7 @@ namespace Project.BLL.Services.Interface
     {
         Task<Result<NashuGetDTOs>> SaveNashuData(NashuCreateDTOs nashuCreateDTOs);
         Task<Result<NashuGetDTOs>> GetNashuDataById(string NashuId, CancellationToken cancellationToken);
-        Task<Result<NashuGetDTOs>> UpdateNashuData(NashuUpdateDTOs nashuUpdateDTOs);
+        Task<Result<NashuGetDTOs>> UpdateNashuData(string NashuId,NashuUpdateDTOs nashuUpdateDTOs);
         Task<Result<NashuGetDTOs>> DeleteNashuData(string NashuId);
         Task<Result<List<NashuGetDTOs>>> GetAllNashuData(int page, int pageSize, CancellationToken cancellationToken);
     }

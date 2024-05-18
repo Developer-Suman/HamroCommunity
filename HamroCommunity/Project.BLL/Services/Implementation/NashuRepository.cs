@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Project.BLL.DTOs.Nashu;
 using Project.BLL.Services.Interface;
 using Project.DLL.Abstraction;
@@ -151,22 +152,24 @@ namespace Project.BLL.Services.Implementation
            
         }
 
-        public async Task<Result<NashuGetDTOs>> UpdateNashuData(NashuUpdateDTOs nashuUpdateDTOs)
+        public async Task<Result<NashuGetDTOs>> UpdateNashuData([FromRoute] string NashuId, NashuUpdateDTOs nashuUpdateDTOs)
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
                 {
                     await _cacheRepository.RemoveAsync(CacheKeys.Nashu);
-                    if(!nashuUpdateDTOs.NashuId.Any())
+                    if(string.IsNullOrEmpty(NashuId))
                     {
                         return Result<NashuGetDTOs>.Failure("Please provide a valid NashuId");
                     }
-                    var nashuDataToBeUpdated = await _unitOfWork.Repository<Nashu>().GetByIdAsync(nashuUpdateDTOs.NashuId);
+                    var nashuDataToBeUpdated = await _unitOfWork.Repository<Nashu>().GetByIdAsync(NashuId);
                     if(nashuDataToBeUpdated is null)
                     {
                         return Result<NashuGetDTOs>.Failure("NotFound", "NashuData are not Found");
                     }
+
+                    //Bulk Update
                     _mapper.Map(nashuUpdateDTOs, nashuDataToBeUpdated);
                     await _unitOfWork.SaveChangesAsync();
                     scope.Complete();

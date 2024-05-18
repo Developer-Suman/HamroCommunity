@@ -23,6 +23,8 @@ namespace Project.BLL.Abstraction
             CreateMap<NashuCreateDTOs, NashuGetDTOs>().ReverseMap();
             CreateMap<Nashu,NashuCreateDTOs>().ReverseMap();
             CreateMap<Nashu, NashuGetDTOs>().ReverseMap();
+            CreateMap<Nashu, NashuUpdateDTOs>().ReverseMap();
+            CreateMap<NashuGetDTOs, NashuUpdateDTOs>().ReverseMap();
 
         }
     }
