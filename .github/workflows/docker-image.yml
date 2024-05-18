@@ -17,7 +17,5 @@ jobs:
       run: ls HamroCommunity
 
     - name: Build the Docker image
-      run: |
-        cd HamroCommunity
-        docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run:  docker build . --file Dockerfile --tag my-image-name:$(date +%s)
         
