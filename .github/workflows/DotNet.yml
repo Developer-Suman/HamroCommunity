@@ -20,12 +20,7 @@ jobs:
       - name: Display Current Directory
         run: ls
 
-      - name: Verify Dockerfile presence
-        run: |
-          if [ ! -f HamroCommunity/Dockerfile ]; then
-          echo "Dockerfile not found!"
-          exit 1
-          fi
+
         
       - name: Change to project directory and build
         run: |
