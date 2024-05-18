@@ -42,7 +42,7 @@ jobs:
         run: docker pull ${{ secrets.DOCKER_USERNAME }}/fullstack:latest
 
       - name: Run Docker Image
-        run: docker run --name fullstack-container -d -p 8080:80 ${{ secrets.DOCKER_USERNAME }}/fullstack:latest
+        run: docker run --name fullstack-container -d -p 8089:80 ${{ secrets.DOCKER_USERNAME }}/fullstack:latest
 
       - name: Show Running Container
         run: docker ps
