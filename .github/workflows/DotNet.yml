@@ -20,8 +20,6 @@ jobs:
       - name: Display Current Directory
         run: ls
 
-
-        
       - name: Change to project directory and build
         run: |
           cd HamroCommunity
