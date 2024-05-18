@@ -24,8 +24,7 @@ jobs:
         
       - name: Change to project directory and build
         run: |
-          cd HamroCommunity
-          cd HamroCommunity
+          cd HamroCommunity/HamroCommunity
           dotnet publish -c Release -o ./app
           docker build -t fullstack .
 
