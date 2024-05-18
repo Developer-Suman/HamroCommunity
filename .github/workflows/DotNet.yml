@@ -16,6 +16,8 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.x
+      - name: Change to project directory
+        run: cd hamrocommunity
 
       - name: Build Docker Image
         run: |
