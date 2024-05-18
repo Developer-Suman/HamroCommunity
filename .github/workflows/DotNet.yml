@@ -33,7 +33,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Tag Docker Image
-        run: cd HamroCommunity && docker tag fullstack ${{ secrets.DOCKER_USERNAME }}/fullstack:latest
+        run: docker tag fullstack ${{ secrets.DOCKER_USERNAME }}/fullstack:latest
 
       - name: Push Docker Image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/fullstack:latest
