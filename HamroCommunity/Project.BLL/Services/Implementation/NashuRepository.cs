@@ -134,7 +134,6 @@ namespace Project.BLL.Services.Implementation
                         return Result<NashuGetDTOs>.Failure("Error occured while mapping Entity");
                     }
 
-                    var data = "Test";
 
                     nashuData.NashuId = Guid.NewGuid().ToString();
                     await _unitOfWork.Repository<Nashu>().AddAsync(nashuData);

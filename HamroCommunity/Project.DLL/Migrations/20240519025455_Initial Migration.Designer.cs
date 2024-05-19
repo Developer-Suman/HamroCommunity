@@ -12,7 +12,7 @@ using Project.DLL.DbContext;
 namespace Project.DLL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240510051922_Initial Migration")]
+    [Migration("20240519025455_Initial Migration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -241,6 +241,66 @@ namespace Project.DLL.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Project.DLL.Models.Department", b =>
+                {
+                    b.Property<string>("DepartmentId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DepartmentName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("DepartmentId");
+
+                    b.ToTable("Departments");
+                });
+
+            modelBuilder.Entity("Project.DLL.Models.Nashu", b =>
+                {
+                    b.Property<string>("NashuId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MiddleName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PermanentAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TemporaryAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("NashuId");
+
+                    b.ToTable("Nashu");
+                });
+
+            modelBuilder.Entity("Project.DLL.Models.UserDepartment", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DepartentId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserDepartmentId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "DepartentId");
+
+                    b.HasIndex("DepartentId");
+
+                    b.ToTable("UserDepartments");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -290,6 +350,35 @@ namespace Project.DLL.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Project.DLL.Models.UserDepartment", b =>
+                {
+                    b.HasOne("Project.DLL.Models.Department", "Department")
+                        .WithMany("UserDepartments")
+                        .HasForeignKey("DepartentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Project.DLL.Models.ApplicationUsers", "User")
+                        .WithMany("UserDepartments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Project.DLL.Models.ApplicationUsers", b =>
+                {
+                    b.Navigation("UserDepartments");
+                });
+
+            modelBuilder.Entity("Project.DLL.Models.Department", b =>
+                {
+                    b.Navigation("UserDepartments");
                 });
 #pragma warning restore 612, 618
         }
