@@ -133,7 +133,7 @@ namespace Project.BLL.Services.Implementation
                     {
                         return Result<NashuGetDTOs>.Failure("Error occured while mapping Entity");
                     }
-                    string data = "Suman";
+           
 
                     nashuData.NashuId = Guid.NewGuid().ToString();
                     await _unitOfWork.Repository<Nashu>().AddAsync(nashuData);
