@@ -24,7 +24,7 @@ jobs:
         run: |
           cd HamroCommunity
           dotnet publish -c Release -o ./app
-          docker build -t fullstack .
+          docker build -t hamrocommunity .
 
       - name: Login to Docker Hub
         uses: docker/login-action@v1
@@ -33,16 +33,16 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Tag Docker Image
-        run: docker tag fullstack ${{ secrets.DOCKER_USERNAME }}/fullstack:latest
+        run: docker tag hamrocommunity ${{ secrets.DOCKER_USERNAME }}/hamrocommunity:latest
         
       - name: Push Docker Image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/fullstack:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/hamrocommunity:latest
         
       - name: Pull Docker Image
-        run: docker pull ${{ secrets.DOCKER_USERNAME }}/fullstack:latest
+        run: docker pull ${{ secrets.DOCKER_USERNAME }}/hamrocommunity:latest
 
       - name: Run Docker Image
-        run: docker run --name fullstack-container -d -p 8089:80 ${{ secrets.DOCKER_USERNAME }}/fullstack:latest
+        run: docker run --name hamrocommunity-container -d -p 8089:80 ${{ secrets.DOCKER_USERNAME }}/hamrocommunity:latest
 
       - name: Show Running Container
         run: docker ps
