@@ -8,6 +8,9 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["HamroCommunity/HamroCommunity.csproj", "HamroCommunity/"]
+COPY ["Project.BLL/Project.BLL.csproj", "Project.BLL/"]
+COPY ["Project.DLL/Project.DLL.csproj", "Project.DLL/"]
+COPY ["Project.TEST/Project.TEST.csproj", "Project.TEST/"]
 RUN dotnet restore "HamroCommunity/HamroCommunity.csproj"
 COPY . .
 WORKDIR "/src/HamroCommunity"

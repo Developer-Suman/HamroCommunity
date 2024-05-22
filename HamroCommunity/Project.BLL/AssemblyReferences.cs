@@ -46,6 +46,7 @@ namespace Project.BLL
             #endregion
 
             #region InjectDependency
+            services.AddControllers();
             services.AddAuthorization();
             //builder.Services.AddAuthorization();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));

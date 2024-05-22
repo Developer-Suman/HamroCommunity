@@ -8,37 +8,38 @@ using Project.DLL.Seed;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
-try
+//try
+//{
+
+//}
+//catch(Exception ex)
+//{
+//    Log.Error("The following {Exception} was thrown during Application Startup", ex);
+//}
+//finally
+//{
+//    Log.CloseAndFlush();
+//}
+var builder = WebApplication.CreateBuilder(args);
+
+ConfigurationManager configuration = builder.Configuration;
+builder.Services
+    .AddDAL(configuration)
+    .AddBLL();
+
+// Add services to the container.
+Dependencies.Inject(builder);
+
+Log.Information("Application StartUp");
+
+var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
 {
-    var builder = WebApplication.CreateBuilder(args);
-
-    ConfigurationManager configuration = builder.Configuration;
-    builder.Services
-        .AddBLL()
-        .AddDAL(configuration);
-
-    // Add services to the container.
-    Dependencies.Inject(builder);
-
-    Log.Information("Application StartUp");
-
-    var app = builder.Build();
-
-    using(var scope = app.Services.CreateScope())
-    {
-        var dataSeeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-        await dataSeeder.Seed();
-    }
-   
-    ApplicationConfiguration.Configure(app); //Configurations
-
-    app.Run();
+    var dataSeeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+    await dataSeeder.Seed();
 }
-catch(Exception ex)
-{
-    Log.Error("The following {Exception} was thrown during Application Startup", ex);
-}
-finally
-{
-    Log.CloseAndFlush();
-}
+
+ApplicationConfiguration.Configure(app); //Configurations
+
+app.Run();

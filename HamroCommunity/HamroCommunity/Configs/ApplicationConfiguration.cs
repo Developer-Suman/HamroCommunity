@@ -83,9 +83,10 @@ namespace HamroCommunity.Configs
 
             // Configure the HTTP request pipeline.
 
-            app.UseHttpsRedirection();
+            
 
             app.UseStaticFiles();
+            app.UseHttpsRedirection();
 
             //app.UseSerilogRequestLogging();
 
