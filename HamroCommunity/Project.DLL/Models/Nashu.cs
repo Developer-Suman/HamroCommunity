@@ -14,5 +14,8 @@ namespace Project.DLL.Models
         public string LastName { get; set; }
         public string PermanentAddress { get; set; }
         public string TemporaryAddress { get; set; }
+        
+        public string SignatureImageUrl { get; set; }
+        
     }
 }
