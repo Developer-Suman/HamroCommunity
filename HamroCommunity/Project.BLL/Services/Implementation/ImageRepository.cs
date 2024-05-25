@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using ImageMagick;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Project.BLL.Services.Interface;
 using System;
@@ -14,12 +15,13 @@ namespace Project.BLL.Services.Implementation
     {
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IHelpherMethods _helpherMethods;
 
-        public ImageRepository(IHttpContextAccessor httpContextAccessor, IWebHostEnvironment webHostEnvironment)
+        public ImageRepository(IHttpContextAccessor httpContextAccessor, IWebHostEnvironment webHostEnvironment, IHelpherMethods helpherMethods)
         {
             _contextAccessor = httpContextAccessor;
             _webHostEnvironment = webHostEnvironment;
-            
+            _helpherMethods = helpherMethods;
         }
         public async Task<List<string>> AddMultiple(List<IFormFile> File)
         {
@@ -38,21 +40,86 @@ namespace Project.BLL.Services.Implementation
 
                 foreach(var image in File)
                 {
-                    string uniqueFile = Guid.NewGuid().ToString();
-                    string originalFileName = Path.GetFileName(image.FileName);
-                    string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(image.FileName);
-                    string fileExtension = Path.GetExtension(image.FileName);
-
-                    //Combine uploadFolderPath with uniquefile and fileExtension
-                    string filePath = Path.Combine(uploadFolderPath, fileNameWithoutExtension + '~' + fileExtension);
-
-                    //Copy image to the server
-                    using(var fileStream = new FileStream(filePath, FileMode.Create))
+                    if (_helpherMethods.IsImage(image.ContentType))
                     {
-                        await image.CopyToAsync(fileStream);
-                    }
 
-                    filename.Add(Path.Combine("Images/", fileNameWithoutExtension + '~' + uniqueFile + fileExtension));
+                        string uniqueFile = Guid.NewGuid().ToString();
+                        string originalFileName = Path.GetFileName(image.FileName);
+                        string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(originalFileName);
+                        string FileExtension = Path.GetExtension(originalFileName);
+
+
+                        //Combine uploadFolderPath with unique file and fileExtension 
+                        string filepath = Path.Combine(uploadFolderPath, fileNameWithoutExtension + '~' + uniqueFile + FileExtension);
+
+                        //copy images to the server
+                        using (var fileStream = new FileStream(filepath, FileMode.Create))
+                        {
+                            await image.CopyToAsync(fileStream);
+
+                        }
+
+                        using (MagickImage img = new MagickImage(filepath))
+                        {
+                            if (FileExtension == ".jpg" || FileExtension == ".jpeg")
+                            {
+                                img.Format = MagickFormat.Jpg;
+
+                            }
+                            if (FileExtension == ".png")
+                            {
+                                img.Format = MagickFormat.Png;
+                            }
+
+                            img.Resize(1000, 1000);
+
+                            img.Quality = 60;
+
+                            string uniqueFileAfterCompression = Guid.NewGuid().ToString();
+                            string FileNameAfterCompression = Path.GetFileName(image.FileName);
+                            string getFileNameWithoutExtension = Path.GetFileNameWithoutExtension(FileNameAfterCompression);
+                            string ExtensionAfterCompression = Path.GetExtension(FileNameAfterCompression);
+
+                            string FilePathAfterCompression = Path.Combine(uploadFolderPath, getFileNameWithoutExtension + '~' + uniqueFileAfterCompression + ExtensionAfterCompression);
+                            img.Write(FilePathAfterCompression);
+
+                            System.IO.File.Delete(filepath);
+
+                            filename.Add(Path.Combine("Images/", getFileNameWithoutExtension + '~' + uniqueFileAfterCompression + ExtensionAfterCompression));
+                        }
+
+                    }
+                    else
+                    {
+
+                        string uniqueFile = Guid.NewGuid().ToString();
+                        string originalFileName = Path.GetFileName(image.FileName);
+                        string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(originalFileName);
+                        string FileExtension = Path.GetExtension(originalFileName);
+
+
+                        //Combine uploadFolderPath with unique file and fileExtension 
+                        string filepath = Path.Combine(uploadFolderPathForFiles, fileNameWithoutExtension + '~' + uniqueFile + FileExtension);
+                        using (var fileStream = new FileStream(filepath, FileMode.Create))
+                        {
+                            await image.CopyToAsync(fileStream);
+                        }
+
+                        string uniqueFileNameAfterCompression = Guid.NewGuid().ToString();
+                        string filenameAfterCompression = Path.GetFileName(image.FileName);
+                        string getFileNameWithoutExtensionAfter = Path.GetFileNameWithoutExtension(filenameAfterCompression);
+                        string ExtensionAfterCompression = Path.GetExtension(filenameAfterCompression);
+
+                        string filePathAfterCompression = Path.Combine(uploadFolderPathForFiles, getFileNameWithoutExtensionAfter + '~' + uniqueFileNameAfterCompression + ExtensionAfterCompression);
+                        _helpherMethods.CompressFile(filepath, filePathAfterCompression);
+
+                        //Remove the original File
+                        System.IO.File.Delete(filepath);
+
+                        filename.Add(Path.Combine("Files/", getFileNameWithoutExtensionAfter + '~' + uniqueFileNameAfterCompression + ExtensionAfterCompression));
+
+
+                    }
                 }
 
                 return filename;
@@ -76,24 +143,83 @@ namespace Project.BLL.Services.Implementation
                     Directory.CreateDirectory(uploadFolderPathForFiles);
                 }
 
-
-                string uniqueFile = Guid.NewGuid().ToString();
-                string originalFileName = Path.GetFileName(File.FileName);
-                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(File.FileName);
-                string fileExtension = Path.GetExtension(originalFileName);
-
-
-                //combine the uploadfolder path with the uniquefile name
-                string filePath = Path.Combine(uploadFolderPath, fileNameWithoutExtension+'~'+uniqueFile+fileExtension);
-
-                //copy file to the server
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                if (_helpherMethods.IsImage(File.ContentType))
                 {
-                    await File.CopyToAsync(fileStream);
+                    string uniqueFile = Guid.NewGuid().ToString();
+                    string originalFileName = Path.GetFileName(File.FileName);
+                    string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(File.FileName);
+                    string fileExtension = Path.GetExtension(originalFileName);
+
+
+                    //combine the uploadfolder path with the uniquefile name
+                    string filePath = Path.Combine(uploadFolderPath, fileNameWithoutExtension + '~' + uniqueFile + fileExtension);
+
+                    //copy file to the server
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await File.CopyToAsync(fileStream);
+                    }
+
+                    using (MagickImage image = new MagickImage(filePath))
+                    {
+                        //Set the desired format like .png,.jpg
+                        if (fileExtension == ".jpg" || fileExtension == ".jpeg")
+                        {
+                            image.Format = MagickFormat.Jpg;
+
+                        }
+                        if (fileExtension == ".png")
+                        {
+                            image.Format = MagickFormat.Png;
+                        }
+
+                        //Resize the image if necessary
+                        image.Resize(1000, 1000);
+
+                        //Set the compression Quality(0-100)
+                        image.Quality = 60; //This is the compression level
+
+                        string uniqueFileAfterCompression = Guid.NewGuid().ToString();
+                        string originalfilenameAfterCompression = Path.GetFileName(File.FileName);
+                        string getFileNameWithoutExtension = Path.GetFileNameWithoutExtension(originalfilenameAfterCompression);
+                        string fileExtensionAfterCompression = Path.GetExtension(originalfilenameAfterCompression);
+                        string filepathAfterCompression = Path.Combine(uploadFolderPath, getFileNameWithoutExtension + '~' + uniqueFileAfterCompression + fileExtensionAfterCompression);
+                        image.Write(filepathAfterCompression);
+
+                        System.IO.File.Delete(filePath);
+
+                        return Path.Combine("Images/", getFileNameWithoutExtension + '~' + uniqueFileAfterCompression + fileExtensionAfterCompression);
+                    }
                 }
+                else
+                {
+                    string uniqueFile = Guid.NewGuid().ToString();
+                    string originalFileName = Path.GetFileName(File.FileName);
+                    string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(originalFileName);
+                    string FileExtension = Path.GetExtension(originalFileName);
 
 
-                return Path.Combine("Images/", fileNameWithoutExtension + '~' + originalFileName + fileExtension);
+                    //Combine uploadFolderPath with unique file and fileExtension 
+                    string filepath = Path.Combine(uploadFolderPathForFiles, fileNameWithoutExtension + '~' + uniqueFile + FileExtension);
+                    using (var fileStream = new FileStream(filepath, FileMode.Create))
+                    {
+                        await File.CopyToAsync(fileStream);
+                    }
+
+                    string uniqueFileNameAfterCompression = Guid.NewGuid().ToString();
+                    string filenameAfterCompression = Path.GetFileName(File.FileName);
+                    string getFileNameWithoutExtensionAfter = Path.GetFileNameWithoutExtension(filenameAfterCompression);
+                    string ExtensionAfterCompression = Path.GetExtension(filenameAfterCompression);
+
+                    string filePathAfterCompression = Path.Combine(uploadFolderPathForFiles, getFileNameWithoutExtensionAfter + '~' + uniqueFileNameAfterCompression + ExtensionAfterCompression);
+                    _helpherMethods.CompressFile(filepath, filePathAfterCompression);
+
+                    //Remove the original File
+                    System.IO.File.Delete(filepath);
+
+                    return Path.Combine("Files/", getFileNameWithoutExtensionAfter + '~' + uniqueFileNameAfterCompression + ExtensionAfterCompression);
+                }
+              
 
             }catch(Exception ex)
             {
