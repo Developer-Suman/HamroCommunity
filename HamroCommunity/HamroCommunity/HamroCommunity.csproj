@@ -46,4 +46,9 @@
     <ProjectReference Include="..\Project.TEST\Project.TEST.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Images\" />
+    <Folder Include="wwwroot\Files\" />
+  </ItemGroup>
+
 </Project>

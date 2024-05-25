@@ -12,7 +12,7 @@ namespace Project.BLL.Services.Interface
         Task<string> AddSingle(IFormFile File);
         Task<List<string>> AddMultiple(List<IFormFile> File);
         void DeleteSingle(string ImageUrl);
-        void DeleteMultiple(string ImageUrls);
+        void DeleteMultiple(List<string> ImageUrls);
         Task<string> UpdateSingle(IFormFile file, string ImageUrl);
         Task<List<string>> UpdateMultiple(List<IFormFile> file, List<string> ImageUrls);
 
