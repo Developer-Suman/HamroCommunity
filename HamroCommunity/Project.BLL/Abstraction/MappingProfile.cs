@@ -26,6 +26,9 @@ namespace Project.BLL.Abstraction
             CreateMap<Nashu, NashuUpdateDTOs>().ReverseMap();
             CreateMap<NashuGetDTOs, NashuUpdateDTOs>().ReverseMap();
 
+            //CustomMapping using automapper
+
+
         }
     }
 }

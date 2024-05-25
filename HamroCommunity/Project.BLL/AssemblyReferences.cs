@@ -58,11 +58,10 @@ namespace Project.BLL
             services.AddScoped<IMemoryCacheRepository, MemoryCacheRepository>();
             services.AddTransient<DataSeeder>();
             services.AddScoped<INashuRepository, NashuRepository>();
+            services.AddTransient<IimageRepository, ImageRepository>();
+            services.AddTransient<IHelpherMethods, HelpherMethod>();
 
          
-
-
-
             #endregion
             return services;
         }

@@ -11,6 +11,6 @@ namespace Project.BLL.Services.Interface
     {
         bool IsImage(string contentType);
         void CompressFile(string inputFilePath, string outputFilePath);
-        bool CompareImage(IFormFile imageFile1, string imagePath2);
+        bool CompareImage(IFormFile imagePath1, string imagePath2);
     }
 }

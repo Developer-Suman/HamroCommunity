@@ -24,9 +24,12 @@ namespace Project.BLL.Services.Implementation
         private readonly IUnitOfWork _unitOfWork;
         private readonly ApplicationDbContext _context;
 
-        public NashuRepository(ApplicationDbContext context,IMapper mapper, IMemoryCacheRepository memoryCacheRepository, IUnitOfWork unitOfWork)
+        private readonly IimageRepository _iimageRepository;
+
+        public NashuRepository(ApplicationDbContext context,IMapper mapper, IMemoryCacheRepository memoryCacheRepository, IUnitOfWork unitOfWork,IimageRepository iimageRepository)
         {
             _context = context;
+            _iimageRepository = iimageRepository;
             _mapper = mapper;
             _cacheRepository = memoryCacheRepository;
             _unitOfWork = unitOfWork;
@@ -133,9 +136,16 @@ namespace Project.BLL.Services.Implementation
                     {
                         return Result<NashuGetDTOs>.Failure("Error occured while mapping Entity");
                     }
+
+                    string imagesUrl = await _iimageRepository.AddSingle(nashuCreateDTOs.SignatureImage);
+                    if(imagesUrl is null)
+                    {
+                        return Result<NashuGetDTOs>.Failure("Image cannot be saved");
+                    }
            
 
                     nashuData.NashuId = Guid.NewGuid().ToString();
+                    nashuData.SignatureImageUrl = imagesUrl;
                     await _unitOfWork.Repository<Nashu>().AddAsync(nashuData);
                     await _unitOfWork.SaveChangesAsync();
                     scope.Complete();
