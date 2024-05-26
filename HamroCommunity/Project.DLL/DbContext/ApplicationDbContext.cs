@@ -90,6 +90,14 @@ namespace Project.DLL.DbContext
 
 
             #endregion
+            #region Citizenship and DocumentsImages(1:m)
+            builder.Entity<DocumentImages>()
+                .HasMany(c => c.Citizenships)
+                .WithOne(cd => cd.DocumentImages)
+                .HasForeignKey(x => x.DocumentsImagesId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            #endregion
 
         }
     }
