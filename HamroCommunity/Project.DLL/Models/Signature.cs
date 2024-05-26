@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Project.DLL.Models
 {
-    internal class Signature
+    public class Signature
     {
+        public string? SignatureId { get;set; }
+        public string? SignatureURL { get; set; }
+        public string DocumentsId { get; set; }
+        public Documents Documents { get; set; }
     }
 }
