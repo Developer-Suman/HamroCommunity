@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace Project.DLL.Models
 {
-    internal class DocumentImages
+    public class DocumentImages
     {
+        public string Id { get; set;}
+        public string? DocumentURL { get; set; }
+
+        //NavigationProperty
+        public ICollection<CertificatesDocumentsImages> CertificatesDocumentsImage { get; set; }
+
     }
 }

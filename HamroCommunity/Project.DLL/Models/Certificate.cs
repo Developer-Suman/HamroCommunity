@@ -14,5 +14,11 @@ namespace Project.DLL.Models
         public string? Type { get; set; }
         public string? DocumentURL { get; set; }
         public string? Board { get; set; }
+        //Foreign Key
+        public string? DocumentsId { get; set;}
+        //Navigation Property
+        public Documents Documents { get; set; }
+        public ICollection<CertificatesDocumentsImages> CertificatesDocumentsImage { get; set; }
+
     }
 }

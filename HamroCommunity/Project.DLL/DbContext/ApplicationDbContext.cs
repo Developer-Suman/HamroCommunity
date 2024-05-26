@@ -23,6 +23,11 @@ namespace Project.DLL.DbContext
         public DbSet<Nashu> Nashu { get; set; }
         public DbSet<UserDepartment> UserDepartments { get; set; }
 
+
+
+        public DbSet<Documents> Documents { get; set; }
+        public DbSet<Certificate> Certificate { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -39,6 +44,52 @@ namespace Project.DLL.DbContext
                 .HasOne(ud => ud.Department)
                 .WithMany(d => d.UserDepartments)
                 .HasForeignKey(x => x.DepartentId);
+
+
+
+            #region Documents and Certificate(1:m)
+            builder.Entity<Documents>()
+                .HasMany(d => d.Certificates)
+                .WithOne(c => c.Documents)
+                .HasForeignKey(c => c.DocumentsId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            #endregion
+            #region Documents and Citizenship(1:1)
+            builder.Entity<Documents>()
+                .HasOne(d => d.Citizenship)
+                .WithOne(c => c.Documents)
+                .HasForeignKey<Citizenship>(d => d.DocumentsId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            #endregion
+            #region Document and Signature(1:1)
+            builder.Entity<Documents>()
+                .HasOne(x => x.Signature)
+                .WithOne(c => c.Documents)
+                .HasForeignKey<Signature>(d => d.SignatureId)
+                .OnDelete(DeleteBehavior.Cascade);
+            #endregion
+
+            #region Certificate and DocumentsImages(m:m)
+            builder.Entity<CertificatesDocumentsImages>()
+                .HasKey(cdi => new { cdi.CertificatesId, cdi.DocumentsImagesId });
+
+            builder.Entity<CertificatesDocumentsImages>()
+                .HasOne(cdi => cdi.Certificate)
+                .WithMany(c => c.CertificatesDocumentsImage)
+                .HasForeignKey(cdi => cdi.CertificatesId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+            builder.Entity<CertificatesDocumentsImages>()
+                .HasOne(cdi => cdi.DocumentImages)
+                .WithMany(c => c.CertificatesDocumentsImage)
+                .HasForeignKey(cdi => cdi.DocumentsImagesId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+            #endregion
 
         }
     }
