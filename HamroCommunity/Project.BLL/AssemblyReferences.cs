@@ -23,10 +23,10 @@ namespace Project.BLL
             #region CORS Enable
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowAllOrigins",
+                options.AddPolicy("192.168.1.84",
                     builder =>
                     {
-                        builder.AllowAnyOrigin()
+                        builder.WithOrigins("")
                         .AllowAnyMethod()
                         .AllowAnyHeader();
                     });

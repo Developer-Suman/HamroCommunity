@@ -12,8 +12,8 @@ using Project.DLL.DbContext;
 namespace Project.DLL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240525165353_Add Images as Signiture")]
-    partial class AddImagesasSigniture
+    [Migration("20240526033842_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
