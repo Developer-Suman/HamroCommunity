@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Project.BLL.DTOs.Authentication
 {
-    public class ChangePasswordDTOs
-    {
-        public string? CurrentPassword { get; set; }
-        public string? NewPassword { get; set; }
-    }
+    public record ChangePasswordDTOs(
+        string? CurrentPassword,
+        string? NewPassword
+        );
 }

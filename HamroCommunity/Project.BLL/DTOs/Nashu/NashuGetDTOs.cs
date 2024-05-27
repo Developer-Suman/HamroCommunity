@@ -6,13 +6,11 @@ using System.Threading.Tasks;
 
 namespace Project.BLL.DTOs.Nashu
 {
-    public class NashuGetDTOs
-    {
-        public string NashuId { get; set; }
-        public string FirstName { get; set; }
-        public string? MiddleName { get; set; }
-        public string LastName { get; set; }
-        public string PermanentAddress { get; set; }
-        public string TemporaryAddress { get; set; }
-    }
+    public record NashuGetDTOs(
+        string NashuId,
+        string FirstName,
+        string? MiddleName,
+        string LastName,
+        string PermanentAddress,
+        string TemporaryAddress);
 }

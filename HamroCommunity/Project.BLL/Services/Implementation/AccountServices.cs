@@ -48,7 +48,7 @@ namespace Project.BLL.Services.Implementation
                 #endregion
                 var user = await _authenticationRepository.FindByEmailAsync(logInDTOs.Email);
                 if(user == null)
-                {
+                {              
                     return Result<TokenDTOs>.Failure("Unauthorized","Invalid Credentials");
                 }
                 if(!await _authenticationRepository.CheckPasswordAsync(user, logInDTOs.Password))
@@ -71,14 +71,10 @@ namespace Project.BLL.Services.Implementation
 
                 await _authenticationRepository.UpdateUserAsync(user);
 
-                var logInData = new TokenDTOs()
-                {
-                    Token = token,
-                    RefreshToken = refreshToken,    
-                };
-
-                return Result<TokenDTOs>.Success(logInData);
+                var logInToken = new TokenDTOs(token, refreshToken);
+                return Result<TokenDTOs>.Success(logInToken);
             }
+       
             catch(Exception ex)
             {
                 throw new Exception("Something went Wrong while logging");
@@ -202,8 +198,13 @@ namespace Project.BLL.Services.Implementation
                 user.RefreshToken = newRefreshToken;
                 await _authenticationRepository.UpdateUserAsync(user);
 
-                tokenDTOs.Token = newToken;
-                tokenDTOs.RefreshToken = newRefreshToken;
+                tokenDTOs = new TokenDTOs(newToken, newRefreshToken);
+
+                //If u want to maintain immutable but need to update specific properties
+                //tokenDTOs = tokenDTOs with { Token = newToken, RefreshToken =  newRefreshToken };
+
+                //tokenDTOs.Token = newToken;
+                //tokenDTOs.RefreshToken = newRefreshToken;
 
                 return Result<TokenDTOs>.Success(tokenDTOs);
 

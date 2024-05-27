@@ -12,7 +12,6 @@ namespace Project.DLL.Models
         public string? Grade { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? Type { get; set; }
-        public string? DocumentURL { get; set; }
         public string? Board { get; set; }
         //Foreign Key
         public string? DocumentsId { get; set;}

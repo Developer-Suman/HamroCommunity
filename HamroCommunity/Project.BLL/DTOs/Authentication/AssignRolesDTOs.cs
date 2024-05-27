@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace Project.BLL.DTOs.Authentication
 {
-    public class AssignRolesDTOs
-    {
-        public string UserId { get; set; }
-        public string RoleName { get;set; }
-    }
+    public record AssignRolesDTOs(
+        string UserId,
+        string RoleName);
 }

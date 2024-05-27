@@ -8,11 +8,8 @@ using System.Threading.Tasks;
 
 namespace Project.BLL.DTOs.Authentication
 {
-    public class LogInDTOs
-    {
-
-        public string Email { get; set; }
-
-        public string Password { get; set; }
-    }
+    public record LogInDTOs(
+        string Email,
+        string Password
+        );
 }

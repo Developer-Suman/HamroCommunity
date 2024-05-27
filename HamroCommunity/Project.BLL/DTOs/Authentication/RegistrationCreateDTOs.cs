@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace Project.BLL.DTOs.Authentication
 {
-    public class RegistrationCreateDTOs
-    {
-        public string Username { get; set; }
-        [Required(ErrorMessage = "Email is Required")]
-        public string Email { get; set; }
-        [Required(ErrorMessage = "Email is Required")]
-        public string Password { get; set; }
-        public string Role { get; set; }
+    public record RegistrationCreateDTOs(
+        string Username,
+        string Email,
+        string Password,
+        string Role
+        );
+    //{
+
         //public string? DepartmentId { get; set; }
         //public string? ProfilePictureName { get; set; }
         //public string? ProfilePictureUrl { get; set; }
         //public bool IsActive { get; set; }
-    }
+    //}
 }

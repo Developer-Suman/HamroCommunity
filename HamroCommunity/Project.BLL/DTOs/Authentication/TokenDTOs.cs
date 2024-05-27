@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Project.BLL.DTOs.Authentication
 {
-    public class TokenDTOs
-    {
-        public string Token { get; set; }
-        public string RefreshToken { get; set; }
-    }
+    public record TokenDTOs(
+        string Token,
+        string RefreshToken
+        );
 }
