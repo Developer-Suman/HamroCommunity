@@ -4,6 +4,7 @@ using HamroCommunity.CustomMiddleware.CustomException;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Project.DLL.Models;
 using Serilog;
 using System.Text.Json;
@@ -27,15 +28,94 @@ namespace HamroCommunity.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet("FixedWindowPolicy")]
+        [EnableRateLimiting("FixedWindowPolicy")]
+        public IEnumerable<WeatherForecast> GetFixedWindowForecasting()
         {
-            var user = GetCurrentUser();
-            var Roles = GetCurrentUserRoles();
-            _logger.LogInformation("You requested the Get Action of WeatherForecasting");
+            //var user = GetCurrentUser();
+            //var Roles = GetCurrentUserRoles();
+            //_logger.LogInformation("You requested the Get Action of WeatherForecasting");
 
             //throw new Exception("An error occured");
+
+            
             var result =  Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            })
+            .ToArray();
+
+            var resultJson = JsonSerializer.Serialize(result);
+            _logger.LogInformation("Weather Forecasting => {@result}", resultJson);
+
+            return result;
+        }
+
+        [HttpGet("GetSlidingWeatherForecasting")]
+        [EnableRateLimiting("SlidingWindowPolicy")]
+        public IEnumerable<WeatherForecast> GetSlidingWeatherForecasting()
+        {
+            //var user = GetCurrentUser();
+            //var Roles = GetCurrentUserRoles();
+            //_logger.LogInformation("You requested the Get Action of WeatherForecasting");
+
+            //throw new Exception("An error occured");
+
+
+            var result = Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            })
+            .ToArray();
+
+            var resultJson = JsonSerializer.Serialize(result);
+            _logger.LogInformation("Weather Forecasting => {@result}", resultJson);
+
+            return result;
+        }
+
+
+        [HttpGet("TokenBucketWeatherForecasting")]
+        [EnableRateLimiting("TokenBucketPolicy")]
+        public IEnumerable<WeatherForecast> GetTokenBucketWeatherForecasting()
+        {
+            //var user = GetCurrentUser();
+            //var Roles = GetCurrentUserRoles();
+            //_logger.LogInformation("You requested the Get Action of WeatherForecasting");
+
+            //throw new Exception("An error occured");
+
+
+            var result = Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            })
+            .ToArray();
+
+            var resultJson = JsonSerializer.Serialize(result);
+            _logger.LogInformation("Weather Forecasting => {@result}", resultJson);
+
+            return result;
+        }
+
+        [HttpGet("ConcurrencyWeatherForecasting")]
+        [EnableRateLimiting("ConcurrencyPolicy")]
+        public IEnumerable<WeatherForecast> GetConcurrencyWeatherForecasting()
+        {
+            //var user = GetCurrentUser();
+            //var Roles = GetCurrentUserRoles();
+            //_logger.LogInformation("You requested the Get Action of WeatherForecasting");
+
+            //throw new Exception("An error occured");
+
+
+            var result = Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                 TemperatureC = Random.Shared.Next(-20, 55),
