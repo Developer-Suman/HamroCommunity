@@ -33,9 +33,9 @@ builder.Services.AddRateLimiter(config =>
 {
     config.AddFixedWindowLimiter("FixedWindowPolicy", options =>
     {
-        options.Window = TimeSpan.FromSeconds(10);
+        options.Window = TimeSpan.FromSeconds(5);
         options.PermitLimit = 3;
-        options.QueueLimit = 2;
+        options.QueueLimit = 0;
         options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
 
     }).RejectionStatusCode = 429;
@@ -74,7 +74,7 @@ builder.Services.AddRateLimiter(config =>
     config.AddConcurrencyLimiter("ConcurrencyPolicy", options =>
     {
         options.PermitLimit = 3;
-        options.QueueLimit = 2;
+        options.QueueLimit = 0;
         options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
 
     }).RejectionStatusCode = 429;
@@ -86,6 +86,8 @@ Dependencies.Inject(builder);
 Log.Information("Application StartUp");
 
 var app = builder.Build();
+app.UseRateLimiter();
+
 
 using (var scope = app.Services.CreateScope())
 {
