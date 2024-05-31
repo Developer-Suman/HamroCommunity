@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Project.DLL.DbContext;
 
@@ -11,9 +12,11 @@ using Project.DLL.DbContext;
 namespace Project.DLL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240531125736_Add three table")]
+    partial class Addthreetable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -335,29 +338,6 @@ namespace Project.DLL.Migrations
                     b.ToTable("Departments");
                 });
 
-            modelBuilder.Entity("Project.DLL.Models.District", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("DistrictNameInEnglish")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DistrictNameInNepali")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProvinceId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProvinceId");
-
-                    b.ToTable("Districts");
-                });
-
             modelBuilder.Entity("Project.DLL.Models.DocumentImages", b =>
                 {
                     b.Property<string>("Id")
@@ -393,29 +373,6 @@ namespace Project.DLL.Migrations
                     b.ToTable("Documents");
                 });
 
-            modelBuilder.Entity("Project.DLL.Models.Municipality", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DistrictId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MunicipalityNameInEnglish")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MunicipalityNameInNepali")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DistrictId");
-
-                    b.ToTable("Municipalities");
-                });
-
             modelBuilder.Entity("Project.DLL.Models.Nashu", b =>
                 {
                     b.Property<string>("NashuId")
@@ -447,24 +404,6 @@ namespace Project.DLL.Migrations
                     b.HasKey("NashuId");
 
                     b.ToTable("Nashu");
-                });
-
-            modelBuilder.Entity("Project.DLL.Models.Province", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ProvinceNameInEnglish")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProvinceNameInNepali")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Provinces");
                 });
 
             modelBuilder.Entity("Project.DLL.Models.Signature", b =>
@@ -500,29 +439,6 @@ namespace Project.DLL.Migrations
                     b.HasIndex("DepartentId");
 
                     b.ToTable("UserDepartments");
-                });
-
-            modelBuilder.Entity("Project.DLL.Models.VDC", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DistrictId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("VdcNameInEnglish")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("VdcNameInNepali")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DistrictId");
-
-                    b.ToTable("Vdc");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -625,28 +541,6 @@ namespace Project.DLL.Migrations
                     b.Navigation("Documents");
                 });
 
-            modelBuilder.Entity("Project.DLL.Models.District", b =>
-                {
-                    b.HasOne("Project.DLL.Models.Province", "Province")
-                        .WithMany()
-                        .HasForeignKey("ProvinceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Province");
-                });
-
-            modelBuilder.Entity("Project.DLL.Models.Municipality", b =>
-                {
-                    b.HasOne("Project.DLL.Models.District", "District")
-                        .WithMany()
-                        .HasForeignKey("DistrictId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("District");
-                });
-
             modelBuilder.Entity("Project.DLL.Models.Signature", b =>
                 {
                     b.HasOne("Project.DLL.Models.Documents", "Documents")
@@ -675,17 +569,6 @@ namespace Project.DLL.Migrations
                     b.Navigation("Department");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Project.DLL.Models.VDC", b =>
-                {
-                    b.HasOne("Project.DLL.Models.District", "District")
-                        .WithMany()
-                        .HasForeignKey("DistrictId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("District");
                 });
 
             modelBuilder.Entity("Project.DLL.Models.ApplicationUsers", b =>

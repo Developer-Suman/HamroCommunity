@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using AutoMapper;
 using HamroCommunity.Configs;
 using HamroCommunity.CustomMiddleware.CustomException;
@@ -11,7 +12,7 @@ using System.Text.Json;
 
 namespace HamroCommunity.Controllers
 {
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : HamroCommunityBaseController
@@ -26,6 +27,7 @@ namespace HamroCommunity.Controllers
         public WeatherForecastController(ILogger<WeatherForecastController> logger, IMapper mapper, UserManager<ApplicationUsers> userManager, RoleManager<IdentityRole> roleManager) : base(mapper, userManager, roleManager) 
         {
             _logger = logger;
+           
         }
 
         [HttpGet("FixedWindowPolicy")]
@@ -37,8 +39,9 @@ namespace HamroCommunity.Controllers
             //_logger.LogInformation("You requested the Get Action of WeatherForecasting");
 
             //throw new Exception("An error occured");
+           
 
-            
+
             var result =  Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
@@ -106,8 +109,9 @@ namespace HamroCommunity.Controllers
 
         [HttpGet("ConcurrencyWeatherForecasting")]
         [EnableRateLimiting("ConcurrencyPolicy")]
-        public IEnumerable<WeatherForecast> GetConcurrencyWeatherForecasting()
+        public async Task<IEnumerable<WeatherForecast>> GetConcurrencyWeatherForecasting()
         {
+            await Task.Delay(3000);
             //var user = GetCurrentUser();
             //var Roles = GetCurrentUserRoles();
             //_logger.LogInformation("You requested the Get Action of WeatherForecasting");

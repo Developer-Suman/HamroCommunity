@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using AspNetCoreRateLimit;
+using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Project.BLL.Abstraction;
 using Project.BLL.Repository.Implementation;
@@ -60,8 +61,10 @@ namespace Project.BLL
             services.AddScoped<INashuRepository, NashuRepository>();
             services.AddTransient<IimageRepository, ImageRepository>();
             services.AddTransient<IHelpherMethods, HelpherMethod>();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
-         
+
+
             #endregion
             return services;
         }

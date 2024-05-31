@@ -23,6 +23,11 @@ namespace Project.DLL.DbContext
         public DbSet<Nashu> Nashu { get; set; }
         public DbSet<UserDepartment> UserDepartments { get; set; }
 
+        public DbSet<Municipality> Municipalities { get; set; }
+        public DbSet<District> Districts { get; set; }
+        public DbSet<Province> Provinces { get; set; }
+        public DbSet<VDC> Vdc { get; set; }
+
 
 
         public DbSet<Documents> Documents { get; set; }

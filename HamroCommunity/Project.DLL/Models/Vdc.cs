@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace Project.DLL.Models
 {
-    public sealed class Vdc : CustomEntity
+    public class VDC : CustomEntity
     {
-        public Vdc(int Id, string vdcNameInEnglish, string vdcNameInNepali, int districtId): base(Id)
+        public VDC(int Id, string vdcNameInEnglish, string vdcNameInNepali, int districtId) : base(Id)
         {
-            VDCNaemInEnglish = vdcNameInEnglish;
-            VDCNameInNepali = vdcNameInNepali;
+            VdcNameInEnglish = vdcNameInEnglish;
+            VdcNameInNepali = vdcNameInNepali;
             DistrictId = districtId;
             
         }
-        public string VDCNaemInEnglish { get; set; }
-        public string VDCNameInNepali { get; set; }
+        public string VdcNameInEnglish { get; set; }
+        public string VdcNameInNepali { get; set; }
         public int DistrictId { get; set;}
         public District? District { get; set;}
     }
