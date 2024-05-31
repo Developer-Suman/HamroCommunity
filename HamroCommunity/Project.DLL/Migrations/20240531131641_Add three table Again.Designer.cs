@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Project.DLL.DbContext;
 
@@ -11,9 +12,11 @@ using Project.DLL.DbContext;
 namespace Project.DLL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240531131641_Add three table Again")]
+    partial class AddthreetableAgain
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -502,29 +505,6 @@ namespace Project.DLL.Migrations
                     b.ToTable("UserDepartments");
                 });
 
-            modelBuilder.Entity("Project.DLL.Models.VDC", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DistrictId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("VdcNameInEnglish")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("VdcNameInNepali")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DistrictId");
-
-                    b.ToTable("Vdc");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -675,17 +655,6 @@ namespace Project.DLL.Migrations
                     b.Navigation("Department");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Project.DLL.Models.VDC", b =>
-                {
-                    b.HasOne("Project.DLL.Models.District", "District")
-                        .WithMany()
-                        .HasForeignKey("DistrictId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("District");
                 });
 
             modelBuilder.Entity("Project.DLL.Models.ApplicationUsers", b =>
