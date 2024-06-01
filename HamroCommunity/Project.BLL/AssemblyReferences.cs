@@ -64,6 +64,7 @@ namespace Project.BLL
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
             services.AddScoped<IProvinceRepository, ProvinceRepository>();
             services.AddTransient<IDistrictRepository, DistrictRepository>();
+            services.AddTransient<IMunicipalityRepository, MunicipalityRepository>();
 
 
 

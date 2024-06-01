@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Project.BLL.DTOs.Authentication;
 using Project.BLL.DTOs.District;
 using Project.BLL.Services.Interface;
 using Project.DLL.Abstraction;
@@ -33,6 +34,10 @@ namespace Project.BLL.Services.Implementation
             {
                 var cacheKey = CacheKeys.District;
                 var cacheData = await _memoryCacheRepository.GetCacheKey<List<DistrictGetDTOs>>(cacheKey);
+                if(cacheData is not null)
+                {
+                    return Result<List<DistrictGetDTOs>>.Success(cacheData);
+                }
                 var districtData = await _unitOfWork.Repository<District>()
                     .GetFilterAndOrderByAsync(
                     predicate: null,
@@ -63,6 +68,10 @@ namespace Project.BLL.Services.Implementation
             {
                 var cacheKey = $"GetById{DistrictId}";
                 var cacheData = await _memoryCacheRepository.GetCacheKey<DistrictGetDTOs>(cacheKey);
+                if (cacheData is not null)
+                {
+                    return Result<DistrictGetDTOs>.Success(cacheData);
+                }
                 var districtData = await _unitOfWork.Repository<District>().GetByIdAsync(DistrictId);
                 if(districtData is null)
                 {
@@ -90,6 +99,10 @@ namespace Project.BLL.Services.Implementation
             {
                 var cacheKey = $"GetByProvinceId{ProvinceId}";
                 var cacheData = await _memoryCacheRepository.GetCacheKey<List<DistrictGetDTOs>>(cacheKey);
+                if (cacheData is not null)
+                {
+                    return Result<List<DistrictGetDTOs>>.Success(cacheData);
+                }
                 int provinceId = Convert.ToInt32(ProvinceId);
                 var districtData = await _unitOfWork.Repository<District>().GetConditonalAsync(x=>x.ProvinceId == provinceId);
                 if(districtData is null)
