@@ -37,6 +37,8 @@ namespace Project.DLL.Seed
                     await SeedRole();
                     await SeedProvince();
                     await SeedDistrict();
+                    await SeedMunicipality();
+                    await SeedVDCs();
 
                     scode.Complete();
 
