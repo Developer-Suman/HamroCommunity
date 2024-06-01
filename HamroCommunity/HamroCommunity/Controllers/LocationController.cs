@@ -13,12 +13,13 @@ namespace HamroCommunity.Controllers
 
         private readonly IProvinceRepository _provinceRepository;
         private readonly IDistrictRepository _districtRepository;
+        private readonly IMunicipalityRepository _municipalityRepository;
         private readonly IMapper _mapper;
         private readonly IMemoryCacheRepository _memoryCacheRepository;
 
-        public LocationController(IMemoryCacheRepository memoryCacheRepository,IDistrictRepository districtRepository,IProvinceRepository provinceRepository, IMapper mapper, UserManager<ApplicationUsers> userManager, RoleManager<IdentityRole> roleManager) : base(mapper,userManager, roleManager)
+        public LocationController(IMemoryCacheRepository memoryCacheRepository,IMunicipalityRepository municipalityRepository,IDistrictRepository districtRepository,IProvinceRepository provinceRepository, IMapper mapper, UserManager<ApplicationUsers> userManager, RoleManager<IdentityRole> roleManager) : base(mapper,userManager, roleManager)
         {
-
+            _municipalityRepository = municipalityRepository;
             _districtRepository = districtRepository;
             _memoryCacheRepository = memoryCacheRepository;
             _mapper = mapper;
@@ -113,6 +114,69 @@ namespace HamroCommunity.Controllers
                 {
                     DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
                 }),
+                { IsSuccess : false, Errors: not null } => HandleFailureResult(getDistrictData.Errors),
+                _ => BadRequest("Invalid some Field")
+            };;
+
+            #endregion
+        }
+
+
+        [HttpGet("Municipality/get-municipalby-districtId")]
+        public async Task<IActionResult> GetMunicipalityByDistrictId(int DistrictId)
+        {
+            string districtId = DistrictId.ToString();
+            var getMunicipalData = await _municipalityRepository.GetByDistrictId(districtId);
+
+            #region Switch
+            return getMunicipalData switch
+            {
+                { IsSuccess: true, Data: not null } => new JsonResult(getMunicipalData.Data, new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                }),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(getMunicipalData.Errors),
+                _ => BadRequest("Invalid some Field")
+            };
+
+            #endregion
+        }
+
+
+        [HttpGet("Municipality/get-by-Id")]
+        public async Task<IActionResult> GetMunicipalityBytId(int MunicipalityId)
+        {
+            string municipalId = MunicipalityId.ToString();
+            var getMunicipalData = await _municipalityRepository.GetById(municipalId);
+
+            #region Switch
+            return getMunicipalData switch
+            {
+                { IsSuccess: true, Data: not null } => new JsonResult(getMunicipalData.Data, new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                }),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(getMunicipalData.Errors),
+                _ => BadRequest("Invalid some Field")
+            };
+
+            #endregion
+        }
+
+
+        [HttpGet("Municipality/get-all")]
+        public async Task<IActionResult> GetAllMunicipality()
+        {
+            var getMunicipalData = await _municipalityRepository.GetAll();
+
+            #region Switch
+            return getMunicipalData switch
+            {
+                { IsSuccess: true, Data: not null } => new JsonResult(getMunicipalData.Data, new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                }),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(getMunicipalData.Errors),
                 _ => BadRequest("Invalid some Field")
             };
 
