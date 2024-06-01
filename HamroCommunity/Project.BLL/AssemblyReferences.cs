@@ -63,6 +63,7 @@ namespace Project.BLL
             services.AddTransient<IHelpherMethods, HelpherMethod>();
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
             services.AddScoped<IProvinceRepository, ProvinceRepository>();
+            services.AddTransient<IDistrictRepository, DistrictRepository>();
 
 
 
