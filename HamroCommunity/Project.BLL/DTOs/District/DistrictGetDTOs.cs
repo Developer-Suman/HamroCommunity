@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Project.BLL.DTOs.District
 {
-    public record DistrictGetDTOs(int districtId,
+    public record DistrictGetDTOs(int Id,
         string districtNameInNepali,
         string districtNameInEnglish,
         int provinceId);

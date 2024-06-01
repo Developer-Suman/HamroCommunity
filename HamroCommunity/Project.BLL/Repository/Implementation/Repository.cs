@@ -70,6 +70,21 @@ namespace Project.BLL.Repository.Implementation
             return await _dbSet.Where(predicate).ToListAsync();
         }
 
+        public async Task<List<TEntity>> GetFilterAndOrderByAsync(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderby = null)
+        {
+            IQueryable<TEntity> query = _dbSet;
+            if(predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+            if (orderby != null)
+            {
+                query = orderby(query);
+            }
+
+            return await query.AsNoTracking().ToListAsync();
+        }
+
         public async Task<TEntity> GetSingleAsync(Expression<Func<TEntity, bool>> predicate) => await _dbSet.SingleOrDefaultAsync(predicate);
        
 

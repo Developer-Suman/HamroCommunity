@@ -22,13 +22,10 @@ namespace Project.BLL.Services.Implementation
         private readonly IMapper _mapper;
         private readonly IMemoryCacheRepository _cacheRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ApplicationDbContext _context;
-
         private readonly IimageRepository _iimageRepository;
 
-        public NashuRepository(ApplicationDbContext context,IMapper mapper, IMemoryCacheRepository memoryCacheRepository, IUnitOfWork unitOfWork,IimageRepository iimageRepository)
+        public NashuRepository(IMapper mapper, IMemoryCacheRepository memoryCacheRepository, IUnitOfWork unitOfWork,IimageRepository iimageRepository)
         {
-            _context = context;
             _iimageRepository = iimageRepository;
             _mapper = mapper;
             _cacheRepository = memoryCacheRepository;
@@ -58,7 +55,6 @@ namespace Project.BLL.Services.Implementation
 
         public async Task<Result<List<NashuGetDTOs>>> GetAllNashuData(int page, int pageSize, CancellationToken cancellationToken)
         {
-
             try
             {
                 var cacheKeys = CacheKeys.Nashu;
@@ -69,17 +65,18 @@ namespace Project.BLL.Services.Implementation
                     return Result<List<NashuGetDTOs>>.Success(cacheData);
                 }
                 var nashuData = await _unitOfWork.Repository<Nashu>().GetAllAsync();
-                if(nashuData is null && !nashuData.Any())
+               
+                if (nashuData is null && !nashuData.Any())
                 {
                     return Result<List<NashuGetDTOs>>.Failure("NoContent", "Nashu Data are not found");
                 };
-
-                await _cacheRepository.SetAsync(cacheKeys, nashuData, new Microsoft.Extensions.Caching.Memory.MemoryCacheEntryOptions
+                var nashuDataDTOs = _mapper.Map<List<NashuGetDTOs>>(nashuData);
+                await _cacheRepository.SetAsync(cacheKeys, nashuDataDTOs, new Microsoft.Extensions.Caching.Memory.MemoryCacheEntryOptions
                 {
                     AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(30)
                 }, cancellationToken) ;
 
-                return Result<List<NashuGetDTOs>>.Success(_mapper.Map<List<NashuGetDTOs>>(nashuData));
+                return Result<List<NashuGetDTOs>>.Success(nashuDataDTOs);
 
             }catch(Exception ex)
             {

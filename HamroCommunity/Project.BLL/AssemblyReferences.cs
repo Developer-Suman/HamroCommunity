@@ -62,6 +62,7 @@ namespace Project.BLL
             services.AddTransient<IimageRepository, ImageRepository>();
             services.AddTransient<IHelpherMethods, HelpherMethod>();
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+            services.AddScoped<IProvinceRepository, ProvinceRepository>();
 
 
 
