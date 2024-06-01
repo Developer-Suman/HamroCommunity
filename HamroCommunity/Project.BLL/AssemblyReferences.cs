@@ -65,6 +65,7 @@ namespace Project.BLL
             services.AddScoped<IProvinceRepository, ProvinceRepository>();
             services.AddTransient<IDistrictRepository, DistrictRepository>();
             services.AddTransient<IMunicipalityRepository, MunicipalityRepository>();
+            services.AddTransient<IVDCRepository, VDCRepository>();
 
 
 
