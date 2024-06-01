@@ -10,5 +10,9 @@ namespace Project.DLL.Static.Cache
     {
         public const string User = "UserCacheKey";
         public const string Nashu = "NashuCacheKey";
+        public const string Province = "ProvinceCacheKey";
+        public const string District = "DistrictCacheKey";
+        public const string Municipality = "MunicipalityCacheKey";
+        public const string Vdc = "VdcCacheKey";
     }
 }

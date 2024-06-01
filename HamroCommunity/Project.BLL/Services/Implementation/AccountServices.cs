@@ -217,8 +217,7 @@ namespace Project.BLL.Services.Implementation
         public async Task<Result<List<UserDTOs>>> GetAllUsers(int page, int pageSize, CancellationToken cancellationToken)
         {
             try
-            {
-               
+            {  
                 var cacheKey = CacheKeys.User;
                 var cacheData = await _memoryCacheRepository.GetCacheKey<List<UserDTOs>>(cacheKey);
 

@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Project.BLL.DTOs.Authentication;
+using Project.BLL.DTOs.District;
 using Project.BLL.DTOs.Nashu;
+using Project.BLL.DTOs.Province;
 using Project.DLL.Models;
 using System;
 using System.Collections.Generic;
@@ -25,6 +27,13 @@ namespace Project.BLL.Abstraction
             CreateMap<Nashu, NashuGetDTOs>().ReverseMap();
             CreateMap<Nashu, NashuUpdateDTOs>().ReverseMap();
             CreateMap<NashuGetDTOs, NashuUpdateDTOs>().ReverseMap();
+
+            CreateMap<ProvinceGetDTOs, Province>().ReverseMap();
+            CreateMap<DistrictGetDTOs, District>().ReverseMap();
+            //CreateMap<Province, ProvinceGetDTOs>()
+            //.ForCtorParam("ProvinceId", opt => opt.MapFrom(src => src.Id))
+            //.ForCtorParam("ProvinceNameInEnglish", opt => opt.MapFrom(src => src.ProvinceNameInEnglish))
+            //.ForCtorParam("ProvinceNameInNepali", opt => opt.MapFrom(src => src.ProvinceNameInNepali));
 
             //CustomMapping using automapper
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Project.BLL.DTOs.Province
 {
-    public record ProvinceGetDTOs(int ProvinceId,
+    public record ProvinceGetDTOs(int Id,
         string ProvinceNameInEnglish,
         string ProvinceNameInNepali);
    

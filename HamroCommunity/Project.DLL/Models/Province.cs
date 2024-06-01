@@ -12,7 +12,7 @@ namespace Project.DLL.Models
         public Province(int Id, string provinceNameInNepali, string provinceNameInEnglish) : base(Id)
         {
             ProvinceNameInEnglish = provinceNameInEnglish;
-            ProvinceNameInEnglish = provinceNameInEnglish;
+            ProvinceNameInNepali = provinceNameInNepali;
         }
 
         public string ProvinceNameInNepali { get; set; }
