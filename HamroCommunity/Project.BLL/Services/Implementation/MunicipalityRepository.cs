@@ -124,7 +124,7 @@ namespace Project.BLL.Services.Implementation
 
             }
             catch (Exception ex)
-            {
+    {
                 throw new Exception("An error occured while getting District Details", ex);
             }
         }
