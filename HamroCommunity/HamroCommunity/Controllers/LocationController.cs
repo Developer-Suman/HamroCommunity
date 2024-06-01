@@ -14,12 +14,14 @@ namespace HamroCommunity.Controllers
         private readonly IProvinceRepository _provinceRepository;
         private readonly IDistrictRepository _districtRepository;
         private readonly IMunicipalityRepository _municipalityRepository;
+        private readonly IVDCRepository _vdcRepository;
         private readonly IMapper _mapper;
         private readonly IMemoryCacheRepository _memoryCacheRepository;
 
-        public LocationController(IMemoryCacheRepository memoryCacheRepository,IMunicipalityRepository municipalityRepository,IDistrictRepository districtRepository,IProvinceRepository provinceRepository, IMapper mapper, UserManager<ApplicationUsers> userManager, RoleManager<IdentityRole> roleManager) : base(mapper,userManager, roleManager)
+        public LocationController(IMemoryCacheRepository memoryCacheRepository,IVDCRepository vDCRepository,IMunicipalityRepository municipalityRepository,IDistrictRepository districtRepository,IProvinceRepository provinceRepository, IMapper mapper, UserManager<ApplicationUsers> userManager, RoleManager<IdentityRole> roleManager) : base(mapper,userManager, roleManager)
         {
             _municipalityRepository = municipalityRepository;
+            _vdcRepository = vDCRepository;
             _districtRepository = districtRepository;
             _memoryCacheRepository = memoryCacheRepository;
             _mapper = mapper;
@@ -177,6 +179,69 @@ namespace HamroCommunity.Controllers
                     DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
                 }),
                 { IsSuccess: false, Errors: not null } => HandleFailureResult(getMunicipalData.Errors),
+                _ => BadRequest("Invalid some Field")
+            };
+
+            #endregion
+        }
+
+        [HttpGet("VDC/get-vdcBy-districtId")]
+        public async Task<IActionResult> GetVDCByDistrictId(int DistrictId)
+        {
+            string districtId = DistrictId.ToString();
+            var getVDCData = await _vdcRepository.GetByDistrictId(districtId);
+
+            #region Switch
+            return getVDCData switch
+            {
+                { IsSuccess: true, Data: not null } => new JsonResult(getVDCData.Data, new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                }),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(getVDCData.Errors),
+                _ => BadRequest("Invalid some Field")
+            };
+
+            #endregion
+        }
+
+
+
+        [HttpGet("VDC/get-all")]
+        public async Task<IActionResult> GetAllVDC()
+        {
+            var getVDCData = await _vdcRepository.GetAll();
+
+            #region Switch
+            return getVDCData switch
+            {
+                { IsSuccess: true, Data: not null } => new JsonResult(getVDCData.Data, new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                }),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(getVDCData.Errors),
+                _ => BadRequest("Invalid some Field")
+            };
+
+            #endregion
+        }
+
+
+
+        [HttpGet("VDC/get-by-Id")]
+        public async Task<IActionResult> GetVDCBytId(int vdcId)
+        {
+            string VdcId = vdcId.ToString();
+            var getVDCData = await _vdcRepository.GetById(VdcId);
+
+            #region Switch
+            return getVDCData switch
+            {
+                { IsSuccess: true, Data: not null } => new JsonResult(getVDCData.Data, new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                }),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(getVDCData.Errors),
                 _ => BadRequest("Invalid some Field")
             };
 
