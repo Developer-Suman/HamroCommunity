@@ -38,6 +38,10 @@ namespace Project.DLL.Seed
                     await SeedProvince();
                     await SeedDistrict();
 
+
+                    await SeedMunicipality();
+                    await SeedVDCs();
+
                     scode.Complete();
 
                 }catch(Exception ex)
