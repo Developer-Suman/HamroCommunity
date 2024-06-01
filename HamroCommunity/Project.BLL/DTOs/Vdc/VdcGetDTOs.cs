@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Project.BLL.DTOs.Vdc
 {
-    public record VdcGetDTOs(int vdcId,
+    public record VdcGetDTOs(int Id,
         string vdcNameInNepali,
         string vdcNameInEnglish,
         int districtId);
