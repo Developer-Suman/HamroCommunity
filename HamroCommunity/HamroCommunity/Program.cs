@@ -35,7 +35,7 @@ builder.Services.AddRateLimiter(config =>
     {
         options.Window = TimeSpan.FromSeconds(5);
         options.PermitLimit = 3;
-        options.QueueLimit = 0;
+        options.QueueLimit = 1;
         options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
 
     }).RejectionStatusCode = 429;

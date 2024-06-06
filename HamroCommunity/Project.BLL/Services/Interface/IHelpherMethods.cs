@@ -9,6 +9,8 @@ namespace Project.BLL.Services.Interface
 {
     public interface IHelpherMethods
     {
+
+        Task<int> CalculateAge(DateTime dateOfBirth, DateTime now);
         bool IsImage(string contentType);
         void CompressFile(string inputFilePath, string outputFilePath);
         bool CompareImage(IFormFile imagePath1, string imagePath2);

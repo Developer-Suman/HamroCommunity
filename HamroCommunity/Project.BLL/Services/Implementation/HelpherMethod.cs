@@ -12,6 +12,22 @@ namespace Project.BLL.Services.Implementation
 {
     public class HelpherMethod : IHelpherMethods
     {
+        public Task<int> CalculateAge(DateTime dateOfBirth, DateTime now)
+        {
+            //Calculate the initial age based on year difference
+            int age = now.Year - dateOfBirth.Year;
+
+            //Check if the birthday has occured yet in the current year
+            if(dateOfBirth.Date > now.AddYears(-age).Date)
+            {
+                age--;
+
+            }
+
+            //Rsturn the result as Task
+            return Task.FromResult(age);
+        }
+
         public bool CompareImage(IFormFile imageFile1, string imagePath2)
         {
             using (var imageStream1 = Image.FromStream(imageFile1.OpenReadStream()))

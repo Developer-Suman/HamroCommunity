@@ -81,9 +81,9 @@ namespace HamroCommunity.Controllers
 
 
         [HttpGet("get-all-nashudata")]
-        public async Task<IActionResult> GetAllData(int page,int pageSize, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllData(int pageIndex, int pageSize, CancellationToken cancellationToken)
         {
-            var getAllNashuData = await _nashuRepository.GetAllNashuData(page, pageSize, cancellationToken);
+            var getAllNashuData = await _nashuRepository.GetAllNashuData(pageIndex, pageSize, cancellationToken);
 
             #region switch
             return getAllNashuData switch

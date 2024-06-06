@@ -62,6 +62,11 @@ namespace Project.BLL.Repository.Implementation
             return await _dbSet.AsNoTracking().ToListAsync();
         }
 
+        public Task<IQueryable<TEntity>> GetAllAsyncWithPagination()
+        {
+            return Task.FromResult(_dbSet.AsNoTracking().AsQueryable());
+        }
+
         public async Task<TEntity> GetByIdAsync(string id) => await _dbSet.FindAsync(id);
         
 

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Project.BLL.DTOs.Nashu;
 using Project.BLL.Services.Interface;
 using Project.DLL.Abstraction;
@@ -23,13 +24,18 @@ namespace Project.BLL.Services.Implementation
         private readonly IMemoryCacheRepository _cacheRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IimageRepository _iimageRepository;
+        private readonly IHelpherMethods _helpherMethods;
+        private readonly ApplicationDbContext _applicationDbContext;
 
-        public NashuRepository(IMapper mapper, IMemoryCacheRepository memoryCacheRepository, IUnitOfWork unitOfWork,IimageRepository iimageRepository)
+
+        public NashuRepository(ApplicationDbContext applicationDbContext ,IMapper mapper, IMemoryCacheRepository memoryCacheRepository,IHelpherMethods helpherMethods, IUnitOfWork unitOfWork,IimageRepository iimageRepository)
         {
             _iimageRepository = iimageRepository;
             _mapper = mapper;
             _cacheRepository = memoryCacheRepository;
             _unitOfWork = unitOfWork;
+            _helpherMethods = helpherMethods;
+            _applicationDbContext = applicationDbContext;
             
         }
         public async Task<Result<NashuGetDTOs>> DeleteNashuData(string NashuId)
@@ -60,17 +66,29 @@ namespace Project.BLL.Services.Implementation
                 var cacheKeys = CacheKeys.Nashu;
                 var cacheData = await _cacheRepository.GetCacheKey<List<NashuGetDTOs>>(cacheKeys);
 
+
+                //DateTime date = DateTime.Now;
+                //DateTime specificDate = new DateTime(1998, 5, 30);
+                //var exectDate = _helpherMethods.CalculateAge(specificDate, date);
+
+
+
+
                 if(cacheData is not null && cacheData.Count > 0)
                 {
                     return Result<List<NashuGetDTOs>>.Success(cacheData);
                 }
-                var nashuData = await _unitOfWork.Repository<Nashu>().GetAllAsync();
-               
-                if (nashuData is null && !nashuData.Any())
+ 
+
+                var nashuQuery = await _unitOfWork.Repository<Nashu>().GetAllAsyncWithPagination();
+                var nashuPagedResult = await nashuQuery.ToPagedResultAsync(page, pageSize);
+
+
+                if (nashuQuery is null && !nashuQuery.Any())
                 {
                     return Result<List<NashuGetDTOs>>.Failure("NoContent", "Nashu Data are not found");
                 };
-                var nashuDataDTOs = _mapper.Map<List<NashuGetDTOs>>(nashuData);
+                var nashuDataDTOs = _mapper.Map<List<NashuGetDTOs>>(nashuQuery);
                 await _cacheRepository.SetAsync(cacheKeys, nashuDataDTOs, new Microsoft.Extensions.Caching.Memory.MemoryCacheEntryOptions
                 {
                     AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(30)
