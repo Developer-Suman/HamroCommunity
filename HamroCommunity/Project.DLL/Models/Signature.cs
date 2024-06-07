@@ -10,6 +10,8 @@ namespace Project.DLL.Models
     {
         public string? SignatureId { get;set; }
         public string? SignatureURL { get; set; }
+
+        public string CreatedAt { get; set; }
         public string DocumentsId { get; set; }
         public Documents Documents { get; set; }
     }

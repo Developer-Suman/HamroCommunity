@@ -14,5 +14,6 @@ namespace Project.DLL.Static.Cache
         public const string District = "DistrictCacheKey";
         public const string Municipality = "MunicipalityCacheKey";
         public const string Vdc = "VdcCacheKey";
+        public const string Signature = "Signiture";
     }
 }

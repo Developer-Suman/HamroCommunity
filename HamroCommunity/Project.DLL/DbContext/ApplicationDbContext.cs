@@ -23,15 +23,23 @@ namespace Project.DLL.DbContext
         public DbSet<Nashu> Nashu { get; set; }
         public DbSet<UserDepartment> UserDepartments { get; set; }
 
+
+        public DbSet<Signature> signatures { get; set; }
+        public DbSet<Certificate> certificates { get; set; }
+        public DbSet<CertificatesDocumentsImages> CertificatesDocumentsImages { get; set; }
+        public DbSet<DocumentImages> DocumentImages { get; set; }
+        public DbSet<Documents> Documents { get; set; }
+
+
+
+
+
+
         public DbSet<Municipality> Municipalities { get; set; }
         public DbSet<District> Districts { get; set; }
         public DbSet<Province> Provinces { get; set; }
         public DbSet<VDC> Vdc { get; set; }
 
-
-
-        public DbSet<Documents> Documents { get; set; }
-        public DbSet<Certificate> Certificate { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

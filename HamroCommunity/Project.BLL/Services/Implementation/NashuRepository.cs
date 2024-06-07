@@ -200,6 +200,7 @@ namespace Project.BLL.Services.Implementation
                     _mapper.Map(nashuUpdateDTOs, nashuDataToBeUpdated);
                     await _unitOfWork.SaveChangesAsync();
                     scope.Complete();
+
                     return Result<NashuGetDTOs>.Success(_mapper.Map<NashuGetDTOs>(nashuUpdateDTOs));
 
                 }
