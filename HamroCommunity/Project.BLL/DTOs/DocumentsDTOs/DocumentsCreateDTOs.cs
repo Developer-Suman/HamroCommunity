@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Project.BLL.DTOs.Signiture
+namespace Project.BLL.DTOs.DocumentsDTOs
 {
-    public record SignitureGetDTOs(string SignitureId, string SignatureURL);
-    
+    public record DocumentsCreateDTOs(string DocumentType, string UpdatedBy);
+   
 }

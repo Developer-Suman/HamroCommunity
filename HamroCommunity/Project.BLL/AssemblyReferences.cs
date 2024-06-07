@@ -67,6 +67,7 @@ namespace Project.BLL
             services.AddTransient<IMunicipalityRepository, MunicipalityRepository>();
             services.AddTransient<IVDCRepository, VDCRepository>();
             services.AddScoped<ISignitureRepository, SignitureRepository>();
+            services.AddScoped<IDocumentsRepository, DocumentRepository>();
 
 
 
