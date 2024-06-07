@@ -13,7 +13,7 @@ namespace Project.DLL.Models
 
         //NavigationProperty
         public ICollection<CertificatesDocumentsImages> CertificatesDocumentsImage { get; set; }
-        public ICollection<Citizenship> Citizenships { get; set; }
+
 
     }
 }

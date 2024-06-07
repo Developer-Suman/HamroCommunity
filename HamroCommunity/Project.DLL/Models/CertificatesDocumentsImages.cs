@@ -11,8 +11,6 @@ namespace Project.DLL.Models
         public string CertificatesId { get; set; }
         public Certificate Certificate { get; set; }
 
-        public string DocumentsImagesId { get; set; }
-        public DocumentImages DocumentImages { get; set; }
 
     }
 }

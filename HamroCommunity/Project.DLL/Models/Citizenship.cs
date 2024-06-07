@@ -17,9 +17,10 @@ namespace Project.DLL.Models
         public string? CitizenshipNumber { get; set; }
 
         //ForeignKey
-        public string DocumentsImagesId { get; set; }
-        public DocumentImages DocumentImages { get; set; }
+
         public string DocumentsId { get;set; }
         public Documents Documents { get; set; }
+
+        public ICollection<CitizenshipImages> CitizenshipImages { get; set; }
     }
 }

@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace Project.BLL.DTOs.DocumentsDTOs
 {
-    public record DocumentsGetDTOs(string DocumentsId, string DocumentType, string UpdatedBy);
+    public record DocumentsGetDTOs(string Id, string DocumentType, string UpdatedBy);
   
 }
