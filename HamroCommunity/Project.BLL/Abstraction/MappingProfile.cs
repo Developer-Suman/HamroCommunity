@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Project.BLL.DTOs.Authentication;
 using Project.BLL.DTOs.District;
+using Project.BLL.DTOs.DocumentsDTOs;
 using Project.BLL.DTOs.Municipality;
 using Project.BLL.DTOs.Nashu;
 using Project.BLL.DTOs.Province;
@@ -38,6 +39,9 @@ namespace Project.BLL.Abstraction
             CreateMap<Signature, SignitureCreateDTOs>().ReverseMap();
             CreateMap<Signature, SignitureGetDTOs>().ReverseMap();
             CreateMap<Signature, SignitureUpdateDTOs>().ReverseMap();
+            CreateMap<Documents, DocumentsCreateDTOs>().ReverseMap();
+            CreateMap<Documents, DocumentsGetDTOs>().ReverseMap();
+            CreateMap<Documents, DocumentsUpdateDTOs>().ReverseMap();
             //CreateMap<Province, ProvinceGetDTOs>()
             //.ForCtorParam("ProvinceId", opt => opt.MapFrom(src => src.Id))
             //.ForCtorParam("ProvinceNameInEnglish", opt => opt.MapFrom(src => src.ProvinceNameInEnglish))
