@@ -29,7 +29,7 @@ namespace Project.DLL.DbContext
         public DbSet<CertificatesDocumentsImages> CertificatesDocumentsImages { get; set; }
         public DbSet<Documents> Documents { get; set; }
 
-
+        public DbSet<CitizenshipImages> CitizenshipImages { get; set; }
 
 
 

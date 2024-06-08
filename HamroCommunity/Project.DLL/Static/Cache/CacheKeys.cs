@@ -16,5 +16,6 @@ namespace Project.DLL.Static.Cache
         public const string Vdc = "VdcCacheKey";
         public const string Signature = "Signiture";
         public const string Documents = "Documents";
+        public const string Citizenship = "Citizenship";
     }
 }

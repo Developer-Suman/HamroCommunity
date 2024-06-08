@@ -16,6 +16,8 @@ namespace Project.DLL.RepoInterface
         Task<IEnumerable<TEntity>> GetConditonalAsync(Expression<Func<TEntity, bool>> predicate);
         Task<IEnumerable<TEntity>> GetAllAsync();
 
+        Task<IQueryable<TEntity>> FindBy(Expression<Func<TEntity, bool>> predicate);
+
         Task<IQueryable<TEntity>> GetAllAsyncWithPagination();
         Task<List<TEntity>> GetFilterAndOrderByAsync(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderby = null);
         Task AddAsync(TEntity entity);

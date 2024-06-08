@@ -16,6 +16,7 @@ namespace Project.DLL.Models
         public string? DOB { get; set; }
         public string? CitizenshipNumber { get; set; }
 
+
         //ForeignKey
 
         public string DocumentsId { get;set; }
