@@ -57,9 +57,26 @@ namespace Project.BLL.Repository.Implementation
             _dbSet.RemoveRange(entity);
         }
 
+        public async Task<IQueryable<TEntity>> FindBy(Expression<Func<TEntity, bool>> predicate)
+        {
+            try
+            {
+                var result = _dbSet.Where(predicate);
+                return await Task.FromResult(result);
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError(ex, "An error occurred while finding entities.");
+                throw;
+            }
+        }
+
+
+
+
         public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            return await _dbSet.AsNoTracking().ToListAsync();
+            return await _dbSet.ToListAsync();
         }
 
         public Task<IQueryable<TEntity>> GetAllAsyncWithPagination()

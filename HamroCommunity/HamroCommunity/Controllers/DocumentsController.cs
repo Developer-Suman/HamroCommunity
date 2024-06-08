@@ -89,7 +89,7 @@ namespace HamroCommunity.Controllers
 
         }
 
-        [HttpGet("get-documentsdata-byId/{SignitureId}")]
+        [HttpGet("get-documentsdata-byId/{DocumentsId}")]
         public async Task<IActionResult> GetById([FromRoute] string DocumentsId, CancellationToken cancellationToken)
         {
             var getByIdResultData = await _documentsRepository.GetById(DocumentsId, cancellationToken);
