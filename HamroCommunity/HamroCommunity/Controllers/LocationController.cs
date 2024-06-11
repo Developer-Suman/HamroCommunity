@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HamroCommunity.Configs;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Project.BLL.Services.Interface;
@@ -8,6 +9,9 @@ using System.Text.Json;
 
 namespace HamroCommunity.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
+    //[EnableCors("AllowAllOrigins")]
     public class LocationController : HamroCommunityBaseController
     {
 

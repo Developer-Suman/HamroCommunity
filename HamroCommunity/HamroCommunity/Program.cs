@@ -1,100 +1,125 @@
 
 using HamroCommunity.Configs;
+using HamroCommunity.CustomHealthChecks;
 using HamroCommunity.CustomMiddleware.GlobalErrorHandling;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using Project.BLL;
 using Project.DLL;
+using Project.DLL.DbContext;
 using Project.DLL.Seed;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
-//try
-//{
-
-//}
-//catch(Exception ex)
-//{
-//    Log.Error("The following {Exception} was thrown during Application Startup", ex);
-//}
-//finally
-//{
-//    Log.CloseAndFlush();
-//}
-var builder = WebApplication.CreateBuilder(args);
-
-ConfigurationManager configuration = builder.Configuration;
-builder.Services
-    .AddDAL(configuration)
-    .AddBLL();
-
-//Configure RateLimiter
-builder.Services.AddRateLimiter(config =>
+try
 {
-    config.AddFixedWindowLimiter("FixedWindowPolicy", options =>
+    var builder = WebApplication.CreateBuilder(args);
+
+    ConfigurationManager configuration = builder.Configuration;
+    builder.Services
+        .AddDAL(configuration)
+        .AddBLL();
+
+
+    builder.Services.AddHttpClient();
+
+    builder.Services.AddHealthChecks()
+        .AddCheck<ApiHealthchecks>(nameof(ApiHealthchecks))
+        .AddDbContextCheck<ApplicationDbContext>();
+
+    builder.Services
+        .AddHealthChecksUI(options =>
+        {
+            options.AddHealthCheckEndpoint("HealthCheck API", "/healthcheck");
+        })
+        .AddInMemoryStorage();
+
+    //Configure RateLimiter
+    builder.Services.AddRateLimiter(config =>
     {
-        options.Window = TimeSpan.FromSeconds(5);
-        options.PermitLimit = 3;
-        options.QueueLimit = 1;
-        options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        config.AddFixedWindowLimiter("FixedWindowPolicy", options =>
+        {
+            options.Window = TimeSpan.FromSeconds(5);
+            options.PermitLimit = 3;
+            options.QueueLimit = 1;
+            options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
 
-    }).RejectionStatusCode = 429;
-});
+        }).RejectionStatusCode = 429;
+    });
 
 
-builder.Services.AddRateLimiter(config =>
-{
-    config.AddSlidingWindowLimiter("SlidingWindowPolicy", options =>
+    builder.Services.AddRateLimiter(config =>
     {
-        options.Window = TimeSpan.FromSeconds(15);
-        options.PermitLimit = 3;
-        options.QueueLimit = 2;
-        options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
-        options.SegmentsPerWindow = 3;
-    }).RejectionStatusCode=  429;
+        config.AddSlidingWindowLimiter("SlidingWindowPolicy", options =>
+        {
+            options.Window = TimeSpan.FromSeconds(15);
+            options.PermitLimit = 3;
+            options.QueueLimit = 2;
+            options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+            options.SegmentsPerWindow = 3;
+        }).RejectionStatusCode = 429;
 
-});
+    });
 
-builder.Services.AddRateLimiter(config =>
-{
-    config.AddTokenBucketLimiter("TokenBucketPolicy", options =>
+    builder.Services.AddRateLimiter(config =>
     {
-        options.ReplenishmentPeriod = TimeSpan.FromSeconds(10);
-        options.TokenLimit = 3;
-        options.QueueLimit= 2;
-        options.TokensPerPeriod = 2;
-        options.AutoReplenishment = true;
-        options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
-    }).RejectionStatusCode = 429;
-});
+        config.AddTokenBucketLimiter("TokenBucketPolicy", options =>
+        {
+            options.ReplenishmentPeriod = TimeSpan.FromSeconds(10);
+            options.TokenLimit = 3;
+            options.QueueLimit = 2;
+            options.TokensPerPeriod = 2;
+            options.AutoReplenishment = true;
+            options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        }).RejectionStatusCode = 429;
+    });
 
 
-builder.Services.AddRateLimiter(config =>
-{
-    config.AddConcurrencyLimiter("ConcurrencyPolicy", options =>
+    builder.Services.AddRateLimiter(config =>
     {
-        options.PermitLimit = 3;
-        options.QueueLimit = 0;
-        options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        config.AddConcurrencyLimiter("ConcurrencyPolicy", options =>
+        {
+            options.PermitLimit = 3;
+            options.QueueLimit = 0;
+            options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
 
-    }).RejectionStatusCode = 429;
-});
+        }).RejectionStatusCode = 429;
+    });
 
-// Add services to the container.
-Dependencies.Inject(builder);
+    // Add services to the container.
+    Dependencies.Inject(builder);
 
-Log.Information("Application StartUp");
+    Log.Information("Application StartUp");
 
-var app = builder.Build();
-app.UseRateLimiter();
+    var app = builder.Build();
+    app.UseRouting();
+    app.UseRateLimiter();
 
+    app.MapHealthChecks("/healthcheck", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+    {
+        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+  
+    });
+    app.MapHealthChecksUI(options => options.UIPath = "/dashboard");
+    using (var scope = app.Services.CreateScope())
+    {
+        var dataSeeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+        await dataSeeder.Seed();
+    }
 
-using (var scope = app.Services.CreateScope())
-{
-    var dataSeeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-    await dataSeeder.Seed();
+  
+    ApplicationConfiguration.Configure(app); //Configurations
+
+    app.Run();
+
 }
-
-ApplicationConfiguration.Configure(app); //Configurations
-
-app.Run();
+catch (Exception ex)
+{
+    Log.Error("The following {Exception} was thrown during Application Startup", ex);
+}
+finally
+{
+    Log.CloseAndFlush();
+}

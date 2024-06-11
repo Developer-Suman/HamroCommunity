@@ -14,7 +14,7 @@ namespace HamroCommunity.Controllers
 {
     //[Authorize(AuthenticationSchemes = "Bearer")]
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class WeatherForecastController : HamroCommunityBaseController
     {
         private static readonly string[] Summaries = new[]
