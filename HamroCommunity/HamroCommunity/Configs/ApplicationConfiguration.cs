@@ -89,7 +89,7 @@ namespace HamroCommunity.Configs
             app.UseHttpsRedirection();
 
             //app.UseSerilogRequestLogging();
-
+           
             app.UseCors("AllowAllOrigins"); //UseCors must be placed after UseRouting an before UseAuthorization
             //This is to ensure the cors headers are included in the response for both authorized and unauthorized calls
 

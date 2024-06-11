@@ -24,7 +24,7 @@ namespace Project.BLL
             #region CORS Enable
             services.AddCors(options =>
             {
-                options.AddPolicy("192.168.1.84",
+                options.AddPolicy("AllowAllOrigins",
                     builder =>
                     {
                         builder.WithOrigins("")
