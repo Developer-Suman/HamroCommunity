@@ -13,11 +13,13 @@ namespace Project.DLL.Models
         public string CreatedAt { get; set; }
         public string UpdatedBy { get; set; }
 
+        public string SignitureId { get; set; }
+        public string CertificateId { get; set; }
+
         //NavigationProperty
 
-        public Citizenship Citizenship { get; set; }
         public Signature Signature { get; set; }
-        public ICollection<Certificate> Certificates { get; set; }
+        public Certificate Certificate { get; set; }
 
     }
 }

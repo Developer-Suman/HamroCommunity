@@ -136,6 +136,7 @@ namespace Project.BLL.Services.Implementation
                     }
                     signitureData.SignatureId = Guid.NewGuid().ToString();
                     signitureData.SignatureURL = imageURL;
+              
                     signitureData.CreatedAt = DateTime.Now.ToString();
                     await _unitOfWork.Repository<Signature>().AddAsync(signitureData);
                     await _unitOfWork.SaveChangesAsync();

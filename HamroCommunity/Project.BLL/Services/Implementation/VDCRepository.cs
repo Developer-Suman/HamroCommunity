@@ -63,7 +63,7 @@ namespace Project.BLL.Services.Implementation
             }
         }
 
-        public async Task<Result<List<VdcGetDTOs>>> GetByDistrictId(string districtId, CancellationToken cancellationToken = default)
+        public async Task<Result<List<VdcGetDTOs>>> GetByDistrictId(int districtId, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -95,7 +95,7 @@ namespace Project.BLL.Services.Implementation
             }
         }
 
-        public async Task<Result<VdcGetDTOs>> GetById(string VdcId, CancellationToken cancellationToken = default)
+        public async Task<Result<VdcGetDTOs>> GetById(int VdcId, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -105,7 +105,7 @@ namespace Project.BLL.Services.Implementation
                 {
                     return Result<VdcGetDTOs>.Success(cacheData);
                 }
-                var VdcData = await _unitOfWork.Repository<VDC>().GetByIdAsync(VdcId);
+                var VdcData = await _unitOfWork.Repository<VDC>().GetById(VdcId);
                 if (VdcData is null)
                 {
                     return Result<VdcGetDTOs>.Failure("NotFound", "VDC data are ot Found");

@@ -86,6 +86,32 @@ namespace Project.DLL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Provinces",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    ProvinceNameInNepali = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProvinceNameInEnglish = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Provinces", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "signatures",
+                columns: table => new
+                {
+                    SignatureId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    SignatureURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_signatures", x => x.SignatureId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -195,24 +221,187 @@ namespace Project.DLL.Migrations
                 name: "UserDepartments",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DepartentId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserDepartmentId = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UserDepartmentId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    DepartentId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DepartmentId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserDepartments", x => new { x.UserId, x.DepartentId });
+                    table.PrimaryKey("PK_UserDepartments", x => x.UserDepartmentId);
                     table.ForeignKey(
                         name: "FK_UserDepartments_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_UserDepartments_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Departments",
+                        principalColumn: "DepartmentId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Districts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    DistrictNameInNepali = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DistrictNameInEnglish = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProvinceId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Districts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Districts_Provinces_ProvinceId",
+                        column: x => x.ProvinceId,
+                        principalTable: "Provinces",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Documents",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DocumentType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SignitureId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Documents", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserDepartments_Departments_DepartentId",
-                        column: x => x.DepartentId,
-                        principalTable: "Departments",
-                        principalColumn: "DepartmentId",
+                        name: "FK_Documents_signatures_SignitureId",
+                        column: x => x.SignitureId,
+                        principalTable: "signatures",
+                        principalColumn: "SignatureId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Municipalities",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    MunicipalityNameInNepali = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MunicipalityNameInEnglish = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DistrictId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Municipalities", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Municipalities_Districts_DistrictId",
+                        column: x => x.DistrictId,
+                        principalTable: "Districts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Vdc",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    VdcNameInEnglish = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    VdcNameInNepali = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DistrictId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Vdc", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Vdc_Districts_DistrictId",
+                        column: x => x.DistrictId,
+                        principalTable: "Districts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "certificates",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Grade = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Board = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DocumentsId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_certificates", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_certificates_Documents_DocumentsId",
+                        column: x => x.DocumentsId,
+                        principalTable: "Documents",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Citizenship",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IssuedDate = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IssuedDistrict = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    VDCOrMunicipality = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WardNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DOB = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CitizenshipNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DocumentsId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Citizenship", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Citizenship_Documents_DocumentsId",
+                        column: x => x.DocumentsId,
+                        principalTable: "Documents",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CertificatesDocumentsImages",
+                columns: table => new
+                {
+                    CertificatesId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CertificateId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CertificatesDocumentsImages", x => x.CertificatesId);
+                    table.ForeignKey(
+                        name: "FK_CertificatesDocumentsImages_certificates_CertificateId",
+                        column: x => x.CertificateId,
+                        principalTable: "certificates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CitizenshipImages",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CitizenshipId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CitizenshipImages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CitizenshipImages_Citizenship_CitizenshipId",
+                        column: x => x.CitizenshipId,
+                        principalTable: "Citizenship",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -256,9 +445,54 @@ namespace Project.DLL.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserDepartments_DepartentId",
+                name: "IX_certificates_DocumentsId",
+                table: "certificates",
+                column: "DocumentsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CertificatesDocumentsImages_CertificateId",
+                table: "CertificatesDocumentsImages",
+                column: "CertificateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Citizenship_DocumentsId",
+                table: "Citizenship",
+                column: "DocumentsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CitizenshipImages_CitizenshipId",
+                table: "CitizenshipImages",
+                column: "CitizenshipId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Districts_ProvinceId",
+                table: "Districts",
+                column: "ProvinceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Documents_SignitureId",
+                table: "Documents",
+                column: "SignitureId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Municipalities_DistrictId",
+                table: "Municipalities",
+                column: "DistrictId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserDepartments_DepartmentId",
                 table: "UserDepartments",
-                column: "DepartentId");
+                column: "DepartmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserDepartments_UserId",
+                table: "UserDepartments",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vdc_DistrictId",
+                table: "Vdc",
+                column: "DistrictId");
         }
 
         /// <inheritdoc />
@@ -280,19 +514,49 @@ namespace Project.DLL.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "CertificatesDocumentsImages");
+
+            migrationBuilder.DropTable(
+                name: "CitizenshipImages");
+
+            migrationBuilder.DropTable(
+                name: "Municipalities");
+
+            migrationBuilder.DropTable(
                 name: "Nashu");
 
             migrationBuilder.DropTable(
                 name: "UserDepartments");
 
             migrationBuilder.DropTable(
+                name: "Vdc");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "certificates");
+
+            migrationBuilder.DropTable(
+                name: "Citizenship");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Departments");
+
+            migrationBuilder.DropTable(
+                name: "Districts");
+
+            migrationBuilder.DropTable(
+                name: "Documents");
+
+            migrationBuilder.DropTable(
+                name: "Provinces");
+
+            migrationBuilder.DropTable(
+                name: "signatures");
         }
     }
 }

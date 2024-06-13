@@ -54,8 +54,8 @@ namespace HamroCommunity.Controllers
         [HttpGet("Province/get-by-id")]
         public async Task<IActionResult> GetById(int Id)
         {
-            string provinceId = Id.ToString();
-            var getByIdProvinceData = await _provinceRepository.GetById(provinceId);
+        
+            var getByIdProvinceData = await _provinceRepository.GetById(Id);
 
             #region switch
             return getByIdProvinceData switch
@@ -74,8 +74,7 @@ namespace HamroCommunity.Controllers
         [HttpGet("District/get-by-id")]
         public async Task<IActionResult> GetDistrictById(int Id)
         {
-            string DistrictId = Id.ToString();
-            var getByIdDistrictData = await _districtRepository.GetById(DistrictId);
+            var getByIdDistrictData = await _districtRepository.GetById(Id);
             #region Switch
             return getByIdDistrictData switch
             {
@@ -110,8 +109,7 @@ namespace HamroCommunity.Controllers
         [HttpGet("District/get-districtby-provinceId")]
         public async Task<IActionResult> GetDistrictByProvinceId(int ProvinceId)
         {
-            string provinceId = ProvinceId.ToString();
-            var getDistrictData = await _districtRepository.GetByProvinceId(provinceId);
+            var getDistrictData = await _districtRepository.GetByProvinceId(ProvinceId);
 
             #region Switch
             return getDistrictData switch
@@ -131,8 +129,7 @@ namespace HamroCommunity.Controllers
         [HttpGet("Municipality/get-municipalby-districtId")]
         public async Task<IActionResult> GetMunicipalityByDistrictId(int DistrictId)
         {
-            string districtId = DistrictId.ToString();
-            var getMunicipalData = await _municipalityRepository.GetByDistrictId(districtId);
+            var getMunicipalData = await _municipalityRepository.GetByDistrictId(DistrictId);
 
             #region Switch
             return getMunicipalData switch
@@ -152,8 +149,7 @@ namespace HamroCommunity.Controllers
         [HttpGet("Municipality/get-by-Id")]
         public async Task<IActionResult> GetMunicipalityBytId(int MunicipalityId)
         {
-            string municipalId = MunicipalityId.ToString();
-            var getMunicipalData = await _municipalityRepository.GetById(municipalId);
+            var getMunicipalData = await _municipalityRepository.GetById(MunicipalityId);
 
             #region Switch
             return getMunicipalData switch
@@ -192,8 +188,7 @@ namespace HamroCommunity.Controllers
         [HttpGet("VDC/get-vdcBy-districtId")]
         public async Task<IActionResult> GetVDCByDistrictId(int DistrictId)
         {
-            string districtId = DistrictId.ToString();
-            var getVDCData = await _vdcRepository.GetByDistrictId(districtId);
+            var getVDCData = await _vdcRepository.GetByDistrictId(DistrictId);
 
             #region Switch
             return getVDCData switch
@@ -235,8 +230,7 @@ namespace HamroCommunity.Controllers
         [HttpGet("VDC/get-by-Id")]
         public async Task<IActionResult> GetVDCBytId(int vdcId)
         {
-            string VdcId = vdcId.ToString();
-            var getVDCData = await _vdcRepository.GetById(VdcId);
+            var getVDCData = await _vdcRepository.GetById(vdcId);
 
             #region Switch
             return getVDCData switch

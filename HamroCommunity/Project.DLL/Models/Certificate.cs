@@ -13,11 +13,11 @@ namespace Project.DLL.Models
         public DateTime CreatedAt { get; set; }
         public string? Type { get; set; }
         public string? Board { get; set; }
-        //Foreign Key
-        public string? DocumentsId { get; set;}
+ 
         //Navigation Property
-        public Documents Documents { get; set; }
-        public ICollection<CertificatesDocumentsImages> CertificatesDocumentsImage { get; set; }
+
+        public ICollection<Documents> Documents { get; set; }
+        public ICollection<CertificateImages> CertificateImages { get; set; }
 
     }
 }

@@ -128,6 +128,7 @@ namespace Project.BLL.Services.Implementation
                     }
 
                     documentsData.Id = Guid.NewGuid().ToString();
+                    documentsData.SignitureId = documentsCreateDTOs.SignitureId;
                     documentsData.UpdatedBy = "Suman";
                     documentsData.CreatedAt = DateTime.Now.ToString();
                     await _unitOfWork.Repository<Documents>().AddAsync(documentsData);

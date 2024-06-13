@@ -11,8 +11,8 @@ namespace Project.BLL.Services.Interface
 {
     public interface IVDCRepository
     {
-        Task<Result<VdcGetDTOs>> GetById(string VdcId, CancellationToken cancellationToken = default);
+        Task<Result<VdcGetDTOs>> GetById(int VdcId, CancellationToken cancellationToken = default);
         Task<Result<List<VdcGetDTOs>>> GetAll(CancellationToken cancellationToken = default);
-        Task<Result<List<VdcGetDTOs>>> GetByDistrictId(string districtId, CancellationToken cancellationToken = default);
+        Task<Result<List<VdcGetDTOs>>> GetByDistrictId(int districtId, CancellationToken cancellationToken = default);
     }
 }

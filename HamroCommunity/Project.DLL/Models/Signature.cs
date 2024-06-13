@@ -12,7 +12,6 @@ namespace Project.DLL.Models
         public string? SignatureURL { get; set; }
 
         public string CreatedAt { get; set; }
-        public string DocumentsId { get; set; }
-        public Documents Documents { get; set; }
+        public ICollection<Documents> Documents { get; set; }
     }
 }

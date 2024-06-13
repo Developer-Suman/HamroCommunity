@@ -84,6 +84,9 @@ namespace Project.BLL.Repository.Implementation
             return Task.FromResult(_dbSet.AsNoTracking().AsQueryable());
         }
 
+        public async Task<TEntity> GetById(int id) => await _dbSet.FindAsync(id);
+        
+
         public async Task<TEntity> GetByIdAsync(string id) => await _dbSet.FindAsync(id);
         
 

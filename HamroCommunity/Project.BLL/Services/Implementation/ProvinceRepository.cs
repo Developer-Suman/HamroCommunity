@@ -67,7 +67,7 @@ namespace Project.BLL.Services.Implementation
 
 
 
-        public async Task<Result<ProvinceGetDTOs>> GetById(string provinceId, CancellationToken cancellationToken = default)
+        public async Task<Result<ProvinceGetDTOs>> GetById(int provinceId, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace Project.BLL.Services.Implementation
                     return Result<ProvinceGetDTOs>.Success(cacheData);
                 }
 
-                var provinceData = await _unitOfWork.Repository<Province>().GetByIdAsync(provinceId);
+                var provinceData = await _unitOfWork.Repository<Province>().GetById(provinceId);
                 if(provinceData is null)
                 {
                     return Result<ProvinceGetDTOs>.Failure("NotFound", "Province Not Found");

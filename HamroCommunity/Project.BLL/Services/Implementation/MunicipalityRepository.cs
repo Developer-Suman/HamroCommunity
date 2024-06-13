@@ -65,7 +65,7 @@ namespace Project.BLL.Services.Implementation
             }
         }
 
-        public async Task<Result<List<MunicipalityGetDTOs>>> GetByDistrictId(string districtId, CancellationToken cancellationToken)
+        public async Task<Result<List<MunicipalityGetDTOs>>> GetByDistrictId(int districtId, CancellationToken cancellationToken)
         {
             try
             {
@@ -97,7 +97,7 @@ namespace Project.BLL.Services.Implementation
             }
         }
 
-        public async Task<Result<MunicipalityGetDTOs>> GetById(string municipalityId, CancellationToken cancellationToken)
+        public async Task<Result<MunicipalityGetDTOs>> GetById(int municipalityId, CancellationToken cancellationToken)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace Project.BLL.Services.Implementation
                 {
                     return Result<MunicipalityGetDTOs>.Success(cacheData);
                 }
-                var municipalData = await _unitOfWork.Repository<Municipality>().GetByIdAsync(municipalityId);
+                var municipalData = await _unitOfWork.Repository<Municipality>().GetById(municipalityId);
                 if (municipalData is null)
                 {
                     return Result<MunicipalityGetDTOs>.Failure("NotFound", "District data are ot Found");

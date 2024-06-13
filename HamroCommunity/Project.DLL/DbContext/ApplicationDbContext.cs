@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -43,45 +44,109 @@ namespace Project.DLL.DbContext
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            //Configure many-to-many relationship
-            builder.Entity<UserDepartment>()
-                .HasKey(ud => new { ud.UserId, ud.DepartentId });
 
-            builder.Entity<UserDepartment>()
-            .HasOne(ud => ud.User)
-            .WithMany(u => u.UserDepartments)
-            .HasForeignKey(ud => ud.UserId);
+            #region Signature and Documents(1:m)
+            builder.Entity<Signature>(entity =>
+            {
+                entity.HasKey(e => e.SignatureId);
+                entity.Property(e => e.SignatureURL).IsRequired(false);
+                entity.Property(e => e.CreatedAt).IsRequired();
 
-            builder.Entity<UserDepartment>()
-                .HasOne(ud => ud.Department)
-                .WithMany(d => d.UserDepartments)
-                .HasForeignKey(x => x.DepartentId);
-
-
-
-            #region Documents and Certificate(1:m)
-            builder.Entity<Documents>()
-                .HasMany(d => d.Certificates)
-                .WithOne(c => c.Documents)
-                .HasForeignKey(c => c.DocumentsId)
-                .OnDelete(DeleteBehavior.Cascade);
+                entity.HasMany(s => s.Documents)
+                      .WithOne(d => d.Signature)
+                      .HasForeignKey(d => d.SignitureId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
 
             #endregion
-            #region Documents and Citizenship(1:1)
-            builder.Entity<Documents>()
-                .HasOne(d => d.Citizenship)
-                .WithOne(c => c.Documents)
-                .HasForeignKey<Citizenship>(d => d.DocumentsId)
-                .OnDelete(DeleteBehavior.Cascade);
+
+            #region Documents and Signiture(1:m)
+            builder.Entity<Documents>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.DocumentType).IsRequired();
+                entity.Property(e => e.CreatedAt).IsRequired();
+                entity.Property(e => e.UpdatedBy).IsRequired(false);
+
+                entity.HasOne(d => d.Signature)
+                      .WithMany(s => s.Documents)
+                      .HasForeignKey(d => d.SignitureId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+            #endregion
+
+            #region Certificate and CertificateImages(1:m)
+            builder.Entity<Certificate>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Grade).IsRequired();
+                entity.Property(e=>e.CreatedAt).IsRequired(false);
+                entity.Property(e => e.Type).IsRequired(false);
+                entity.Property(e => e.Board).IsRequired();
+
+                entity.HasMany(d => d.CertificateImages)
+                        .WithOne(e => e.Certificate)
+                        .HasForeignKey(d => d.CertificateId)
+                        .OnDelete(DeleteBehavior.Cascade);
+            });
+            #endregion
+
+            #region CertificateImages and Certificate(m :1)
+            builder.Entity<CertificateImages>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.CertificateImgURL).IsRequired();
+                entity.Property(e => e.CertificateId).IsRequired();
+
+                entity.HasOne(e => e.Certificate)
+                    .WithMany(e => e.CertificateImages)
+                    .HasForeignKey(d => d.Id);
+                    
+            });
 
             #endregion
-            #region Document and Signature(1:1)
-            builder.Entity<Documents>()
-                .HasOne(x => x.Signature)
-                .WithOne(c => c.Documents)
-                .HasForeignKey<Signature>(d => d.SignatureId)
-                .OnDelete(DeleteBehavior.Cascade);
-            #endregion
+
+
+
+            ////Configure many-to-many relationship
+            //builder.Entity<UserDepartment>()
+            //    .HasKey(ud => new { ud.UserId, ud.DepartentId });
+
+            //builder.Entity<UserDepartment>()
+            //.HasOne(ud => ud.User)
+            //.WithMany(u => u.UserDepartments)
+            //.HasForeignKey(ud => ud.UserId);
+
+            //builder.Entity<UserDepartment>()
+            //    .HasOne(ud => ud.Department)
+            //    .WithMany(d => d.UserDepartments)
+            //    .HasForeignKey(x => x.DepartentId);
+
+
+
+            //#region Documents and Certificate(1:m)
+            //builder.Entity<Documents>()
+            //    .HasMany(d => d.Certificates)
+            //    .WithOne(c => c.Documents)
+            //    .HasForeignKey(c => c.DocumentsId)
+            //    .OnDelete(DeleteBehavior.Cascade);
+
+            //#endregion
+            //#region Documents and Citizenship(1:1)
+            //builder.Entity<Documents>()
+            //    .HasOne(d => d.Citizenship)
+            //    .WithOne(c => c.Documents)
+            //    .HasForeignKey<Citizenship>(d => d.DocumentsId)
+            //    .OnDelete(DeleteBehavior.Cascade);
+
+            //#endregion
+            //#region Document and Signature(1:1)
+            //builder.Entity<Documents>()
+            //    .HasOne(x => x.Signature)
+            //    .WithOne(c => c.Documents)
+            //    .HasForeignKey<Signature>(d => d.SignatureId)
+            //    .OnDelete(DeleteBehavior.Cascade);
+            //#endregion
 
             //#region Certificate and DocumentsImages(m:m)
             //builder.Entity<CertificatesDocumentsImages>()

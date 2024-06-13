@@ -1,6 +1,7 @@
 ﻿using AspNetCoreRateLimit;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Project.BLL.Abstraction;
 using Project.BLL.Repository.Implementation;
 using Project.BLL.Services.Implementation;
@@ -68,6 +69,7 @@ namespace Project.BLL
             services.AddTransient<IVDCRepository, VDCRepository>();
             services.AddScoped<ISignitureRepository, SignitureRepository>();
             services.AddScoped<IDocumentsRepository, DocumentRepository>();
+         
 
 
 

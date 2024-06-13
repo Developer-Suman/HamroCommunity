@@ -1,11 +1,9 @@
 
 using HamroCommunity.Configs;
 using HamroCommunity.CustomHealthChecks;
-using HamroCommunity.CustomMiddleware.GlobalErrorHandling;
+using HamroCommunity.CustomHealthChecks.HealthChecksEndPoints;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.OpenApi.Models;
 using Project.BLL;
 using Project.DLL;
 using Project.DLL.DbContext;
@@ -29,12 +27,19 @@ try
         .AddCheck<ApiHealthchecks>(nameof(ApiHealthchecks))
         .AddDbContextCheck<ApplicationDbContext>();
 
-    builder.Services
-        .AddHealthChecksUI(options =>
-        {
-            options.AddHealthCheckEndpoint("HealthCheck API", "/healthcheck");
-        })
-        .AddInMemoryStorage();
+
+    // Register ApiEndpointsConfig from appsettings.json
+    builder.Services.Configure<HealthChecksEndPointConfig>(builder.Configuration.GetSection("ApiEndpoints"));
+
+    // Register a singleton instance of HttpClient
+    builder.Services.AddHttpClient<ApiHealthchecks>();
+
+    //builder.Services
+    //    .AddHealthChecksUI(options =>
+    //    {
+    //        options.AddHealthCheckEndpoint("HealthCheck API", "/healthcheck");
+    //    })
+    //    .AddInMemoryStorage();
 
     //Configure RateLimiter
     builder.Services.AddRateLimiter(config =>
@@ -94,7 +99,7 @@ try
     Log.Information("Application StartUp");
 
     var app = builder.Build();
-    app.UseRouting();
+    //app.UseRouting();
     app.UseRateLimiter();
 
     app.MapHealthChecks("/healthcheck", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions

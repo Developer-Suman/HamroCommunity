@@ -44,6 +44,11 @@ namespace Project.BLL.Abstraction
             CreateMap<Documents, DocumentsGetDTOs>().ReverseMap();
             CreateMap<DocumentsCreateDTOs, DocumentsGetDTOs>().ReverseMap();
             CreateMap<Documents, DocumentsUpdateDTOs>().ReverseMap();
+
+            CreateMap<Signature, SignitureGetDTOs>()
+            .ConstructUsing(src => new SignitureGetDTOs(src.SignatureId,src.SignatureURL, src.CreatedAt))
+            .ReverseMap();
+
             //CreateMap<Province, ProvinceGetDTOs>()
             //.ForCtorParam("ProvinceId", opt => opt.MapFrom(src => src.Id))
             //.ForCtorParam("ProvinceNameInEnglish", opt => opt.MapFrom(src => src.ProvinceNameInEnglish))

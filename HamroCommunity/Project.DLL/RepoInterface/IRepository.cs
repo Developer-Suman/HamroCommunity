@@ -10,6 +10,7 @@ namespace Project.DLL.RepoInterface
     public interface IRepository<TEntity> where TEntity : class
     {
         Task<TEntity> GetByIdAsync(string id);
+        Task<TEntity> GetById(int id);
         Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate);
         Task<bool> AnyAsync(Expression<Func<TEntity, bool>> filter);
         Task<TEntity> GetSingleAsync(Expression<Func<TEntity, bool>> predicate);

@@ -250,7 +250,6 @@ namespace Project.DLL.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DocumentsId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Grade")
@@ -271,12 +270,13 @@ namespace Project.DLL.Migrations
                     b.Property<string>("CertificatesId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("DocumentsImagesId")
+                    b.Property<string>("CertificateId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("CertificatesId", "DocumentsImagesId");
+                    b.HasKey("CertificatesId");
 
-                    b.HasIndex("DocumentsImagesId");
+                    b.HasIndex("CertificateId");
 
                     b.ToTable("CertificatesDocumentsImages");
                 });
@@ -296,10 +296,6 @@ namespace Project.DLL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("DocumentsImagesId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("IssuedDate")
                         .HasColumnType("nvarchar(max)");
 
@@ -314,12 +310,32 @@ namespace Project.DLL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DocumentsId")
-                        .IsUnique();
-
-                    b.HasIndex("DocumentsImagesId");
+                    b.HasIndex("DocumentsId");
 
                     b.ToTable("Citizenship");
+                });
+
+            modelBuilder.Entity("Project.DLL.Models.CitizenshipImages", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CitizenshipId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CitizenshipId");
+
+                    b.ToTable("CitizenshipImages");
                 });
 
             modelBuilder.Entity("Project.DLL.Models.Department", b =>
@@ -358,19 +374,6 @@ namespace Project.DLL.Migrations
                     b.ToTable("Districts");
                 });
 
-            modelBuilder.Entity("Project.DLL.Models.DocumentImages", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("DocumentURL")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DocumentImages");
-                });
-
             modelBuilder.Entity("Project.DLL.Models.Documents", b =>
                 {
                     b.Property<string>("Id")
@@ -384,11 +387,16 @@ namespace Project.DLL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UpdatedBy")
+                    b.Property<string>("SignitureId")
                         .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SignitureId");
 
                     b.ToTable("Documents");
                 });
@@ -476,10 +484,6 @@ namespace Project.DLL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DocumentsId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("SignatureURL")
                         .HasColumnType("nvarchar(max)");
 
@@ -490,18 +494,23 @@ namespace Project.DLL.Migrations
 
             modelBuilder.Entity("Project.DLL.Models.UserDepartment", b =>
                 {
-                    b.Property<string>("UserId")
+                    b.Property<string>("UserDepartmentId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DepartentId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserDepartmentId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId", "DepartentId");
+                    b.Property<string>("DepartmentId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasIndex("DepartentId");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserDepartmentId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserDepartments");
                 });
@@ -583,10 +592,8 @@ namespace Project.DLL.Migrations
             modelBuilder.Entity("Project.DLL.Models.Certificate", b =>
                 {
                     b.HasOne("Project.DLL.Models.Documents", "Documents")
-                        .WithMany("Certificates")
-                        .HasForeignKey("DocumentsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("DocumentsId");
 
                     b.Navigation("Documents");
                 });
@@ -595,38 +602,33 @@ namespace Project.DLL.Migrations
                 {
                     b.HasOne("Project.DLL.Models.Certificate", "Certificate")
                         .WithMany("CertificatesDocumentsImage")
-                        .HasForeignKey("CertificatesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Project.DLL.Models.DocumentImages", "DocumentImages")
-                        .WithMany("CertificatesDocumentsImage")
-                        .HasForeignKey("DocumentsImagesId")
+                        .HasForeignKey("CertificateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Certificate");
-
-                    b.Navigation("DocumentImages");
                 });
 
             modelBuilder.Entity("Project.DLL.Models.Citizenship", b =>
                 {
                     b.HasOne("Project.DLL.Models.Documents", "Documents")
-                        .WithOne("Citizenship")
-                        .HasForeignKey("Project.DLL.Models.Citizenship", "DocumentsId")
+                        .WithMany()
+                        .HasForeignKey("DocumentsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Project.DLL.Models.DocumentImages", "DocumentImages")
-                        .WithMany("Citizenships")
-                        .HasForeignKey("DocumentsImagesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("DocumentImages");
 
                     b.Navigation("Documents");
+                });
+
+            modelBuilder.Entity("Project.DLL.Models.CitizenshipImages", b =>
+                {
+                    b.HasOne("Project.DLL.Models.Citizenship", "Citizenship")
+                        .WithMany("CitizenshipImages")
+                        .HasForeignKey("CitizenshipId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Citizenship");
                 });
 
             modelBuilder.Entity("Project.DLL.Models.District", b =>
@@ -640,6 +642,17 @@ namespace Project.DLL.Migrations
                     b.Navigation("Province");
                 });
 
+            modelBuilder.Entity("Project.DLL.Models.Documents", b =>
+                {
+                    b.HasOne("Project.DLL.Models.Signature", "Signature")
+                        .WithMany("Documents")
+                        .HasForeignKey("SignitureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Signature");
+                });
+
             modelBuilder.Entity("Project.DLL.Models.Municipality", b =>
                 {
                     b.HasOne("Project.DLL.Models.District", "District")
@@ -651,30 +664,15 @@ namespace Project.DLL.Migrations
                     b.Navigation("District");
                 });
 
-            modelBuilder.Entity("Project.DLL.Models.Signature", b =>
-                {
-                    b.HasOne("Project.DLL.Models.Documents", "Documents")
-                        .WithOne("Signature")
-                        .HasForeignKey("Project.DLL.Models.Signature", "SignatureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Documents");
-                });
-
             modelBuilder.Entity("Project.DLL.Models.UserDepartment", b =>
                 {
                     b.HasOne("Project.DLL.Models.Department", "Department")
                         .WithMany("UserDepartments")
-                        .HasForeignKey("DepartentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DepartmentId");
 
                     b.HasOne("Project.DLL.Models.ApplicationUsers", "User")
                         .WithMany("UserDepartments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Department");
 
@@ -702,27 +700,19 @@ namespace Project.DLL.Migrations
                     b.Navigation("CertificatesDocumentsImage");
                 });
 
+            modelBuilder.Entity("Project.DLL.Models.Citizenship", b =>
+                {
+                    b.Navigation("CitizenshipImages");
+                });
+
             modelBuilder.Entity("Project.DLL.Models.Department", b =>
                 {
                     b.Navigation("UserDepartments");
                 });
 
-            modelBuilder.Entity("Project.DLL.Models.DocumentImages", b =>
+            modelBuilder.Entity("Project.DLL.Models.Signature", b =>
                 {
-                    b.Navigation("CertificatesDocumentsImage");
-
-                    b.Navigation("Citizenships");
-                });
-
-            modelBuilder.Entity("Project.DLL.Models.Documents", b =>
-                {
-                    b.Navigation("Certificates");
-
-                    b.Navigation("Citizenship")
-                        .IsRequired();
-
-                    b.Navigation("Signature")
-                        .IsRequired();
+                    b.Navigation("Documents");
                 });
 #pragma warning restore 612, 618
         }

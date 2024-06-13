@@ -3,7 +3,6 @@ using Project.BLL.DTOs.Authentication;
 using Project.BLL.DTOs.District;
 using Project.BLL.Services.Interface;
 using Project.DLL.Abstraction;
-using Project.DLL.DbContext;
 using Project.DLL.Models;
 using Project.DLL.RepoInterface;
 using Project.DLL.Static.Cache;
@@ -62,7 +61,7 @@ namespace Project.BLL.Services.Implementation
             }
         }
 
-        public async Task<Result<DistrictGetDTOs>> GetById(string DistrictId, CancellationToken cancellationToken = default)
+        public async Task<Result<DistrictGetDTOs>> GetById(int DistrictId, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -72,7 +71,7 @@ namespace Project.BLL.Services.Implementation
                 {
                     return Result<DistrictGetDTOs>.Success(cacheData);
                 }
-                var districtData = await _unitOfWork.Repository<District>().GetByIdAsync(DistrictId);
+                var districtData = await _unitOfWork.Repository<District>().GetById(DistrictId);
                 if(districtData is null)
                 {
                     return Result<DistrictGetDTOs>.Failure("NotFound", "District data are ot Found");
@@ -93,7 +92,7 @@ namespace Project.BLL.Services.Implementation
             }
         }
 
-        public async Task<Result<List<DistrictGetDTOs>>> GetByProvinceId(string ProvinceId, CancellationToken cancellationToken = default)
+        public async Task<Result<List<DistrictGetDTOs>>> GetByProvinceId(int ProvinceId, CancellationToken cancellationToken = default)
         {
             try
             {

@@ -11,7 +11,7 @@ namespace Project.BLL.Services.Interface
     public interface IDistrictRepository
     {
         Task<Result<List<DistrictGetDTOs>>> GetAll(CancellationToken cancellationToken = default);
-        Task<Result<DistrictGetDTOs>> GetById(string DistrictId, CancellationToken cancellationToken = default);
-        Task<Result<List<DistrictGetDTOs>>> GetByProvinceId(string ProvinceId, CancellationToken cancellationToken = default);
+        Task<Result<DistrictGetDTOs>> GetById(int DistrictId, CancellationToken cancellationToken = default);
+        Task<Result<List<DistrictGetDTOs>>> GetByProvinceId(int ProvinceId, CancellationToken cancellationToken = default);
     }
 }
