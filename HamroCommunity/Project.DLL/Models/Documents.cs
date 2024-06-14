@@ -14,12 +14,12 @@ namespace Project.DLL.Models
         public string UpdatedBy { get; set; }
 
         public string SignitureId { get; set; }
-        public string CertificateId { get; set; }
 
         //NavigationProperty
 
         public Signature Signature { get; set; }
-        public Certificate Certificate { get; set; }
+ 
+        public ICollection<CertificateDocuments> certificateDocuments { get; set; }
 
     }
 }

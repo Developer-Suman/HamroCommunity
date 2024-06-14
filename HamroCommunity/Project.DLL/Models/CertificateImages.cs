@@ -10,21 +10,18 @@ namespace Project.DLL.Models
     public class CertificateImages : Entity
     {
         public CertificateImages(
-            string Id,
-            string certificateImgUrl,
-            string certificateId
-            ) : base(Id)
+                string id,
+                string certificateImgURL,
+                string certificateId
+                ) : base(id)
         {
-            certificateImgUrl = CertificateImgURL;
-            certificateId = CertificateId;
-            
+            CertificateImgURL = certificateImgURL;
+            CertificateId = certificateId;
         }
+
         public string? CertificateImgURL { get; set; }
         public string? CertificateId { get; set; }
-        public Certificate Certificate { get; set; }
-
-        //NavigationProperty
-
+        public Certificate Certificate { get; set; } // Navigation property
 
     }
 }

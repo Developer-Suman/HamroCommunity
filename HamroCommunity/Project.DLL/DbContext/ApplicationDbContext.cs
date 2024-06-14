@@ -27,7 +27,6 @@ namespace Project.DLL.DbContext
 
         public DbSet<Signature> signatures { get; set; }
         public DbSet<Certificate> certificates { get; set; }
-        public DbSet<CertificatesDocumentsImages> CertificatesDocumentsImages { get; set; }
         public DbSet<Documents> Documents { get; set; }
 
         public DbSet<CitizenshipImages> CitizenshipImages { get; set; }
@@ -103,6 +102,24 @@ namespace Project.DLL.DbContext
                     .HasForeignKey(d => d.Id);
                     
             });
+
+            #endregion
+
+            #region Certificate and Documents(m:m)
+            builder.Entity<CertificateDocuments>()
+                .HasKey(ud => new { ud.DocumentsId, ud.CertificateId });
+
+            builder.Entity<CertificateDocuments>()
+                .HasOne(e => e.Certificate)
+                .WithMany(e => e.CertificateDocuments)
+                .HasForeignKey(ud => ud.CertificateId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<CertificateDocuments>()
+                .HasOne(e => e.Documents)
+                .WithMany(e => e.certificateDocuments)
+                .HasForeignKey(ud => ud.DocumentsId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             #endregion
 
