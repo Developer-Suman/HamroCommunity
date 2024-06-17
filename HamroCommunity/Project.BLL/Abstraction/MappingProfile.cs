@@ -54,8 +54,8 @@ namespace Project.BLL.Abstraction
             CreateMap<CertificateImages, CertificateGetDTOs>().ReverseMap();
             CreateMap<CertificateGetDTOs, CertificateImageDTOs>().ReverseMap();
 
-            CreateMap<PagedResult<List<CertificateImages>>, PagedResult<List<CertificateGetDTOs>>>().ReverseMap();
-            //CreateMap<PagedResult<Certificate>, PagedResult<CertificateGetDTOs>>().ReverseMap();
+
+            CreateMap<PagedResult<Certificate>, PagedResult<CertificateGetDTOs>>().ReverseMap();
 
             CreateMap<PagedResult<Certificate>, PagedResult<CertificateGetDTOs>>()
            .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items))
