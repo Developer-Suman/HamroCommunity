@@ -76,23 +76,20 @@ namespace Project.DLL.DbContext
             });
             #endregion
 
-            #region Certificate and CertificateImages(1:m)
             builder.Entity<Certificate>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Grade).IsRequired();
-                entity.Property(e=>e.CreatedAt).IsRequired(false);
+                entity.Property(e => e.CreatedAt).IsRequired(false);
                 entity.Property(e => e.Type).IsRequired(false);
                 entity.Property(e => e.Board).IsRequired();
 
                 entity.HasMany(d => d.CertificateImages)
-                        .WithOne(e => e.Certificate)
-                        .HasForeignKey(d => d.CertificateId)
-                        .OnDelete(DeleteBehavior.Cascade);
+                      .WithOne(e => e.Certificate)
+                      .HasForeignKey(d => d.CertificateId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
-            #endregion
 
-            #region CertificateImages and Certificate(m :1)
             builder.Entity<CertificateImages>(entity =>
             {
                 entity.HasKey(e => e.Id);
@@ -100,12 +97,10 @@ namespace Project.DLL.DbContext
                 entity.Property(e => e.CertificateId).IsRequired();
 
                 entity.HasOne(e => e.Certificate)
-                    .WithMany(e => e.CertificateImages)
-                    .HasForeignKey(d => d.Id);
-                    
+                      .WithMany(e => e.CertificateImages)
+                      .HasForeignKey(e => e.CertificateId); // Corrected foreign key configuration
             });
 
-            #endregion
 
             #region Certificate and Documents(m:m)
             builder.Entity<CertificateDocuments>()

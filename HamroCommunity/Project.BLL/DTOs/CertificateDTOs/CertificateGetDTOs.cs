@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Project.BLL.DTOs.CertificateDTOs
 {
+
     public record CertificateGetDTOs(
         string Id,
         string Grade,

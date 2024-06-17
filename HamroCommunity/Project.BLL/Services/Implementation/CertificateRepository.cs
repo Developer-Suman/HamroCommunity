@@ -151,20 +151,26 @@ namespace Project.BLL.Services.Implementation
                     {
                         await _memoryCacheRepository.RemoveAsync(CacheKeys.Certificate);
                         string newId = Guid.NewGuid().ToString();
+                        //var certificateData = _mapper.Map<Certificate>(certificateCreateDTOs);
                         var certificateData = new Certificate(
-                         newId,
-                         certificateCreateDTOs.Grade,
-                         certificateCreateDTOs.Type,
-                         certificateCreateDTOs.Board
-                     );
+                            newId,
+                            certificateCreateDTOs.Grade,
+                            certificateCreateDTOs.Type,
+                            certificateCreateDTOs.Board
+                        );
 
-
-                        if (certificateData is null)
+                        if (certificateData == null)
                         {
-                            return Result<CertificateGetDTOs>.Failure("NotFound","Error occured while mapping");
-
+                            return Result<CertificateGetDTOs>.Failure("NotFound", "Error occurred while mapping");
                         }
 
+                    
+                        certificateData.Board = certificateCreateDTOs.Board;
+                        certificateData.Type = certificateCreateDTOs.Type;
+                        certificateData.Grade = certificateCreateDTOs.Grade;
+                        certificateData.CreatedAt = DateTime.Now;
+                        await _unitOfWork.Repository<Certificate>().AddAsync(certificateData);
+                        await _unitOfWork.SaveChangesAsync();
 
 
                         var tasks = certificateFiles.Select(async item =>
@@ -179,14 +185,9 @@ namespace Project.BLL.Services.Implementation
 
                         // Await the completion of all tasks
                         var imagesDTOs = (await Task.WhenAll(tasks)).ToList();
-
-                        certificateData.CertificateImages = imagesDTOs;
-                        certificateData.Board = certificateCreateDTOs.Board;
-                        certificateData.Type = certificateCreateDTOs.Type;
-                        certificateData.Grade = certificateCreateDTOs.Grade;
-                        certificateData.CreatedAt = DateTime.Now;
-                        await _unitOfWork.Repository<Certificate>().AddAsync(certificateData);
+                        await _unitOfWork.Repository<CertificateImages>().AddRange(imagesDTOs);
                         await _unitOfWork.SaveChangesAsync();
+                        certificateData.CertificateImages = imagesDTOs;
 
                         scope.Complete();
 
@@ -197,7 +198,7 @@ namespace Project.BLL.Services.Implementation
                     catch (Exception ex)
                     {
                         scope.Dispose();
-                        throw new Exception("An error occured while Saving Data");
+                        throw new Exception("An error occured while Saving Data",ex);
                     }
                 }
 

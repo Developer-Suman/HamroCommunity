@@ -9,17 +9,21 @@ namespace Project.DLL.Models
 {
     public class Certificate : Entity
     {
+
         public Certificate(
             string id,
-            string? grade,
-            string? type,
-            string? board
+            string grade,
+            string type,
+            string board 
             ) : base(id)
         {
             Grade = grade;
             Type = type;
             Board = board;
-            
+            CertificateImages = new List<CertificateImages>();
+            CertificateDocuments = new List<CertificateDocuments>();
+
+
         }
         public string? Grade { get; set; }
         public DateTime? CreatedAt { get; set; }
@@ -27,8 +31,8 @@ namespace Project.DLL.Models
         public string? Board { get; set; }
 
         //Navigation Property
-        public ICollection<CertificateImages>? CertificateImages { get; set; } = new List<CertificateImages>();
-        public ICollection<CertificateDocuments>? CertificateDocuments { get; set; } = new List<CertificateDocuments>();
+        public ICollection<CertificateImages>? CertificateImages { get; set; } 
+        public ICollection<CertificateDocuments>? CertificateDocuments { get; set; } 
 
     }
 }

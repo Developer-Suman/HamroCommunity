@@ -51,8 +51,12 @@ namespace Project.BLL.Abstraction
             .ConstructUsing(src => new SignitureGetDTOs(src.SignatureId,src.SignatureURL, src.CreatedAt))
             .ReverseMap();
 
-            CreateMap<CertificateImages, CertificateGetDTOs>().ReverseMap();
-            CreateMap<CertificateGetDTOs, CertificateImageDTOs>().ReverseMap();
+            CreateMap<CertificateImages,CertificateGetDTOs>()
+                .ForMember(dest => dest.certificateImages, opt => opt.MapFrom(src => src.Certificate.CertificateImages));
+                
+
+
+            CreateMap<CertificateCreateDTOs, Certificate>().ReverseMap();
 
 
             CreateMap<PagedResult<Certificate>, PagedResult<CertificateGetDTOs>>().ReverseMap();
@@ -62,10 +66,14 @@ namespace Project.BLL.Abstraction
            .ReverseMap()
            .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
 
+
+
+
+
             CreateMap<Certificate, CertificateGetDTOs>()
            .ForMember(dest => dest.certificateImages, opt => opt.MapFrom(src => src.CertificateImages))
-           .ReverseMap()
-           .ForMember(dest => dest.CertificateImages, opt => opt.MapFrom(src => src.certificateImages));
+           .ReverseMap();
+        
 
            
 
