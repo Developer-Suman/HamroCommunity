@@ -34,12 +34,6 @@ try
     // Register a singleton instance of HttpClient
     builder.Services.AddHttpClient<ApiHealthchecks>();
 
-    //builder.Services
-    //    .AddHealthChecksUI(options =>
-    //    {
-    //        options.AddHealthCheckEndpoint("HealthCheck API", "/healthcheck");
-    //    })
-    //    .AddInMemoryStorage();
 
     //Configure RateLimiter
     builder.Services.AddRateLimiter(config =>

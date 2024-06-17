@@ -69,7 +69,9 @@ namespace Project.BLL
             services.AddTransient<IVDCRepository, VDCRepository>();
             services.AddScoped<ISignitureRepository, SignitureRepository>();
             services.AddScoped<IDocumentsRepository, DocumentRepository>();
-         
+            services.AddScoped<ICertificateRepository, CertificateRepository>();
+
+
 
 
 

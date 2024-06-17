@@ -29,6 +29,8 @@ namespace Project.DLL.DbContext
         public DbSet<Certificate> certificates { get; set; }
         public DbSet<Documents> Documents { get; set; }
 
+        public DbSet<CertificateImages> CertificateImages { get; set; }
+
         public DbSet<CitizenshipImages> CitizenshipImages { get; set; }
 
 

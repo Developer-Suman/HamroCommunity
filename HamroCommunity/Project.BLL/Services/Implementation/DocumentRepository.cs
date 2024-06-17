@@ -74,7 +74,7 @@ namespace Project.BLL.Services.Implementation
                 await _memoryCacheRepository.SetAsync(cacheKeys, documentsData, new Microsoft.Extensions.Caching.Memory.MemoryCacheEntryOptions
                 {
                     AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(30)
-                }, cancellationToken); ;
+                }, cancellationToken); 
                 return Result<List<DocumentsGetDTOs>>.Success(documentsDataDTOs);
 
             }

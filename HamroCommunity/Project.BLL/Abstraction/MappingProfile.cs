@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Project.BLL.DTOs.Authentication;
+using Project.BLL.DTOs.CertificateDTOs;
 using Project.BLL.DTOs.District;
 using Project.BLL.DTOs.DocumentsDTOs;
 using Project.BLL.DTOs.Municipality;
 using Project.BLL.DTOs.Nashu;
+using Project.BLL.DTOs.Pagination;
 using Project.BLL.DTOs.Province;
 using Project.BLL.DTOs.Signiture;
 using Project.BLL.DTOs.Vdc;
@@ -48,6 +50,27 @@ namespace Project.BLL.Abstraction
             CreateMap<Signature, SignitureGetDTOs>()
             .ConstructUsing(src => new SignitureGetDTOs(src.SignatureId,src.SignatureURL, src.CreatedAt))
             .ReverseMap();
+
+            CreateMap<CertificateImages, CertificateGetDTOs>().ReverseMap();
+            CreateMap<CertificateGetDTOs, CertificateImageDTOs>().ReverseMap();
+
+            CreateMap<PagedResult<List<CertificateImages>>, PagedResult<List<CertificateGetDTOs>>>().ReverseMap();
+            //CreateMap<PagedResult<Certificate>, PagedResult<CertificateGetDTOs>>().ReverseMap();
+
+            CreateMap<PagedResult<Certificate>, PagedResult<CertificateGetDTOs>>()
+           .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items))
+           .ReverseMap()
+           .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
+
+            CreateMap<Certificate, CertificateGetDTOs>()
+           .ForMember(dest => dest.certificateImages, opt => opt.MapFrom(src => src.CertificateImages))
+           .ReverseMap()
+           .ForMember(dest => dest.CertificateImages, opt => opt.MapFrom(src => src.certificateImages));
+
+           
+
+
+            CreateMap<Certificate, CertificateUpdateDTOs>() .ReverseMap();
 
             //CreateMap<Province, ProvinceGetDTOs>()
             //.ForCtorParam("ProvinceId", opt => opt.MapFrom(src => src.Id))
