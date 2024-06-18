@@ -188,10 +188,19 @@ namespace Project.BLL.Services.Implementation
                         await _unitOfWork.Repository<CertificateImages>().AddRange(imagesDTOs);
                         await _unitOfWork.SaveChangesAsync();
                         certificateData.CertificateImages = imagesDTOs;
+                        var imageUrls = imagesDTOs.Select(image => image.CertificateImgURL).ToList();
+                        // Map the certificate data to the result DTO and include image URLs
+                        var resultDTO = new CertificateGetDTOs(
+                            certificateData.Id,
+                            certificateData.Grade,
+                            certificateData.Type,
+                            certificateData.Board,
+                            imageUrls
+                        );
 
                         scope.Complete();
 
-                        return Result<CertificateGetDTOs>.Success(_mapper.Map<CertificateGetDTOs>(certificateData));
+                        return Result<CertificateGetDTOs>.Success(_mapper.Map<CertificateGetDTOs>(resultDTO));
 
 
                     }
