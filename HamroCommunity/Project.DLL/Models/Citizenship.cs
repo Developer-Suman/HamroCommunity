@@ -26,6 +26,8 @@ namespace Project.DLL.Models
             WardNumber = wardNumber;
             DOB = dob;
             CitizenshipNumber = citizenshipNumber;
+            CitizenshipImages = new List<CitizenshipImages>();
+            Documents = new List<Documents>();
         }
 
         public string? IssuedDate { get; set; }
@@ -36,6 +38,7 @@ namespace Project.DLL.Models
         public string? CitizenshipNumber { get; set; }
 
         // Navigation Property
-        public ICollection<CitizenshipImages> CitizenshipImages { get; set; } = new List<CitizenshipImages>();
+        public ICollection<CitizenshipImages> CitizenshipImages { get; set; } 
+        public ICollection<Documents> Documents { get; set; }
     }
 }
