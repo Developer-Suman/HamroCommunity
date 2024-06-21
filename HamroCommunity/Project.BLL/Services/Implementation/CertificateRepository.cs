@@ -73,7 +73,7 @@ namespace Project.BLL.Services.Implementation
                     return Result<PagedResult<CertificateGetDTOs>>.Success(cacheData);
                 }
 
-                var img = await _context.certificates.Include(x => x.CertificateImages).ToListAsync();
+                //var imgs = await _context.certificates.Include(x => x.CertificateImages).ToListAsync();
                 var certificateData = await _unitOfWork.Repository<Certificate>().GetAllAsyncWithPagination();
                 var certificatePagedResult = await certificateData
                                         .Include(x => x.CertificateImages)
@@ -164,10 +164,7 @@ namespace Project.BLL.Services.Implementation
                             return Result<CertificateGetDTOs>.Failure("NotFound", "Error occurred while mapping");
                         }
 
-                    
-                        certificateData.Board = certificateCreateDTOs.Board;
-                        certificateData.Type = certificateCreateDTOs.Type;
-                        certificateData.Grade = certificateCreateDTOs.Grade;
+        
                         certificateData.CreatedAt = DateTime.Now;
                         await _unitOfWork.Repository<Certificate>().AddAsync(certificateData);
                         await _unitOfWork.SaveChangesAsync();
@@ -187,7 +184,6 @@ namespace Project.BLL.Services.Implementation
                         var imagesDTOs = (await Task.WhenAll(tasks)).ToList();
                         await _unitOfWork.Repository<CertificateImages>().AddRange(imagesDTOs);
                         await _unitOfWork.SaveChangesAsync();
-                        certificateData.CertificateImages = imagesDTOs;
                         var imageUrls = imagesDTOs.Select(image => image.CertificateImgURL).ToList();
                         // Map the certificate data to the result DTO and include image URLs
                         var resultDTO = new CertificateGetDTOs(

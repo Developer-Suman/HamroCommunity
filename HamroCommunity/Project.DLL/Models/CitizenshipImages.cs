@@ -1,6 +1,7 @@
 ﻿using Project.DLL.Premetives;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,7 +25,8 @@ namespace Project.DLL.Models
         public string ImageUrl { get; set; }
         public DateTime CreatedAt { get; set;}
         public string CitizenshipId { get; set; }
-
+        [ForeignKey("CitizenshipId")]
+        //NavigationProperty
         public Citizenship Citizenship { get; set; }
     }
 }

@@ -13,8 +13,8 @@ namespace Project.BLL.DTOs.Citizenship
         string VDCOrMunicipality,
         string WardNumber,
         string DOB,
-        string CitizenshipNumber,
-        string DocumentsId
+        string CitizenshipNumber
+        //string DocumentsId
         );
     
 }

@@ -1,27 +1,41 @@
-﻿using System;
+﻿using Project.DLL.Premetives;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Project.DLL.Models
 {
-    public class Citizenship
+    public class Citizenship : Entity
     {
-        public string Id { get; set; }
+        // Parameterless constructor for EF
+        public Citizenship() : base(null) { }
+
+        // Constructor with parameters for manual instantiation
+        public Citizenship(
+            string id,
+            string issuedDate,
+            string issuedDistrict,
+            string vdcOrMunicipality,
+            string wardNumber,
+            string dob,
+            string citizenshipNumber
+        ) : base(id)
+        {
+            IssuedDate = issuedDate;
+            IssuedDistrict = issuedDistrict;
+            VdcOrMunicipality = vdcOrMunicipality;
+            WardNumber = wardNumber;
+            DOB = dob;
+            CitizenshipNumber = citizenshipNumber;
+        }
+
         public string? IssuedDate { get; set; }
         public string? IssuedDistrict { get; set; }
-        public string? VDCOrMunicipality { get; set; }
+        public string? VdcOrMunicipality { get; set; }
         public string? WardNumber { get; set; }
         public string? DOB { get; set; }
         public string? CitizenshipNumber { get; set; }
 
-
-        //ForeignKey
-
-        public string DocumentsId { get;set; }
-        public Documents Documents { get; set; }
-
-        public ICollection<CitizenshipImages> CitizenshipImages { get; set; }
+        // Navigation Property
+        public ICollection<CitizenshipImages> CitizenshipImages { get; set; } = new List<CitizenshipImages>();
     }
 }

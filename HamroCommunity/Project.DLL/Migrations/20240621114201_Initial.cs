@@ -57,6 +57,38 @@ namespace Project.DLL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Certificates",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Grade = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Board = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Certificates", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Citizenships",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IssuedDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IssuedDistrict = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    VdcOrMunicipality = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    WardNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DOB = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CitizenshipNumber = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Citizenships", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Departments",
                 columns: table => new
                 {
@@ -99,7 +131,7 @@ namespace Project.DLL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "signatures",
+                name: "Signatures",
                 columns: table => new
                 {
                     SignatureId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -108,7 +140,7 @@ namespace Project.DLL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_signatures", x => x.SignatureId);
+                    table.PrimaryKey("PK_Signatures", x => x.SignatureId);
                 });
 
             migrationBuilder.CreateTable(
@@ -218,6 +250,45 @@ namespace Project.DLL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CertificateImages",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CertificateImgURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CertificateId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CertificateImages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CertificateImages_Certificates_CertificateId",
+                        column: x => x.CertificateId,
+                        principalTable: "Certificates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CitizenshipImages",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CitizenshipId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CitizenshipImages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CitizenshipImages_Citizenships_CitizenshipId",
+                        column: x => x.CitizenshipId,
+                        principalTable: "Citizenships",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserDepartments",
                 columns: table => new
                 {
@@ -275,9 +346,9 @@ namespace Project.DLL.Migrations
                 {
                     table.PrimaryKey("PK_Documents", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Documents_signatures_SignitureId",
+                        name: "FK_Documents_Signatures_SignitureId",
                         column: x => x.SignitureId,
-                        principalTable: "signatures",
+                        principalTable: "Signatures",
                         principalColumn: "SignatureId",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -323,84 +394,26 @@ namespace Project.DLL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "certificates",
+                name: "CertificateDocuments",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Grade = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Board = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DocumentsId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    DocumentsId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CertificateId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_certificates", x => x.Id);
+                    table.PrimaryKey("PK_CertificateDocuments", x => new { x.DocumentsId, x.CertificateId });
                     table.ForeignKey(
-                        name: "FK_certificates_Documents_DocumentsId",
-                        column: x => x.DocumentsId,
-                        principalTable: "Documents",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Citizenship",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    IssuedDate = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IssuedDistrict = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    VDCOrMunicipality = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    WardNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DOB = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CitizenshipNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DocumentsId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Citizenship", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Citizenship_Documents_DocumentsId",
-                        column: x => x.DocumentsId,
-                        principalTable: "Documents",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CertificatesDocumentsImages",
-                columns: table => new
-                {
-                    CertificatesId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CertificateId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CertificatesDocumentsImages", x => x.CertificatesId);
-                    table.ForeignKey(
-                        name: "FK_CertificatesDocumentsImages_certificates_CertificateId",
+                        name: "FK_CertificateDocuments_Certificates_CertificateId",
                         column: x => x.CertificateId,
-                        principalTable: "certificates",
+                        principalTable: "Certificates",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CitizenshipImages",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CitizenshipId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CitizenshipImages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CitizenshipImages_Citizenship_CitizenshipId",
-                        column: x => x.CitizenshipId,
-                        principalTable: "Citizenship",
+                        name: "FK_CertificateDocuments_Documents_DocumentsId",
+                        column: x => x.DocumentsId,
+                        principalTable: "Documents",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -445,19 +458,14 @@ namespace Project.DLL.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_certificates_DocumentsId",
-                table: "certificates",
-                column: "DocumentsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CertificatesDocumentsImages_CertificateId",
-                table: "CertificatesDocumentsImages",
+                name: "IX_CertificateDocuments_CertificateId",
+                table: "CertificateDocuments",
                 column: "CertificateId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Citizenship_DocumentsId",
-                table: "Citizenship",
-                column: "DocumentsId");
+                name: "IX_CertificateImages_CertificateId",
+                table: "CertificateImages",
+                column: "CertificateId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CitizenshipImages_CitizenshipId",
@@ -514,7 +522,10 @@ namespace Project.DLL.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "CertificatesDocumentsImages");
+                name: "CertificateDocuments");
+
+            migrationBuilder.DropTable(
+                name: "CertificateImages");
 
             migrationBuilder.DropTable(
                 name: "CitizenshipImages");
@@ -535,10 +546,13 @@ namespace Project.DLL.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "certificates");
+                name: "Documents");
 
             migrationBuilder.DropTable(
-                name: "Citizenship");
+                name: "Certificates");
+
+            migrationBuilder.DropTable(
+                name: "Citizenships");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
@@ -550,13 +564,10 @@ namespace Project.DLL.Migrations
                 name: "Districts");
 
             migrationBuilder.DropTable(
-                name: "Documents");
+                name: "Signatures");
 
             migrationBuilder.DropTable(
                 name: "Provinces");
-
-            migrationBuilder.DropTable(
-                name: "signatures");
         }
     }
 }

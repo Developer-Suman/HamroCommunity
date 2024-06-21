@@ -25,9 +25,9 @@ namespace HamroCommunity.Controllers
         }
 
         [HttpPost("SaveCitizenship")]
-        public async Task<IActionResult> SaveCitizenship([FromForm] CitizenshipCreateDTOs citizenshipCreateDTOs, List<CitizenshipImagesDTOs> citizenshipImages)
+        public async Task<IActionResult> SaveCitizenship([FromForm] CitizenshipCreateDTOs citizenshipCreateDTOs, List<IFormFile> certificateFiles)
         {
-            var saveCitizenshipResult = await _citizenshipRepository.SaveCitizenshipData(citizenshipCreateDTOs, citizenshipImages);
+            var saveCitizenshipResult = await _citizenshipRepository.SaveCitizenshipData(citizenshipCreateDTOs, certificateFiles);
             #region switch
             return saveCitizenshipResult switch
             {

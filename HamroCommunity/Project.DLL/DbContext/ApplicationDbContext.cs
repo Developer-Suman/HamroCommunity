@@ -25,9 +25,10 @@ namespace Project.DLL.DbContext
         public DbSet<UserDepartment> UserDepartments { get; set; }
 
 
-        public DbSet<Signature> signatures { get; set; }
-        public DbSet<Certificate> certificates { get; set; }
+        public DbSet<Signature> Signatures { get; set; }
+        public DbSet<Certificate> Certificates { get; set; }
         public DbSet<Documents> Documents { get; set; }
+        public DbSet<Citizenship> Citizenships { get; set; }
 
         public DbSet<CertificateImages> CertificateImages { get; set; }
 
@@ -100,6 +101,45 @@ namespace Project.DLL.DbContext
                       .WithMany(e => e.CertificateImages)
                       .HasForeignKey(e => e.CertificateId); // Corrected foreign key configuration
             });
+
+            #region Citizenship and CitizenshipImages(1:m)
+            builder.Entity<Citizenship>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.IssuedDate).IsRequired();
+                entity.Property(e => e.IssuedDistrict).IsRequired();
+                entity.Property(e => e.VdcOrMunicipality).IsRequired();
+                entity.Property(e => e.WardNumber).IsRequired();
+                entity.Property(e => e.DOB).IsRequired();
+                entity.Property(e => e.CitizenshipNumber).IsRequired();
+
+
+                entity.HasMany(d => d.CitizenshipImages)
+                .WithOne(e => e.Citizenship)
+                .HasForeignKey(d => d.CitizenshipId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            });
+
+            #endregion
+
+            #region CitizenshipImages and dCitizenship(m:1)
+            builder.Entity<CitizenshipImages>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.ImageUrl);
+                entity.Property(e => e.CreatedAt);
+                entity.Property(e => e.CitizenshipId);
+
+
+                entity.HasOne(e => e.Citizenship)
+                .WithMany(e => e.CitizenshipImages)
+                .HasForeignKey(e => e.CitizenshipId)
+                .OnDelete(DeleteBehavior.Cascade);
+            });
+            #endregion
+
+
 
 
             #region Certificate and Documents(m:m)

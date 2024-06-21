@@ -70,6 +70,7 @@ namespace Project.BLL
             services.AddScoped<ISignitureRepository, SignitureRepository>();
             services.AddScoped<IDocumentsRepository, DocumentRepository>();
             services.AddScoped<ICertificateRepository, CertificateRepository>();
+            services.AddScoped<ICitizenshipRepository, CitizenshipRepository>();
 
 
 

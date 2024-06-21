@@ -12,8 +12,8 @@ using Project.DLL.DbContext;
 namespace Project.DLL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240614185713_sdfsdf")]
-    partial class sdfsdf
+    [Migration("20240621114201_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -262,7 +262,7 @@ namespace Project.DLL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("certificates");
+                    b.ToTable("Certificates");
                 });
 
             modelBuilder.Entity("Project.DLL.Models.CertificateDocuments", b =>
@@ -290,13 +290,15 @@ namespace Project.DLL.Migrations
 
                     b.Property<string>("CertificateId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CertificateImgURL")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CertificateId");
 
                     b.ToTable("CertificateImages");
                 });
@@ -307,32 +309,32 @@ namespace Project.DLL.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CitizenshipNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DOB")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DocumentsId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("IssuedDate")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IssuedDistrict")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("VDCOrMunicipality")
+                    b.Property<string>("VdcOrMunicipality")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("WardNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DocumentsId");
-
-                    b.ToTable("Citizenship");
+                    b.ToTable("Citizenships");
                 });
 
             modelBuilder.Entity("Project.DLL.Models.CitizenshipImages", b =>
@@ -509,7 +511,7 @@ namespace Project.DLL.Migrations
 
                     b.HasKey("SignatureId");
 
-                    b.ToTable("signatures");
+                    b.ToTable("Signatures");
                 });
 
             modelBuilder.Entity("Project.DLL.Models.UserDepartment", b =>
@@ -632,22 +634,11 @@ namespace Project.DLL.Migrations
                 {
                     b.HasOne("Project.DLL.Models.Certificate", "Certificate")
                         .WithMany("CertificateImages")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("CertificateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Certificate");
-                });
-
-            modelBuilder.Entity("Project.DLL.Models.Citizenship", b =>
-                {
-                    b.HasOne("Project.DLL.Models.Documents", "Documents")
-                        .WithMany()
-                        .HasForeignKey("DocumentsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Documents");
                 });
 
             modelBuilder.Entity("Project.DLL.Models.CitizenshipImages", b =>
