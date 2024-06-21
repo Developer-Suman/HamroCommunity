@@ -184,14 +184,14 @@ namespace Project.BLL.Services.Implementation
                         var imagesDTOs = (await Task.WhenAll(tasks)).ToList();
                         await _unitOfWork.Repository<CertificateImages>().AddRange(imagesDTOs);
                         await _unitOfWork.SaveChangesAsync();
-                        var imageUrls = imagesDTOs.Select(image => image.CertificateImgURL).ToList();
+                      
                         // Map the certificate data to the result DTO and include image URLs
                         var resultDTO = new CertificateGetDTOs(
                             certificateData.Id,
                             certificateData.Grade,
                             certificateData.Type,
                             certificateData.Board,
-                            imageUrls
+                            imagesDTOs.Select(image => image.CertificateImgURL).ToList()
                         );
 
                         scope.Complete();
@@ -260,15 +260,7 @@ namespace Project.BLL.Services.Implementation
                     _mapper.Map(certificateUpdateDTOs, certificateDataToBeUpdated);
                     await _unitOfWork.SaveChangesAsync();
 
-                    var resultDTO = new CertificateGetDTOs(
-                            certificateDataToBeUpdated.Id,
-                            certificateDataToBeUpdated.Grade,
-                            certificateDataToBeUpdated.Type,
-                            certificateDataToBeUpdated.Board,
-                            updateCertificateImg.Select(x=>x.CertificateImgURL).ToList()
-                        );
-
-
+                
                     var resultDTO = new CertificateGetDTOs(
                       certificateDataToBeUpdated.Id,
                       certificateDataToBeUpdated.Grade,

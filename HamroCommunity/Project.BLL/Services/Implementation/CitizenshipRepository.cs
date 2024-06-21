@@ -238,7 +238,7 @@ namespace Project.BLL.Services.Implementation
             }
         }
 
-        public async Task<Result<CitizenshipGetDTOs>> UpdateCitizenshipData(string CitizenshipId, CitizenshipUpdateDTOs citizenshipUpdateDTOs)
+        public async Task<Result<CitizenshipGetDTOs>> UpdateCitizenshipData(string CitizenshipId, CitizenshipUpdateDTOs citizenshipUpdateDTOs, List<IFormFile> multipleFiles)
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
@@ -258,31 +258,43 @@ namespace Project.BLL.Services.Implementation
 
                     List<string> citizenshipImages = _context.CitizenshipImages.Where(p=>p.CitizenshipId == citizenDataToBeUpdated.Id).AsQueryable().AsNoTracking().Select(x=>x.ImageUrl).ToList();
 
+                    List<string> updateImageUrl = await _imageRepository.UpdateMultiple(multipleFiles, citizenshipImages);
 
-                    List<CitizenshipImages> imagesDTOs = new List<CitizenshipImages>();
-                    // Process each new image
-                    //foreach (var item in citizenshipListImages)
-                    //{
-                    //    // Update single image
-                    //    string imageURL = await _imageRepository.UpdateSingle(item.FormFile, citizenshipImages.SingleOrDefault());
+                    List<CitizenshipImages> citizenshipImages1 = await _context.CitizenshipImages.Where(x => x.CitizenshipId == citizenDataToBeUpdated.Id).ToListAsync();
 
-                    //    // Create a new CitizenshipImages object
-                    //    CitizenshipImages newImage = new CitizenshipImages(Guid.NewGuid().ToString(), imageURL, DateTime.Now, citizenshipUpdateDTOs.Id);
+                    _unitOfWork.Repository<CitizenshipImages>().DeleteRange(citizenshipImages1);
 
-                    //    // Add to the list
-                    //    imagesDTOs.Add(newImage);
-                    //}
+                    List<CitizenshipImages> updatedImages = new List<CitizenshipImages>();
 
+                    var task = multipleFiles.Select(async item =>
+                    {
+                        string imageURL = await _imageRepository.AddSingle(item);
+                        return new CitizenshipImages(Guid.NewGuid().ToString(), imageURL, DateTime.Now, citizenDataToBeUpdated.Id);
+                    });
 
-                    // Await the completion of all tasks
-                    citizenDataToBeUpdated.CitizenshipImages = imagesDTOs;
+                    var results = await Task.WhenAll(task);
+                    updatedImages.AddRange(results);
+
+                    citizenDataToBeUpdated.CitizenshipImages = updatedImages;
 
                     //Bulk Update
                     _mapper.Map(citizenshipUpdateDTOs, citizenDataToBeUpdated);
                     await _unitOfWork.SaveChangesAsync();
+                    var resultDTOs = new CitizenshipGetDTOs(
+                      citizenDataToBeUpdated.Id,
+                      citizenDataToBeUpdated.IssuedDate,
+                      citizenDataToBeUpdated.IssuedDistrict,
+                      citizenDataToBeUpdated.VdcOrMunicipality,
+                      citizenDataToBeUpdated.WardNumber,
+                      citizenDataToBeUpdated.DOB,
+                      citizenDataToBeUpdated.CitizenshipNumber,
+                      updatedImages.Select(image => image.ImageUrl).ToList()
+                      );
                     scope.Complete();
 
-                    return Result<CitizenshipGetDTOs>.Success(_mapper.Map<CitizenshipGetDTOs>(citizenshipUpdateDTOs));
+                    return Result<CitizenshipGetDTOs>.Success(_mapper.Map<CitizenshipGetDTOs>(resultDTOs));
+
+                    
 
                 }
                 catch (Exception ex)
