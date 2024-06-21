@@ -54,9 +54,9 @@ namespace HamroCommunity.Controllers
         }
 
         [HttpPatch("UpdateCitizenship/{CitizenshipId}")]
-        public async Task<IActionResult> UpdateDocuments([FromRoute] string CitizenshipId, [FromForm] CitizenshipUpdateDTOs citizenshipUpdateDTOs)
+        public async Task<IActionResult> UpdateDocuments([FromRoute] string CitizenshipId, [FromForm] CitizenshipUpdateDTOs citizenshipUpdateDTOs, List<IFormFile> multipleFiles)
         {
-            var updateCitizenshipResult = await _citizenshipRepository.UpdateCitizenshipData(CitizenshipId, citizenshipUpdateDTOs);
+            var updateCitizenshipResult = await _citizenshipRepository.UpdateCitizenshipData(CitizenshipId, citizenshipUpdateDTOs, multipleFiles);
 
             #region switch
             return updateCitizenshipResult switch
