@@ -209,8 +209,7 @@ namespace Project.BLL.Services.Implementation
                     // Await the completion of all tasks
                     var imagesDTOs = (await Task.WhenAll(tasks)).ToList();
                     await _unitOfWork.Repository<CitizenshipImages>().AddRange(imagesDTOs);
-                    await _unitOfWork.SaveChangesAsync();
-                    var imageUrls = imagesDTOs.Select(image=> image.ImageUrl).ToList();
+                    await _unitOfWork.SaveChangesAsync();            
 
                     //Map the citizenship data to resultDTOs and include imageUrls
                     var resultDTOs = new CitizenshipGetDTOs(
@@ -221,7 +220,7 @@ namespace Project.BLL.Services.Implementation
                         citizenshipData.WardNumber,
                         citizenshipData.DOB,
                         citizenshipData.CitizenshipNumber,
-                        imageUrls
+                        imagesDTOs.Select(image => image.ImageUrl).ToList()
                         );
 
                     scope.Complete();
