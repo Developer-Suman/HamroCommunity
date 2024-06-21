@@ -1,5 +1,7 @@
-﻿using Project.BLL.DTOs.Citizenship;
+﻿using Microsoft.AspNetCore.Http;
+using Project.BLL.DTOs.Citizenship;
 using Project.BLL.DTOs.Nashu;
+using Project.BLL.DTOs.Pagination;
 using Project.DLL.Abstraction;
 using Project.DLL.Models;
 using System;
@@ -12,10 +14,10 @@ namespace Project.BLL.Services.Interface
 {
     public interface ICitizenshipRepository
     {
-        Task<Result<CitizenshipGetDTOs>> SaveCitizenshipData(CitizenshipCreateDTOs citizenshipCreateDTOs, List<CitizenshipImagesDTOs> citizenshipImages);
+        Task<Result<CitizenshipGetDTOs>> SaveCitizenshipData(CitizenshipCreateDTOs citizenshipCreateDTOs, List<IFormFile> certificateFiles);
         Task<Result<CitizenshipGetDTOs>> GetCitizenshipDataById(string CitizenshipId, CancellationToken cancellationToken);
         Task<Result<CitizenshipGetDTOs>> UpdateCitizenshipData(string CitizenshipId, CitizenshipUpdateDTOs citizenshipUpdateDTOs);
         Task<Result<CitizenshipGetDTOs>> DeleteCitizenshipData(string CitizenshipId);
-        Task<Result<List<CitizenshipGetDTOs>>> GetAllCitizenshipData(int page, int pageSize, CancellationToken cancellationToken);
+        Task<Result<PagedResult<CitizenshipGetDTOs>>> GetAllCitizenshipData(int page, int pageSize, CancellationToken cancellationToken);
     }
 }

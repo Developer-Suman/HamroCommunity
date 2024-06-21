@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Project.BLL.DTOs.Citizenship;
 using Project.BLL.DTOs.Nashu;
+using Project.BLL.DTOs.Pagination;
 using Project.BLL.Services.Interface;
 using Project.DLL.Abstraction;
 using Project.DLL.DbContext;
@@ -58,42 +61,52 @@ namespace Project.BLL.Services.Implementation
             }
         }
 
-        public async Task<Result<List<CitizenshipGetDTOs>>> GetAllCitizenshipData(int page, int pageSize, CancellationToken cancellationToken)
+        public async Task<Result<PagedResult<CitizenshipGetDTOs>>> GetAllCitizenshipData(int pageIndex, int pageSize, CancellationToken cancellationToken)
         {
             try
             {
                 var cacheKeys = CacheKeys.Citizenship;
-                var cacheData = await _memoryCacheRepository.GetCacheKey<List<CitizenshipGetDTOs>>(cacheKeys);
+                var cacheData = await _memoryCacheRepository.GetCacheKey<PagedResult<CitizenshipGetDTOs>>(cacheKeys);
 
 
                 //DateTime date = DateTime.Now;
                 //DateTime specificDate = new DateTime(1998, 5, 30);
                 //var exectDate = _helpherMethods.CalculateAge(specificDate, date);
 
-
-
-
-                if (cacheData is not null && cacheData.Count > 0)
+                if (cacheData is not null)
                 {
-                    return Result<List<CitizenshipGetDTOs>>.Success(cacheData);
+                    return Result<PagedResult<CitizenshipGetDTOs>>.Success(cacheData);
                 }
 
+                //var imageInclude = await _context.citizenships.Include(x => x.CitizenshipImages).ToListAsync();
+                var citizenshipData = await _unitOfWork.Repository<Citizenship>().GetAllAsyncWithPagination();
+                var citizenshipPaginatedResult = await citizenshipData
+                    .Include(x=>x.CitizenshipImages)
+                    .Select(x=> new CitizenshipGetDTOs(
+                        x.Id,
+                        x.IssuedDate,
+                        x.IssuedDistrict,
+                        x.VdcOrMunicipality,
+                        x.WardNumber,
+                        x.DOB,
+                        x.CitizenshipNumber,
+                        x.CitizenshipImages.Select(img => img.ImageUrl).ToList()
+                        )).ToPagedResultAsync(pageIndex, pageSize);
 
-                var citizenshipQuery = await _unitOfWork.Repository<Citizenship>().GetAllAsyncWithPagination();
-                var citizenshipPagedResult = await citizenshipQuery.ToPagedResultAsync(page, pageSize);
 
 
-                if (citizenshipQuery is null && !citizenshipQuery.Any())
+                if (citizenshipPaginatedResult.Data.Items is null && citizenshipData.Any())
                 {
-                    return Result<List<CitizenshipGetDTOs>>.Failure("NoContent", "Citizenship Data are not found");
+                    return Result<PagedResult<CitizenshipGetDTOs>>.Failure("NotFound", "Certificate Data are not Found");
                 };
-                var citizenshipDataDTOs = _mapper.Map<List<CitizenshipGetDTOs>>(citizenshipQuery);
+
+                var citizenshipDataDTOs = _mapper.Map<PagedResult<CitizenshipGetDTOs>>(citizenshipPaginatedResult.Data);
                 await _memoryCacheRepository.SetAsync(cacheKeys, citizenshipDataDTOs, new Microsoft.Extensions.Caching.Memory.MemoryCacheEntryOptions
                 {
                     AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(30)
                 }, cancellationToken);
 
-                return Result<List<CitizenshipGetDTOs>>.Success(citizenshipDataDTOs);
+                return Result<PagedResult<CitizenshipGetDTOs>>.Success(citizenshipDataDTOs);
 
             }
             catch (Exception ex)
@@ -118,15 +131,34 @@ namespace Project.BLL.Services.Implementation
                     return Result<CitizenshipGetDTOs>.Failure("Please provide CitizenshipId");
 
                 }
-                //var nashuData = await _unitOfWork.Repository<Nashu>().GetConditonalAsync(x=>x.NashuId == NashuId);
-                var citizenshipData = await _unitOfWork.Repository<Citizenship>().GetByIdAsync(CitizenshipId);
+
+                var citizenshipData = _context.Citizenships
+                .AsNoTracking()
+                .Include(c => c.CitizenshipImages) 
+                .FirstOrDefault(c => c.Id == CitizenshipId);
+
+                var resultDTOs = new CitizenshipGetDTOs(
+                citizenshipData.Id,
+                citizenshipData.IssuedDate,
+                citizenshipData.IssuedDistrict,
+                citizenshipData.VdcOrMunicipality,
+                citizenshipData.WardNumber,
+                citizenshipData.DOB,
+                citizenshipData.CitizenshipNumber,
+                citizenshipData?.CitizenshipImages.Select(ci => ci.ImageUrl).ToList()
+                );
+
+
+
 
                 await _memoryCacheRepository.SetAsync(cacheKeys, citizenshipData, new Microsoft.Extensions.Caching.Memory.MemoryCacheEntryOptions
                 {
                     AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(30)
                 }, cancellationToken);
 
-                return Result<CitizenshipGetDTOs>.Success(_mapper.Map<CitizenshipGetDTOs>(citizenshipData));
+
+
+                return Result<CitizenshipGetDTOs>.Success(_mapper.Map<CitizenshipGetDTOs>(resultDTOs));
 
             }
             catch (Exception ex)
@@ -136,46 +168,65 @@ namespace Project.BLL.Services.Implementation
 
         }
 
-        public async Task<Result<CitizenshipGetDTOs>> SaveCitizenshipData(CitizenshipCreateDTOs citizenshipCreateDTOs, List<CitizenshipImagesDTOs> citizenshipImages)
+        public async Task<Result<CitizenshipGetDTOs>> SaveCitizenshipData(CitizenshipCreateDTOs citizenshipCreateDTOs, List<IFormFile> certificateFiles)
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
                 {
                     await _memoryCacheRepository.RemoveAsync(CacheKeys.Citizenship);
-                    var citizenshipData = _mapper.Map<Citizenship>(citizenshipCreateDTOs);
+                    string newId = Guid.NewGuid().ToString();
+                    var citizenshipData = new Citizenship(
+                        newId,
+                        citizenshipCreateDTOs.IssuedDate,
+                        citizenshipCreateDTOs.IssuedDistrict,
+                        citizenshipCreateDTOs.VDCOrMunicipality,
+                        citizenshipCreateDTOs.WardNumber,
+                        citizenshipCreateDTOs.DOB,
+                        citizenshipCreateDTOs.CitizenshipNumber
+                        );
+
+
                     if (citizenshipData is null)
                     {
-                        return Result<CitizenshipGetDTOs>.Failure("Error occured while mapping Entity");
+                        return Result<CitizenshipGetDTOs>.Failure("NotFound", "Error occurred while mapping");
                     }
 
-                    citizenshipData.Id = Guid.NewGuid().ToString();
-                    List<CitizenshipImages> imagesDTOs = new List<CitizenshipImages>();
-                    var tasks = citizenshipImages.Select(async item =>
-                    {
-                        string imageURL = await _imageRepository.AddSingle(item.FormFile);
-
-                        return new CitizenshipImages(Guid.NewGuid().ToString(), imageURL, DateTime.Now, citizenshipData.Id);
-                    }).ToList();
-
-
-                    // Await the completion of all tasks
-                    var results = await Task.WhenAll(tasks);
-                    imagesDTOs.AddRange(results);
-
-                    citizenshipData.CitizenshipImages = imagesDTOs;
-                    citizenshipData.IssuedDate = citizenshipCreateDTOs.IssuedDate;
-                    citizenshipData.IssuedDistrict = citizenshipCreateDTOs.IssuedDistrict;
-                    citizenshipData.VDCOrMunicipality = citizenshipCreateDTOs.VDCOrMunicipality;
-                    citizenshipData.WardNumber = citizenshipCreateDTOs.WardNumber;
-                    citizenshipData.DOB = citizenshipCreateDTOs.DOB;
-                    citizenshipData.CitizenshipNumber = citizenshipCreateDTOs.CitizenshipNumber;
-                    citizenshipData.DocumentsId = citizenshipCreateDTOs.DocumentsId;
+                  
+                    //citizenshipData.DocumentsId = citizenshipCreateDTOs.DocumentsId;
                     await _unitOfWork.Repository<Citizenship>().AddAsync(citizenshipData);
                     await _unitOfWork.SaveChangesAsync();
+
+                    var tasks = certificateFiles.Select(async item =>
+                    {
+                        string imageURL = await _imageRepository.AddSingle(item);
+                        return new CitizenshipImages(
+                            Guid.NewGuid().ToString(),
+                            imageURL, DateTime.Now,
+                            citizenshipData.Id);
+                    }).ToList();
+
+                    // Await the completion of all tasks
+                    var imagesDTOs = (await Task.WhenAll(tasks)).ToList();
+                    await _unitOfWork.Repository<CitizenshipImages>().AddRange(imagesDTOs);
+                    await _unitOfWork.SaveChangesAsync();
+                    var imageUrls = imagesDTOs.Select(image=> image.ImageUrl).ToList();
+
+                    //Map the citizenship data to resultDTOs and include imageUrls
+                    var resultDTOs = new CitizenshipGetDTOs(
+                        citizenshipData.Id,
+                        citizenshipData.IssuedDate,
+                        citizenshipData.IssuedDistrict,
+                        citizenshipData.VdcOrMunicipality,
+                        citizenshipData.WardNumber,
+                        citizenshipData.DOB,
+                        citizenshipData.CitizenshipNumber,
+                        imageUrls
+                        );
+
                     scope.Complete();
 
-                    return Result<CitizenshipGetDTOs>.Success(_mapper.Map<CitizenshipGetDTOs>(citizenshipData));
+                    return Result<CitizenshipGetDTOs>.Success(_mapper.Map<CitizenshipGetDTOs>(resultDTOs));
 
                 }
                 catch (Exception ex)

@@ -14,7 +14,8 @@ namespace Project.BLL.DTOs.Citizenship
         string WardNumber,
         string DOB,
         string CitizenshipNumber,
-        string DocumentsId
+        List<string> certificateImages
+
         );
 
 }

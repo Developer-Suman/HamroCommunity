@@ -259,7 +259,7 @@ namespace Project.DLL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("certificates");
+                    b.ToTable("Certificates");
                 });
 
             modelBuilder.Entity("Project.DLL.Models.CertificateDocuments", b =>
@@ -306,32 +306,32 @@ namespace Project.DLL.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CitizenshipNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DOB")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DocumentsId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("IssuedDate")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IssuedDistrict")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("VDCOrMunicipality")
+                    b.Property<string>("VdcOrMunicipality")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("WardNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DocumentsId");
-
-                    b.ToTable("Citizenship");
+                    b.ToTable("Citizenships");
                 });
 
             modelBuilder.Entity("Project.DLL.Models.CitizenshipImages", b =>
@@ -508,7 +508,7 @@ namespace Project.DLL.Migrations
 
                     b.HasKey("SignatureId");
 
-                    b.ToTable("signatures");
+                    b.ToTable("Signatures");
                 });
 
             modelBuilder.Entity("Project.DLL.Models.UserDepartment", b =>
@@ -636,17 +636,6 @@ namespace Project.DLL.Migrations
                         .IsRequired();
 
                     b.Navigation("Certificate");
-                });
-
-            modelBuilder.Entity("Project.DLL.Models.Citizenship", b =>
-                {
-                    b.HasOne("Project.DLL.Models.Documents", "Documents")
-                        .WithMany()
-                        .HasForeignKey("DocumentsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Documents");
                 });
 
             modelBuilder.Entity("Project.DLL.Models.CitizenshipImages", b =>

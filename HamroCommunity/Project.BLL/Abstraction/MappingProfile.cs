@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Project.BLL.DTOs.Authentication;
 using Project.BLL.DTOs.CertificateDTOs;
+using Project.BLL.DTOs.Citizenship;
 using Project.BLL.DTOs.District;
 using Project.BLL.DTOs.DocumentsDTOs;
 using Project.BLL.DTOs.Municipality;
@@ -60,6 +61,9 @@ namespace Project.BLL.Abstraction
 
 
             CreateMap<PagedResult<Certificate>, PagedResult<CertificateGetDTOs>>().ReverseMap();
+            CreateMap<PagedResult<Citizenship>, PagedResult<CitizenshipGetDTOs>>().ReverseMap();
+
+
 
             CreateMap<PagedResult<Certificate>, PagedResult<CertificateGetDTOs>>()
            .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items))
