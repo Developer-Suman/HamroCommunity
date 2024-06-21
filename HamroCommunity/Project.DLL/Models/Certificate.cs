@@ -9,6 +9,7 @@ namespace Project.DLL.Models
 {
     public class Certificate : Entity
     {
+        public Certificate(): base(null) { }
 
         public Certificate(
             string id,

@@ -50,7 +50,7 @@ namespace Project.DLL.DbContext
             #region Signature and Documents(1:m)
             builder.Entity<Signature>(entity =>
             {
-                entity.HasKey(e => e.SignatureId);
+                entity.HasKey(e => e.Id);
                 entity.Property(e => e.SignatureURL).IsRequired(false);
                 entity.Property(e => e.CreatedAt).IsRequired();
 
@@ -77,6 +77,33 @@ namespace Project.DLL.DbContext
             });
             #endregion
 
+            #region Citizenship and Documents(1:m)
+            builder.Entity<Citizenship>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasMany(x => x.Documents)
+                .WithOne(x => x.Citizenship)
+                .HasForeignKey(x => x.CitizenshipId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            });
+            #endregion
+
+            #region Documents and Citizenship(m:1)
+            builder.Entity<Documents>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne(s=>s.Citizenship)
+                .WithMany(s => s.Documents)
+                .HasForeignKey(x=>x.CitizenshipId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            });
+
+            #endregion
+
+            #region Certificate and CertificateImages(1:m)
             builder.Entity<Certificate>(entity =>
             {
                 entity.HasKey(e => e.Id);
@@ -90,7 +117,9 @@ namespace Project.DLL.DbContext
                       .HasForeignKey(d => d.CertificateId)
                       .OnDelete(DeleteBehavior.Cascade);
             });
+            #endregion
 
+            #region CertificateImages and Certificate(m:1)
             builder.Entity<CertificateImages>(entity =>
             {
                 entity.HasKey(e => e.Id);
@@ -101,6 +130,7 @@ namespace Project.DLL.DbContext
                       .WithMany(e => e.CertificateImages)
                       .HasForeignKey(e => e.CertificateId); // Corrected foreign key configuration
             });
+            #endregion
 
             #region Citizenship and CitizenshipImages(1:m)
             builder.Entity<Citizenship>(entity =>
@@ -138,9 +168,6 @@ namespace Project.DLL.DbContext
                 .OnDelete(DeleteBehavior.Cascade);
             });
             #endregion
-
-
-
 
             #region Certificate and Documents(m:m)
             builder.Entity<CertificateDocuments>()

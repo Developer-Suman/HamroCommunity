@@ -134,7 +134,7 @@ namespace Project.BLL.Services.Implementation
                     {
                         return Result<SignitureGetDTOs>.Failure("Image Url are not Created");
                     }
-                    signitureData.SignatureId = Guid.NewGuid().ToString();
+                    signitureData.Id = Guid.NewGuid().ToString();
                     signitureData.SignatureURL = imageURL;
               
                     signitureData.CreatedAt = DateTime.Now.ToString();

@@ -49,7 +49,7 @@ namespace Project.BLL.Abstraction
             CreateMap<Documents, DocumentsUpdateDTOs>().ReverseMap();
 
             CreateMap<Signature, SignitureGetDTOs>()
-            .ConstructUsing(src => new SignitureGetDTOs(src.SignatureId,src.SignatureURL, src.CreatedAt))
+            .ConstructUsing(src => new SignitureGetDTOs(src.Id,src.SignatureURL, src.CreatedAt))
             .ReverseMap();
 
             CreateMap<CertificateImages,CertificateGetDTOs>()
