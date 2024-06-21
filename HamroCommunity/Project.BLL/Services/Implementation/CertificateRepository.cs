@@ -261,6 +261,15 @@ namespace Project.BLL.Services.Implementation
                     await _unitOfWork.SaveChangesAsync();
 
                     var resultDTO = new CertificateGetDTOs(
+                            certificateDataToBeUpdated.Id,
+                            certificateDataToBeUpdated.Grade,
+                            certificateDataToBeUpdated.Type,
+                            certificateDataToBeUpdated.Board,
+                            updateCertificateImg.Select(x=>x.CertificateImgURL).ToList()
+                        );
+
+
+                    var resultDTO = new CertificateGetDTOs(
                       certificateDataToBeUpdated.Id,
                       certificateDataToBeUpdated.Grade,
                       certificateDataToBeUpdated.Type,
@@ -268,9 +277,10 @@ namespace Project.BLL.Services.Implementation
                       updateCertificateImg.Select(x=>x.CertificateImgURL).ToList()
                   );
 
+
                     scope.Complete();
 
-                    return Result<CertificateGetDTOs>.Success(_mapper.Map<CertificateGetDTOs>(certificateUpdateDTOs));
+                    return Result<CertificateGetDTOs>.Success(_mapper.Map<CertificateGetDTOs>(resultDTO));
 
                     
                 }
