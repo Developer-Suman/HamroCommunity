@@ -34,7 +34,7 @@ namespace Project.DLL.DbContext
 
         public DbSet<CitizenshipImages> CitizenshipImages { get; set; }
 
-
+        public DbSet<Branch> Branches { get; set; }
 
 
         public DbSet<Municipality> Municipalities { get; set; }
@@ -75,6 +75,40 @@ namespace Project.DLL.DbContext
                       .HasForeignKey(d => d.SignitureId)
                       .OnDelete(DeleteBehavior.Cascade);
             });
+            #endregion
+
+            #region Branch and Department(1:m)
+            builder.Entity<Branch>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e=>e.BranchNameInEnglish).IsRequired();
+                entity.Property(e=>e.BranchNameInNepali).IsRequired();
+                entity.Property(e => e.BranchHeadNameInEnglish).IsRequired();
+                entity.Property(e => e.BranchHeadNameInNepali).IsRequired();
+                entity.Property(e=>e.IsActive).IsRequired();
+
+                entity.HasMany(d => d.Departments)
+                .WithOne(d => d.Branch)
+                .HasForeignKey(d => d.BranchId)
+                .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            #endregion
+
+
+            #region Department and Branch(m:1)
+
+            builder.Entity<Department>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.DepartmentNameInNepali).IsRequired();
+                entity.Property(e=>e.DepartmentNameInEnglish).IsRequired();
+                entity.HasOne(a=>a.Branch)
+                .WithMany(a=>a.Departments)
+                .HasForeignKey(a=>a.BranchId)
+                .OnDelete(DeleteBehavior.Cascade);
+            });
+
             #endregion
 
             #region Citizenship and Documents(1:m)

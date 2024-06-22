@@ -1,20 +1,40 @@
-﻿using System;
+﻿using Project.DLL.Premetives;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Project.DLL.Models
 {
-    public class Department
+    public class Department : Entity
     {
-        [Key]
-        public string? DepartmentId { get; set; }
-        public string? DepartmentName { get; set; }  
+        public Department() : base("") { }
+
+        public Department(
+            string id,
+            string departmentNameInNepali,
+            string departmentNameInEnglish,
+            string branchId
+            ): base(id)
+        {
+            DepartmentNameInEnglish = departmentNameInEnglish;
+            BranchId = branchId;
+            DepartmentNameInNepali = departmentNameInNepali;
+
+            
+        }
+
+        public string? DepartmentNameInNepali { get; set; }  
+        public string? DepartmentNameInEnglish { get; set; }
 
         //Navigation Property
-        public ICollection<UserDepartment>? UserDepartments { get; set; }
+        public string BranchId { get; set; }
+        [ForeignKey("BranchId")]
+        public Branch Branch { get; set; }
+        
 
     }
 }
