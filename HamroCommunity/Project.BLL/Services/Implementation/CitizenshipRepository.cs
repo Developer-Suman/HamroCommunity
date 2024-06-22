@@ -195,7 +195,6 @@ namespace Project.BLL.Services.Implementation
                   
                     //citizenshipData.DocumentsId = citizenshipCreateDTOs.DocumentsId;
                     await _unitOfWork.Repository<Citizenship>().AddAsync(citizenshipData);
-                    await _unitOfWork.SaveChangesAsync();
 
                     var tasks = certificateFiles.Select(async item =>
                     {

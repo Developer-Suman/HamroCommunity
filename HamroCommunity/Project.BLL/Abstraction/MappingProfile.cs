@@ -54,7 +54,9 @@ namespace Project.BLL.Abstraction
 
             CreateMap<CertificateImages,CertificateGetDTOs>()
                 .ForMember(dest => dest.certificateImages, opt => opt.MapFrom(src => src.Certificate.CertificateImages));
-                
+
+            CreateMap<Documents, DocumentsGetDTOs>()
+            .ForMember(dest => dest.certificateIds, opt => opt.MapFrom(src => src.certificateDocuments.Select(cd => cd.CertificateId).ToList()));
 
 
             CreateMap<CertificateCreateDTOs, Certificate>().ReverseMap();

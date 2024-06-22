@@ -113,6 +113,7 @@ namespace Project.BLL.Services.Implementation
             }
         }
 
+
         public async Task<Result<DocumentsGetDTOs>> SaveDocuments(DocumentsCreateDTOs documentsCreateDTOs)
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
@@ -120,23 +121,51 @@ namespace Project.BLL.Services.Implementation
                 try
                 {
                     await _memoryCacheRepository.RemoveAsync(CacheKeys.Documents);
-                    var documentsData = _mapper.Map<Documents>(documentsCreateDTOs);
+                    string newId = Guid.NewGuid().ToString();
+                    var documentsData = new Documents(
+                        newId,
+                        documentsCreateDTOs.DocumentType,
+                        DateTime.Now.ToString(),
+                        documentsCreateDTOs.UpdatedBy,
+                        documentsCreateDTOs.SignitureId,
+                        documentsCreateDTOs.CitizenshipId
+
+                        );
                     if (documentsData is null)
                     {
                         return Result<DocumentsGetDTOs>.Failure("Error occured while mapping");
 
                     }
-
-                    documentsData.Id = Guid.NewGuid().ToString();
-                    documentsData.SignitureId = documentsCreateDTOs.SignitureId;
-                    documentsData.UpdatedBy = "Suman";
-                    documentsData.CreatedAt = DateTime.Now.ToString();
                     await _unitOfWork.Repository<Documents>().AddAsync(documentsData);
+
+         
+
+                    var certificateDocuments = documentsCreateDTOs
+                        .certificateIds
+                        .Select(certificateId => new CertificateDocuments(
+                            Guid.NewGuid().ToString(),
+                            newId,
+                            certificateId
+                            )).ToList();
+
+                    await _unitOfWork.Repository<CertificateDocuments>().AddRange(certificateDocuments);
+
                     await _unitOfWork.SaveChangesAsync();
+
+                    var resultDTOs = new DocumentsGetDTOs(
+                        documentsData.Id,
+                        documentsData.DocumentType,
+                        documentsData.UpdatedBy,
+                        documentsData.CreatedAt,
+                        documentsData.SignitureId,
+                        documentsData.CitizenshipId,
+                        certificateDocuments.Select(x=>x.CertificateId).ToList()
+
+                        );
 
                     scope.Complete();
 
-                    return Result<DocumentsGetDTOs>.Success(_mapper.Map<DocumentsGetDTOs>(documentsData));
+                    return Result<DocumentsGetDTOs>.Success(_mapper.Map<DocumentsGetDTOs>(resultDTOs));
 
 
                 }

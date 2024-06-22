@@ -17,7 +17,8 @@ namespace Project.DLL.Models
             string documentType,
             string createdAt,
             string updatedBy,
-            string signitureId
+            string signitureId,
+            string citizenshipId
             ) : base(Id)
         {
 
@@ -25,6 +26,7 @@ namespace Project.DLL.Models
             CreatedAt = createdAt;
             UpdatedBy = updatedBy;
             SignitureId = signitureId;
+            CitizenshipId = citizenshipId;
             certificateDocuments = new List<CertificateDocuments>();
 
 

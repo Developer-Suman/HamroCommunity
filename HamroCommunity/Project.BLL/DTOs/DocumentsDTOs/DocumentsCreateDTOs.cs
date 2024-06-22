@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace Project.BLL.DTOs.DocumentsDTOs
 {
-    public record DocumentsCreateDTOs(string DocumentType, string UpdatedBy, string SignitureId);
+    public record DocumentsCreateDTOs(string DocumentType, string UpdatedBy, string SignitureId, string CitizenshipId, List<string> certificateIds );
    
 }

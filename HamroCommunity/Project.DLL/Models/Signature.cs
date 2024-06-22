@@ -12,10 +12,10 @@ namespace Project.DLL.Models
         public Signature() : base(null) { }
 
         public Signature(
-            string id,
+            string Id,
             string signatureURL,
             string createdAt
-            ): base(id)
+            ): base(Id)
         {
             SignatureURL = signatureURL;
             CreatedAt = createdAt;
