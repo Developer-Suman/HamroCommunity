@@ -4,6 +4,7 @@ using Project.BLL.DTOs.Authentication;
 using Project.BLL.DTOs.Branch;
 using Project.BLL.DTOs.CertificateDTOs;
 using Project.BLL.DTOs.Citizenship;
+using Project.BLL.DTOs.Department;
 using Project.BLL.DTOs.District;
 using Project.BLL.DTOs.DocumentsDTOs;
 using Project.BLL.DTOs.Municipality;
@@ -61,13 +62,12 @@ namespace Project.BLL.Abstraction
 
 
             CreateMap<CertificateCreateDTOs, Certificate>().ReverseMap();
-            CreateMap<BranchGetDTOs, Branch>().ReverseMap();
-            CreateMap<BranchUpdateDTOs, Branch>().ReverseMap();
+          
 
 
             CreateMap<PagedResult<Certificate>, PagedResult<CertificateGetDTOs>>().ReverseMap();
             CreateMap<PagedResult<Citizenship>, PagedResult<CitizenshipGetDTOs>>().ReverseMap();
-            CreateMap<PagedResult<Branch>, PagedResult<BranchGetDTOs>>().ReverseMap();
+            
 
 
 
@@ -85,17 +85,21 @@ namespace Project.BLL.Abstraction
            .ReverseMap();
         
 
-           
-
-
             CreateMap<Certificate, CertificateUpdateDTOs>() .ReverseMap();
 
-            //CreateMap<Province, ProvinceGetDTOs>()
-            //.ForCtorParam("ProvinceId", opt => opt.MapFrom(src => src.Id))
-            //.ForCtorParam("ProvinceNameInEnglish", opt => opt.MapFrom(src => src.ProvinceNameInEnglish))
-            //.ForCtorParam("ProvinceNameInNepali", opt => opt.MapFrom(src => src.ProvinceNameInNepali));
+            #region Branch Mapping
+            CreateMap<BranchGetDTOs, Branch>().ReverseMap();
+            CreateMap<BranchUpdateDTOs, Branch>().ReverseMap();
+            CreateMap<PagedResult<Branch>, PagedResult<BranchGetDTOs>>().ReverseMap();
+            #endregion
 
-            //CustomMapping using automapper
+            #region Department Mapping
+            CreateMap<DepartmentGetDTOs, Department>().ReverseMap();
+            CreateMap<DepartmentUpdateDTOs, Department>().ReverseMap();
+            CreateMap<PagedResult<Department>, PagedResult<DepartmentGetDTOs>>().ReverseMap();
+            #endregion
+
+
 
 
         }
