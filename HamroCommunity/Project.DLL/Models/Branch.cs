@@ -22,9 +22,9 @@ namespace Project.DLL.Models
 
             ): base(id)
         {
-            BranchNameInNepali = branchHeadNameInEnglish;
+            BranchNameInNepali = branchNameInNepali;
             BranchNameInEnglish = branchNameInEnglish;
-            BranchHeadNameInEnglish = branchHeadNameInNepali;
+            BranchHeadNameInEnglish = branchHeadNameInEnglish;
             BranchHeadNameInNepali = branchHeadNameInNepali;
             IsActive = isActive;
             Departments = new List<Department>();

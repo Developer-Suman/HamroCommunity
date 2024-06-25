@@ -95,7 +95,6 @@ namespace Project.DLL.DbContext
 
             #endregion
 
-
             #region Department and Branch(m:1)
 
             builder.Entity<Department>(entity =>

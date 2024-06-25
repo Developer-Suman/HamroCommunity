@@ -18,5 +18,6 @@ namespace Project.DLL.Static.Cache
         public const string Documents = "Documents";
         public const string Citizenship = "Citizenship";
         public const string Certificate = "Certificate";
+        public const string Branch = "Branch";
     }
 }

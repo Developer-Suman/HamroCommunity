@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Project.BLL.DTOs.Authentication;
+using Project.BLL.DTOs.Branch;
 using Project.BLL.DTOs.CertificateDTOs;
 using Project.BLL.DTOs.Citizenship;
 using Project.BLL.DTOs.District;
@@ -60,10 +61,13 @@ namespace Project.BLL.Abstraction
 
 
             CreateMap<CertificateCreateDTOs, Certificate>().ReverseMap();
+            CreateMap<BranchGetDTOs, Branch>().ReverseMap();
+            CreateMap<BranchUpdateDTOs, Branch>().ReverseMap();
 
 
             CreateMap<PagedResult<Certificate>, PagedResult<CertificateGetDTOs>>().ReverseMap();
             CreateMap<PagedResult<Citizenship>, PagedResult<CitizenshipGetDTOs>>().ReverseMap();
+            CreateMap<PagedResult<Branch>, PagedResult<BranchGetDTOs>>().ReverseMap();
 
 
 
