@@ -23,8 +23,6 @@ namespace Project.DLL.Models
             DepartmentNameInEnglish = departmentNameInEnglish;
             BranchId = branchId;
             DepartmentNameInNepali = departmentNameInNepali;
-
-            
         }
 
         public string? DepartmentNameInNepali { get; set; }  
