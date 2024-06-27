@@ -36,6 +36,8 @@ namespace Project.DLL.DbContext
 
         public DbSet<Branch> Branches { get; set; }
 
+        public DbSet<Nijamati> Nijamatis { get; set; }
+
 
         public DbSet<Municipality> Municipalities { get; set; }
         public DbSet<District> Districts { get; set; }
@@ -218,6 +220,43 @@ namespace Project.DLL.DbContext
                 .HasForeignKey(ud => ud.DocumentsId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            #endregion
+
+            #region Nijamati and Department(1:m)
+
+            builder.Entity<Nijamati>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.NijamatiName).IsRequired();
+
+                entity.HasOne(x=>x.Department)
+                .WithMany(x=>x.Nijamati)
+                .HasForeignKey(x=>x.DepartmentId)
+                .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            #endregion
+
+            #region Department and Nijamati(m:1)
+            builder.Entity<Department>(entity =>
+            {
+                entity.HasMany(x=>x.Nijamati)
+                .WithOne(x=>x.Department)
+                .HasForeignKey(x=>x.DepartmentId)
+                .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            #endregion
+
+            #region Nijamati and Documents(1:1)
+            builder.Entity<Nijamati>(entity =>
+            {
+                entity.HasOne(x => x.Documents)
+                .WithOne(x => x.Nijamati)
+                .HasForeignKey<Documents>(d => d.NijamatiId)
+                .HasPrincipalKey<Nijamati>(x=>x.DocumentsId)
+                .OnDelete(DeleteBehavior.Cascade);
+            });
             #endregion
 
 

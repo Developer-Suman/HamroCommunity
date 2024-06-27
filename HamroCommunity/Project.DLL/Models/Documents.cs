@@ -44,6 +44,10 @@ namespace Project.DLL.Models
         [ForeignKey("SignitureId")]
 
         public Signature Signature { get; set; }
+
+        public string NijamatiId { get;set; }
+        [ForeignKey("NijamatiId")]
+        public Nijamati Nijamati { get; set; }
  
         public ICollection<CertificateDocuments> certificateDocuments { get; set; }
 
