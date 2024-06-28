@@ -13,6 +13,7 @@ using Project.BLL.DTOs.Nijamati;
 using Project.BLL.DTOs.Pagination;
 using Project.BLL.DTOs.Province;
 using Project.BLL.DTOs.Signiture;
+using Project.BLL.DTOs.UserData;
 using Project.BLL.DTOs.Vdc;
 using Project.DLL.Models;
 using System;
@@ -100,11 +101,18 @@ namespace Project.BLL.Abstraction
             CreateMap<PagedResult<Department>, PagedResult<DepartmentGetDTOs>>().ReverseMap();
             #endregion
 
-            #region Department Mapping
+            #region Nijamati Mapping
             CreateMap<NijamatiCreateDTOs, Nijamati>().ReverseMap();
             CreateMap<NijamatiUpdateDTOs, Nijamati>().ReverseMap();
             CreateMap<NijamatiGetDTOs, Nijamati>().ReverseMap();
             CreateMap<PagedResult<Nijamati>, PagedResult<NijamatiGetDTOs>>().ReverseMap();
+            #endregion
+
+            #region UserData Mapping
+            CreateMap<CreateUserDataDTOs, UserData>().ReverseMap();
+            CreateMap<UpdateUserDataDTOs, UserData>().ReverseMap();
+            CreateMap<GetUserDataDTOs, UserData>().ReverseMap();
+            CreateMap<PagedResult<UserData>, PagedResult<GetUserDataDTOs>>().ReverseMap();
             #endregion
 
 
