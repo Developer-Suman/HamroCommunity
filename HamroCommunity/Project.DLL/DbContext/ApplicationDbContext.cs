@@ -30,6 +30,8 @@ namespace Project.DLL.DbContext
         public DbSet<Documents> Documents { get; set; }
         public DbSet<Citizenship> Citizenships { get; set; }
 
+        public DbSet<UserData> UserDatas { get; set; }
+
         public DbSet<CertificateImages> CertificateImages { get; set; }
 
         public DbSet<CitizenshipImages> CitizenshipImages { get; set; }
