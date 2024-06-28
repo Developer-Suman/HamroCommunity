@@ -28,15 +28,13 @@ namespace Project.DLL.Models
             SignitureId = signitureId;
             CitizenshipId = citizenshipId;
             certificateDocuments = new List<CertificateDocuments>();
-
-
         }
         public string DocumentType { get; set;}
         public string CreatedAt { get; set; }
         public string UpdatedBy { get; set; }
 
-        public string SignitureId { get; set; }
-        public string CitizenshipId { get; set; }
+        public string? SignitureId { get; set; }
+        public string? CitizenshipId { get; set; }
 
         //NavigationProperty
         [ForeignKey("CitizenshipId")]
@@ -45,9 +43,7 @@ namespace Project.DLL.Models
 
         public Signature Signature { get; set; }
 
-        public string NijamatiId { get;set; }
-        [ForeignKey("NijamatiId")]
-        public Nijamati Nijamati { get; set; }
+        public ICollection<Nijamati> Nijamatis { get; set; }
  
         public ICollection<CertificateDocuments> certificateDocuments { get; set; }
 

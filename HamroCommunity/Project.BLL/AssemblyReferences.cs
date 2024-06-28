@@ -73,6 +73,7 @@ namespace Project.BLL
             services.AddScoped<ICitizenshipRepository, CitizenshipRepository>();
             services.AddScoped<IBranchRepository, BranchRepository>();
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            services.AddScoped<INijamatiRepository, NijamatiRepository>();
 
 
 

@@ -5,7 +5,7 @@
 namespace Project.DLL.Migrations
 {
     /// <inheritdoc />
-    public partial class DASDSAD : Migration
+    public partial class DASDAS : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

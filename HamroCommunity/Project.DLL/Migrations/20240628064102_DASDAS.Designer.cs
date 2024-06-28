@@ -12,8 +12,8 @@ using Project.DLL.DbContext;
 namespace Project.DLL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240625162333_Add Branch Table")]
-    partial class AddBranchTable
+    [Migration("20240628064102_DASDAS")]
+    partial class DASDAS
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -453,6 +453,10 @@ namespace Project.DLL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("NijamatiId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("SignitureId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -463,6 +467,9 @@ namespace Project.DLL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CitizenshipId");
+
+                    b.HasIndex("NijamatiId")
+                        .IsUnique();
 
                     b.HasIndex("SignitureId");
 
@@ -523,6 +530,30 @@ namespace Project.DLL.Migrations
                     b.HasKey("NashuId");
 
                     b.ToTable("Nashu");
+                });
+
+            modelBuilder.Entity("Project.DLL.Models.Nijamati", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DepartmentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DocumentsId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NijamatiName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.ToTable("Nijamatis");
                 });
 
             modelBuilder.Entity("Project.DLL.Models.Province", b =>
@@ -728,6 +759,12 @@ namespace Project.DLL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Project.DLL.Models.Nijamati", "Nijamati")
+                        .WithOne("Documents")
+                        .HasForeignKey("Project.DLL.Models.Documents", "NijamatiId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Project.DLL.Models.Signature", "Signature")
                         .WithMany("Documents")
                         .HasForeignKey("SignitureId")
@@ -735,6 +772,8 @@ namespace Project.DLL.Migrations
                         .IsRequired();
 
                     b.Navigation("Citizenship");
+
+                    b.Navigation("Nijamati");
 
                     b.Navigation("Signature");
                 });
@@ -748,6 +787,17 @@ namespace Project.DLL.Migrations
                         .IsRequired();
 
                     b.Navigation("District");
+                });
+
+            modelBuilder.Entity("Project.DLL.Models.Nijamati", b =>
+                {
+                    b.HasOne("Project.DLL.Models.Department", "Department")
+                        .WithMany("Nijamati")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("Project.DLL.Models.UserDepartment", b =>
@@ -800,9 +850,20 @@ namespace Project.DLL.Migrations
                     b.Navigation("Documents");
                 });
 
+            modelBuilder.Entity("Project.DLL.Models.Department", b =>
+                {
+                    b.Navigation("Nijamati");
+                });
+
             modelBuilder.Entity("Project.DLL.Models.Documents", b =>
                 {
                     b.Navigation("certificateDocuments");
+                });
+
+            modelBuilder.Entity("Project.DLL.Models.Nijamati", b =>
+                {
+                    b.Navigation("Documents")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Project.DLL.Models.Signature", b =>

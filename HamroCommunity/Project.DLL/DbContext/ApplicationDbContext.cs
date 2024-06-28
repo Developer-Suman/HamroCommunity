@@ -248,15 +248,25 @@ namespace Project.DLL.DbContext
 
             #endregion
 
-            #region Nijamati and Documents(1:1)
+            #region Nijamati and Documents(m:1)
             builder.Entity<Nijamati>(entity =>
             {
-                entity.HasOne(x => x.Documents)
-                .WithOne(x => x.Nijamati)
-                .HasForeignKey<Documents>(d => d.NijamatiId)
-                .HasPrincipalKey<Nijamati>(x=>x.DocumentsId)
+                entity.HasOne(a=>a.Documents)
+                .WithMany(x => x.Nijamatis)
+                .HasForeignKey(d => d.DocumentsId)
                 .OnDelete(DeleteBehavior.Cascade);
             });
+            #endregion
+
+            #region Documents and Nijamati(1:m)
+            builder.Entity<Documents>(entity =>
+            {
+                entity.HasMany(x=>x.Nijamatis)
+                .WithOne(x=>x.Documents)
+                .HasForeignKey(f=>f.DocumentsId)
+                .OnDelete(DeleteBehavior.Cascade);
+            });
+
             #endregion
 
 
