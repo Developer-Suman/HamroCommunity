@@ -20,5 +20,6 @@ namespace Project.DLL.Static.Cache
         public const string Certificate = "Certificate";
         public const string Branch = "Branch";
         public const string Department = "Department";
+        public const string Nijamati = "Nijamati";
     }
 }

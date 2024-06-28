@@ -12,8 +12,8 @@ using Project.DLL.DbContext;
 namespace Project.DLL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240621171933_DASDSAD")]
-    partial class DASDSAD
+    [Migration("20240628073814_DASDASk")]
+    partial class DASDASk
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -241,6 +241,35 @@ namespace Project.DLL.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Project.DLL.Models.Branch", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("BranchHeadNameInEnglish")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BranchHeadNameInNepali")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BranchNameInEnglish")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BranchNameInNepali")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Branches");
+                });
+
             modelBuilder.Entity("Project.DLL.Models.Certificate", b =>
                 {
                     b.Property<string>("Id")
@@ -362,13 +391,24 @@ namespace Project.DLL.Migrations
 
             modelBuilder.Entity("Project.DLL.Models.Department", b =>
                 {
-                    b.Property<string>("DepartmentId")
+                    b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("DepartmentName")
+                    b.Property<string>("BranchId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DepartmentNameInEnglish")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("DepartmentId");
+                    b.Property<string>("DepartmentNameInNepali")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BranchId");
 
                     b.ToTable("Departments");
                 });
@@ -483,6 +523,32 @@ namespace Project.DLL.Migrations
                     b.HasKey("NashuId");
 
                     b.ToTable("Nashu");
+                });
+
+            modelBuilder.Entity("Project.DLL.Models.Nijamati", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DepartmentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DocumentsId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("NijamatiName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("DocumentsId");
+
+                    b.ToTable("Nijamatis");
                 });
 
             modelBuilder.Entity("Project.DLL.Models.Province", b =>
@@ -658,6 +724,17 @@ namespace Project.DLL.Migrations
                     b.Navigation("Citizenship");
                 });
 
+            modelBuilder.Entity("Project.DLL.Models.Department", b =>
+                {
+                    b.HasOne("Project.DLL.Models.Branch", "Branch")
+                        .WithMany("Departments")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Branch");
+                });
+
             modelBuilder.Entity("Project.DLL.Models.District", b =>
                 {
                     b.HasOne("Project.DLL.Models.Province", "Province")
@@ -699,10 +776,29 @@ namespace Project.DLL.Migrations
                     b.Navigation("District");
                 });
 
+            modelBuilder.Entity("Project.DLL.Models.Nijamati", b =>
+                {
+                    b.HasOne("Project.DLL.Models.Department", "Department")
+                        .WithMany("Nijamati")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Project.DLL.Models.Documents", "Documents")
+                        .WithMany("Nijamatis")
+                        .HasForeignKey("DocumentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Documents");
+                });
+
             modelBuilder.Entity("Project.DLL.Models.UserDepartment", b =>
                 {
                     b.HasOne("Project.DLL.Models.Department", "Department")
-                        .WithMany("UserDepartments")
+                        .WithMany()
                         .HasForeignKey("DepartmentId");
 
                     b.HasOne("Project.DLL.Models.ApplicationUsers", "User")
@@ -730,6 +826,11 @@ namespace Project.DLL.Migrations
                     b.Navigation("UserDepartments");
                 });
 
+            modelBuilder.Entity("Project.DLL.Models.Branch", b =>
+                {
+                    b.Navigation("Departments");
+                });
+
             modelBuilder.Entity("Project.DLL.Models.Certificate", b =>
                 {
                     b.Navigation("CertificateDocuments");
@@ -746,11 +847,13 @@ namespace Project.DLL.Migrations
 
             modelBuilder.Entity("Project.DLL.Models.Department", b =>
                 {
-                    b.Navigation("UserDepartments");
+                    b.Navigation("Nijamati");
                 });
 
             modelBuilder.Entity("Project.DLL.Models.Documents", b =>
                 {
+                    b.Navigation("Nijamatis");
+
                     b.Navigation("certificateDocuments");
                 });
 

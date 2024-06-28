@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Project.DLL.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class AddTablesNijamati : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -57,6 +57,22 @@ namespace Project.DLL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Branches",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    BranchNameInEnglish = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BranchNameInNepali = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BranchHeadNameInEnglish = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BranchHeadNameInNepali = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Branches", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Certificates",
                 columns: table => new
                 {
@@ -86,18 +102,6 @@ namespace Project.DLL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Citizenships", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Departments",
-                columns: table => new
-                {
-                    DepartmentId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DepartmentName = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Departments", x => x.DepartmentId);
                 });
 
             migrationBuilder.CreateTable(
@@ -134,13 +138,13 @@ namespace Project.DLL.Migrations
                 name: "Signatures",
                 columns: table => new
                 {
-                    SignatureId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     SignatureURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Signatures", x => x.SignatureId);
+                    table.PrimaryKey("PK_Signatures", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -250,6 +254,26 @@ namespace Project.DLL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Departments",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DepartmentNameInNepali = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DepartmentNameInEnglish = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BranchId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Departments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Departments_Branches_BranchId",
+                        column: x => x.BranchId,
+                        principalTable: "Branches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CertificateImages",
                 columns: table => new
                 {
@@ -289,30 +313,6 @@ namespace Project.DLL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserDepartments",
-                columns: table => new
-                {
-                    UserDepartmentId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    DepartentId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DepartmentId = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserDepartments", x => x.UserDepartmentId);
-                    table.ForeignKey(
-                        name: "FK_UserDepartments_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_UserDepartments_Departments_DepartmentId",
-                        column: x => x.DepartmentId,
-                        principalTable: "Departments",
-                        principalColumn: "DepartmentId");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Districts",
                 columns: table => new
                 {
@@ -333,24 +333,47 @@ namespace Project.DLL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Documents",
+                name: "Nijamatis",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DocumentType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SignitureId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    NijamatiName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DepartmentId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DocumentsId = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Documents", x => x.Id);
+                    table.PrimaryKey("PK_Nijamatis", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Documents_Signatures_SignitureId",
-                        column: x => x.SignitureId,
-                        principalTable: "Signatures",
-                        principalColumn: "SignatureId",
+                        name: "FK_Nijamatis_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Departments",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserDepartments",
+                columns: table => new
+                {
+                    UserDepartmentId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    DepartentId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DepartmentId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserDepartments", x => x.UserDepartmentId);
+                    table.ForeignKey(
+                        name: "FK_UserDepartments_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_UserDepartments_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Departments",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -389,6 +412,41 @@ namespace Project.DLL.Migrations
                         name: "FK_Vdc_Districts_DistrictId",
                         column: x => x.DistrictId,
                         principalTable: "Districts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Documents",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DocumentType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SignitureId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CitizenshipId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    NijamatiId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Documents", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Documents_Citizenships_CitizenshipId",
+                        column: x => x.CitizenshipId,
+                        principalTable: "Citizenships",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Documents_Nijamatis_NijamatiId",
+                        column: x => x.NijamatiId,
+                        principalTable: "Nijamatis",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Documents_Signatures_SignitureId",
+                        column: x => x.SignitureId,
+                        principalTable: "Signatures",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -473,9 +531,25 @@ namespace Project.DLL.Migrations
                 column: "CitizenshipId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Departments_BranchId",
+                table: "Departments",
+                column: "BranchId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Districts_ProvinceId",
                 table: "Districts",
                 column: "ProvinceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Documents_CitizenshipId",
+                table: "Documents",
+                column: "CitizenshipId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Documents_NijamatiId",
+                table: "Documents",
+                column: "NijamatiId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Documents_SignitureId",
@@ -486,6 +560,11 @@ namespace Project.DLL.Migrations
                 name: "IX_Municipalities_DistrictId",
                 table: "Municipalities",
                 column: "DistrictId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Nijamatis_DepartmentId",
+                table: "Nijamatis",
+                column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserDepartments_DepartmentId",
@@ -552,22 +631,28 @@ namespace Project.DLL.Migrations
                 name: "Certificates");
 
             migrationBuilder.DropTable(
-                name: "Citizenships");
-
-            migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Departments");
+                name: "Districts");
 
             migrationBuilder.DropTable(
-                name: "Districts");
+                name: "Citizenships");
+
+            migrationBuilder.DropTable(
+                name: "Nijamatis");
 
             migrationBuilder.DropTable(
                 name: "Signatures");
 
             migrationBuilder.DropTable(
                 name: "Provinces");
+
+            migrationBuilder.DropTable(
+                name: "Departments");
+
+            migrationBuilder.DropTable(
+                name: "Branches");
         }
     }
 }

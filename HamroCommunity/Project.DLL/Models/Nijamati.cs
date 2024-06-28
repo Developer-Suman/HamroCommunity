@@ -16,19 +16,22 @@ namespace Project.DLL.Models
         }
         public Nijamati(
             string id,
-            string nijamatiName
+            string nijamatiName,
+            string departmentId,
+            string documentsId
             ): base(id)
         {
             NijamatiName = nijamatiName;
+            DepartmentId = departmentId;
+            DocumentsId = documentsId;
         }
         public string NijamatiName { get;set; }
         //NavigationProperty
 
         public string DepartmentId { get;set; }
-        [ForeignKey("DepartmentId")]
         public Department Department { get; set; }
+
         public string DocumentsId { get; set; }
-        [ForeignKey("DocumentsId")]
         public Documents Documents { get; set; }
     }
 }

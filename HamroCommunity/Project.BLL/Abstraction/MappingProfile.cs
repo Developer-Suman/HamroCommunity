@@ -9,6 +9,7 @@ using Project.BLL.DTOs.District;
 using Project.BLL.DTOs.DocumentsDTOs;
 using Project.BLL.DTOs.Municipality;
 using Project.BLL.DTOs.Nashu;
+using Project.BLL.DTOs.Nijamati;
 using Project.BLL.DTOs.Pagination;
 using Project.BLL.DTOs.Province;
 using Project.BLL.DTOs.Signiture;
@@ -97,6 +98,13 @@ namespace Project.BLL.Abstraction
             CreateMap<DepartmentGetDTOs, Department>().ReverseMap();
             CreateMap<DepartmentUpdateDTOs, Department>().ReverseMap();
             CreateMap<PagedResult<Department>, PagedResult<DepartmentGetDTOs>>().ReverseMap();
+            #endregion
+
+            #region Department Mapping
+            CreateMap<NijamatiCreateDTOs, Nijamati>().ReverseMap();
+            CreateMap<NijamatiUpdateDTOs, Nijamati>().ReverseMap();
+            CreateMap<NijamatiGetDTOs, Nijamati>().ReverseMap();
+            CreateMap<PagedResult<Nijamati>, PagedResult<NijamatiGetDTOs>>().ReverseMap();
             #endregion
 
 

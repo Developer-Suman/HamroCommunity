@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace Project.BLL.DTOs.Signiture
 {
-    public record SignitureGetDTOs(string SignatureURL,string SignitureId,string CreatedAt);
+    public record SignitureGetDTOs(string SignatureURL,string Id,string CreatedAt);
     
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Project.BLL.DTOs.Nashu;
+using Project.BLL.DTOs.Nijamati;
 using Project.BLL.Services.Interface;
 using Project.DLL.Models;
 using System.Text.Json; 
@@ -16,93 +17,93 @@ namespace HamroCommunity.Controllers
     [ApiController]
     public class NijamatiController : HamroCommunityBaseController
     {
-        private readonly INashuRepository _nashuRepository;
+        private readonly INijamatiRepository _nijamatiRepository;
         private readonly IMapper _mapper;
         private readonly IMemoryCacheRepository _memoryCacheRepository;
 
-        public NijamatiController(IMemoryCacheRepository memoryCacheRepository, IMapper mapper, INashuRepository nashuRepository, UserManager<ApplicationUsers> userManager, RoleManager<IdentityRole> roleManager) : base(mapper, userManager, roleManager)
+        public NijamatiController(IMemoryCacheRepository memoryCacheRepository, IMapper mapper, INijamatiRepository nijamatiRepository, UserManager<ApplicationUsers> userManager, RoleManager<IdentityRole> roleManager) : base(mapper, userManager, roleManager)
         {
             _memoryCacheRepository = memoryCacheRepository;
             _mapper = mapper;
-            _nashuRepository = nashuRepository;
+            _nijamatiRepository = nijamatiRepository;
 
         }
-        [HttpPost("SaveNashu")]
-        public async Task<IActionResult> SaveNashu([FromForm] NashuCreateDTOs nashuCreateDTOs)
+        [HttpPost("SaveNijamati")]
+        public async Task<IActionResult> SaveNijamati([FromForm] NijamatiCreateDTOs nijamatiCreateDTOs)
         {
-            var saveNashuResult = await _nashuRepository.SaveNashuData(nashuCreateDTOs);
+            var saveNijamatiResult = await _nijamatiRepository.SaveNijamati(nijamatiCreateDTOs);
 
             #region Switch
-            return saveNashuResult switch
+            return saveNijamatiResult switch
             {
-                { IsSuccess: true, Data: not null} => CreatedAtAction(nameof(SaveNashu), saveNashuResult.Data),
-                { IsSuccess: false, Errors: not null} => HandleFailureResult(saveNashuResult.Errors),
+                { IsSuccess: true, Data: not null} => CreatedAtAction(nameof(SaveNijamati), saveNijamatiResult.Data),
+                { IsSuccess: false, Errors: not null} => HandleFailureResult(saveNijamatiResult.Errors),
                 _ => BadRequest("Invalid Some Fields")
             };
             #endregion
 
         }
 
-        [HttpGet("DeleteNashu/{NashuId}")]
-        public async Task<IActionResult> DeleteNashu([FromRoute] string NashuId)
+        [HttpGet("DeleteNijamati/{NijamatiId}")]
+        public async Task<IActionResult> DeleteNijamati([FromRoute] string NijamatiId, CancellationToken cancellationToken)
         {
-            var deleteNashuResult = await _nashuRepository.DeleteNashuData(NashuId);
+            var deleteNijamatiResult = await _nijamatiRepository.DeleteNijamati(NijamatiId, cancellationToken);
 
             #region switch
-            return deleteNashuResult switch
+            return deleteNijamatiResult switch
             {
                 { IsSuccess: true, Data: not null } => NoContent(),
-                { IsSuccess: false, Errors: not null } => HandleFailureResult(deleteNashuResult.Errors),
-                _ => BadRequest("Invalid NashuId")
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(deleteNijamatiResult.Errors),
+                _ => BadRequest("Invalid some Fields")
             };
             #endregion
 
         }
 
-        [HttpPatch("UpdateNashu/{NashuId}")]
-        public async Task<IActionResult> UpdateNashu([FromRoute] string NashuId, [FromBody] NashuUpdateDTOs updateDTOs)
+        [HttpPatch("UpdateNijamati/{NijamatiId}")]
+        public async Task<IActionResult> UpdateNijamati([FromRoute] string NijamatiId, [FromBody] NijamatiUpdateDTOs updateDTOs)
         {
-            var updateNashuResult = await _nashuRepository.UpdateNashuData(NashuId,updateDTOs);
+            var updateNijamatiResult = await _nijamatiRepository.UpdateNijamati(NijamatiId, updateDTOs);
 
             #region switch
-            return updateNashuResult switch
+            return updateNijamatiResult switch
             {
-                { IsSuccess: true, Data: not null } => new JsonResult(updateNashuResult.Data, new JsonSerializerOptions
+                { IsSuccess: true, Data: not null } => new JsonResult(updateNijamatiResult.Data, new JsonSerializerOptions
                 {
                     DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
 
                 }),
-                { IsSuccess: false, Errors: not null } => HandleFailureResult(updateNashuResult.Errors),
-                _ => BadRequest("Invalid Nashu Id")
-            };
-
-            #endregion
-        }
-
-
-        [HttpGet("get-all-nashudata")]
-        public async Task<IActionResult> GetAllData(int pageIndex, int pageSize, CancellationToken cancellationToken)
-        {
-            var getAllNashuData = await _nashuRepository.GetAllNashuData(pageIndex, pageSize, cancellationToken);
-
-            #region switch
-            return getAllNashuData switch
-            {
-                { IsSuccess: true, Data: not null} => new JsonResult(getAllNashuData.Data, new JsonSerializerOptions
-                {
-                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
-                }),
-                { IsSuccess: false, Errors: not null} => HandleFailureResult(getAllNashuData.Errors),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(updateNijamatiResult.Errors),
                 _ => BadRequest("Invalid some Fields")
             };
 
             #endregion
         }
 
-        [HttpGet("get-nashudata-byId/{NashuId}")]
-        public async Task<IActionResult> GetNashuDataById(string NashuId, CancellationToken cancellationToken)
+
+        [HttpGet("get-all-nijamatidata")]
+        public async Task<IActionResult> GetAllData(int pageIndex, int pageSize, CancellationToken cancellationToken)
         {
-            var getbyIdResult = await _nashuRepository.GetNashuDataById(NashuId, cancellationToken);
+            var getAllNijamatiData = await _nijamatiRepository.GetAll(pageIndex, pageSize, cancellationToken);
+
+            #region switch
+            return getAllNijamatiData switch
+            {
+                { IsSuccess: true, Data: not null} => new JsonResult(getAllNijamatiData.Data, new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                }),
+                { IsSuccess: false, Errors: not null} => HandleFailureResult(getAllNijamatiData.Errors),
+                _ => BadRequest("Invalid some Fields")
+            };
+
+            #endregion
+        }
+
+        [HttpGet("get-nijamatidata-byId/{NijamatiId}")]
+        public async Task<IActionResult> GetNashuDataById(string NijamatiId, CancellationToken cancellationToken)
+        {
+            var getbyIdResult = await _nijamatiRepository.GetById(NijamatiId, cancellationToken);
 
             #region switch
             return getbyIdResult switch
@@ -112,7 +113,7 @@ namespace HamroCommunity.Controllers
                     DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
                 }),
                 { IsSuccess: false, Errors: not null } => HandleFailureResult(getbyIdResult.Errors),
-                _ => BadRequest("Invalid NashuId")
+                _ => BadRequest("Invalid some Fields")
             };
 
             #endregion
