@@ -12,7 +12,9 @@ namespace Project.BLL.DTOs.UserData
         string motherName,
         string grandFatherName,
         string grandMotherName,
-        string address
+        string address,
+        string userId,
+        string imageURLs
         );
     
 }

@@ -13,7 +13,7 @@ namespace Project.BLL.Services.Interface
 {
     public interface IUserDataRepository
     {
-        Task<Result<GetUserDataDTOs>> SaveUserData(CreateUserDataDTOs createUserDataDTOs, IFormFile imageUrl);
+        Task<Result<GetUserDataDTOs>> SaveUserData(CreateUserDataDTOs createUserDataDTOs, IFormFile imageUrl, string UserId);
         Task<Result<GetUserDataDTOs>> GetUserDataById(string UserDataId, CancellationToken cancellationToken);
         Task<Result<GetUserDataDTOs>> UpdateUserData(string UserDataId, UpdateUserDataDTOs updateUserDataDTOs, IFormFile imageUrl);
         Task<Result<GetUserDataDTOs>> DeleteUserData(string UserDataId);

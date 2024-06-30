@@ -457,11 +457,17 @@ namespace Project.DLL.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserDataId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CitizenshipId");
 
                     b.HasIndex("SignitureId");
+
+                    b.HasIndex("UserDataId");
 
                     b.ToTable("Documents");
                 });
@@ -612,7 +618,14 @@ namespace Project.DLL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("UserDatas");
                 });
@@ -791,9 +804,17 @@ namespace Project.DLL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Project.DLL.Models.UserData", "UserDatas")
+                        .WithMany("Documents")
+                        .HasForeignKey("UserDataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Citizenship");
 
                     b.Navigation("Signature");
+
+                    b.Navigation("UserDatas");
                 });
 
             modelBuilder.Entity("Project.DLL.Models.Municipality", b =>
@@ -826,6 +847,17 @@ namespace Project.DLL.Migrations
                     b.Navigation("Documents");
                 });
 
+            modelBuilder.Entity("Project.DLL.Models.UserData", b =>
+                {
+                    b.HasOne("Project.DLL.Models.ApplicationUsers", "ApplicationUser")
+                        .WithOne("UserData")
+                        .HasForeignKey("Project.DLL.Models.UserData", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+                });
+
             modelBuilder.Entity("Project.DLL.Models.UserDepartment", b =>
                 {
                     b.HasOne("Project.DLL.Models.Department", "Department")
@@ -833,7 +865,7 @@ namespace Project.DLL.Migrations
                         .HasForeignKey("DepartmentId");
 
                     b.HasOne("Project.DLL.Models.ApplicationUsers", "User")
-                        .WithMany("UserDepartments")
+                        .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("Department");
@@ -854,7 +886,8 @@ namespace Project.DLL.Migrations
 
             modelBuilder.Entity("Project.DLL.Models.ApplicationUsers", b =>
                 {
-                    b.Navigation("UserDepartments");
+                    b.Navigation("UserData")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Project.DLL.Models.Branch", b =>
@@ -889,6 +922,11 @@ namespace Project.DLL.Migrations
                 });
 
             modelBuilder.Entity("Project.DLL.Models.Signature", b =>
+                {
+                    b.Navigation("Documents");
+                });
+
+            modelBuilder.Entity("Project.DLL.Models.UserData", b =>
                 {
                     b.Navigation("Documents");
                 });

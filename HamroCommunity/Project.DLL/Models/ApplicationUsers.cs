@@ -19,6 +19,9 @@ namespace Project.DLL.Models
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
-        public ICollection<UserDepartment> UserDepartments { get; set; }
+       
+        //Using virtual keyword to enable lazyloading which means only needed data are fetched.
+        //Naviagtaion Property
+        public virtual UserData UserData { get; set; }
     }
 }

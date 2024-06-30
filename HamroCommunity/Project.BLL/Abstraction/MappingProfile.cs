@@ -63,31 +63,32 @@ namespace Project.BLL.Abstraction
             .ForMember(dest => dest.certificateIds, opt => opt.MapFrom(src => src.certificateDocuments.Select(cd => cd.CertificateId).ToList()));
 
 
-            CreateMap<CertificateCreateDTOs, Certificate>().ReverseMap();
+            
           
 
 
-            CreateMap<PagedResult<Certificate>, PagedResult<CertificateGetDTOs>>().ReverseMap();
+         
             CreateMap<PagedResult<Citizenship>, PagedResult<CitizenshipGetDTOs>>().ReverseMap();
-            
 
 
 
+            #region certificate
+            CreateMap<PagedResult<Certificate>, PagedResult<CertificateGetDTOs>>().ReverseMap();
             CreateMap<PagedResult<Certificate>, PagedResult<CertificateGetDTOs>>()
-           .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items))
-           .ReverseMap()
-           .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
-
-
-
-
+            .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items))
+            .ReverseMap()
+            .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
 
             CreateMap<Certificate, CertificateGetDTOs>()
            .ForMember(dest => dest.certificateImages, opt => opt.MapFrom(src => src.CertificateImages))
            .ReverseMap();
-        
+            CreateMap<CertificateCreateDTOs, Certificate>().ReverseMap();
+            CreateMap<Certificate, CertificateUpdateDTOs>().ReverseMap();
 
-            CreateMap<Certificate, CertificateUpdateDTOs>() .ReverseMap();
+            #endregion
+
+
+
 
             #region Branch Mapping
             CreateMap<BranchGetDTOs, Branch>().ReverseMap();
@@ -109,11 +110,22 @@ namespace Project.BLL.Abstraction
             #endregion
 
             #region UserData Mapping
-            CreateMap<CreateUserDataDTOs, UserData>().ReverseMap();
-            CreateMap<UpdateUserDataDTOs, UserData>().ReverseMap();
-            CreateMap<GetUserDataDTOs, UserData>().ReverseMap();
             CreateMap<PagedResult<UserData>, PagedResult<GetUserDataDTOs>>().ReverseMap();
+            CreateMap<PagedResult<UserData>, PagedResult<GetUserDataDTOs>>()
+            .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items))
+            .ReverseMap()
+            .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
+
+            CreateMap<UserData, GetUserDataDTOs>()
+           .ForMember(dest => dest.imageURLs, opt => opt.MapFrom(src => src.ImageURL))
+           .ReverseMap();
+            CreateMap<CreateUserDataDTOs, UserData>().ReverseMap();
+            CreateMap<UserData, UpdateUserDataDTOs>().ReverseMap();
+
             #endregion
+
+
+            
 
 
 

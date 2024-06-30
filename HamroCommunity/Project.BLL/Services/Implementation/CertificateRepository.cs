@@ -112,7 +112,6 @@ namespace Project.BLL.Services.Implementation
 
 
 
-
         public async Task<Result<CertificateGetDTOs>> GetById(string CertificateId, CancellationToken cancellationToken)
         {
             try
@@ -123,8 +122,12 @@ namespace Project.BLL.Services.Implementation
                 {
                     return Result<CertificateGetDTOs>.Success(cacheData);
                 }
-                var certificateData = await _unitOfWork.Repository<Certificate>().GetByIdAsync(CertificateId);
-                if(certificateData is null)
+                var certificateData = await _context.Certificates
+                    .AsNoTracking()
+                    .Include(x => x.CertificateImages)
+                    .FirstOrDefaultAsync(c => c.Id == CertificateId);
+
+                if (certificateData is null)
                 {
                     return Result<CertificateGetDTOs>.Failure("NotFound", "Certificate Data are not Found");
                 }
@@ -132,7 +135,15 @@ namespace Project.BLL.Services.Implementation
                 {
 
                 }, cancellationToken);
-                return Result<CertificateGetDTOs>.Success(_mapper.Map<CertificateGetDTOs>(certificateData));
+                var resultDTO = new CertificateGetDTOs(
+                          certificateData.Id,
+                          certificateData.Grade,
+                          certificateData.Type,
+                          certificateData.Board,
+                          certificateData.CertificateImages.Select(image => image.CertificateImgURL).ToList()
+                      );
+
+                return Result<CertificateGetDTOs>.Success(_mapper.Map<CertificateGetDTOs>(resultDTO));
 
             }
             catch(Exception ex)

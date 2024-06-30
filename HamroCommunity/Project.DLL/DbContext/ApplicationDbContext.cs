@@ -271,6 +271,40 @@ namespace Project.DLL.DbContext
 
             #endregion
 
+            #region UserData and Documents(1:m)
+            builder.Entity<UserData>(entity =>
+            {
+                entity.HasMany(x => x.Documents)
+                .WithOne(x => x.UserDatas)
+                .HasForeignKey(x => x.UserDataId)
+                .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            #endregion
+
+            #region Documents and UserDatas(m:1)
+            builder.Entity<Documents>(entity =>
+            {
+                entity.HasOne(x=>x.UserDatas)
+                .WithMany(x => x.Documents)
+                .HasForeignKey(x=>x.UserDataId)
+                .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            #endregion
+
+            #region ApplicationUser and UserDatas(1:1)
+            builder.Entity<ApplicationUsers>(entity =>
+            {
+                entity.HasOne(a => a.UserData)
+               .WithOne(b => b.ApplicationUser)
+               .HasForeignKey<UserData>(b => b.UserId);
+
+            });
+          
+
+            #endregion
+
 
 
             ////Configure many-to-many relationship

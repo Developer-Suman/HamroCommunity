@@ -18,7 +18,8 @@ namespace Project.DLL.Models
             string createdAt,
             string updatedBy,
             string signitureId,
-            string citizenshipId
+            string citizenshipId,
+            string userDataId
             ) : base(Id)
         {
 
@@ -27,6 +28,7 @@ namespace Project.DLL.Models
             UpdatedBy = updatedBy;
             SignitureId = signitureId;
             CitizenshipId = citizenshipId;
+            UserDataId = userDataId;
             certificateDocuments = new List<CertificateDocuments>();
         }
         public string DocumentType { get; set;}
@@ -36,7 +38,12 @@ namespace Project.DLL.Models
         public string? SignitureId { get; set; }
         public string? CitizenshipId { get; set; }
 
+        public string? UserDataId { get; set; }
+
         //NavigationProperty
+        [ForeignKey("UserDataId")]
+
+        public virtual UserData UserDatas { get; set; }
         [ForeignKey("CitizenshipId")]
         public Citizenship Citizenship { get; set; }
         [ForeignKey("SignitureId")]

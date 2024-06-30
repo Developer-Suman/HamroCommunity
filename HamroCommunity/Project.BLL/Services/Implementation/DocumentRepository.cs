@@ -114,13 +114,15 @@ namespace Project.BLL.Services.Implementation
         }
 
 
-        public async Task<Result<DocumentsGetDTOs>> SaveDocuments(DocumentsCreateDTOs documentsCreateDTOs)
+        public async Task<Result<DocumentsGetDTOs>> SaveDocuments(DocumentsCreateDTOs documentsCreateDTOs, string userId)
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
                 {
                     await _memoryCacheRepository.RemoveAsync(CacheKeys.Documents);
+
+                    var userDataId = await _unitOfWork.Repository<UserData>().GetByIdAsync(userId);
                     string newId = Guid.NewGuid().ToString();
                     var documentsData = new Documents(
                         newId,
@@ -128,9 +130,10 @@ namespace Project.BLL.Services.Implementation
                         DateTime.Now.ToString(),
                         documentsCreateDTOs.UpdatedBy,
                         documentsCreateDTOs.SignitureId,
-                        documentsCreateDTOs.CitizenshipId
-
+                        documentsCreateDTOs.CitizenshipId,
+                        userDataId.Id
                         );
+
                     if (documentsData is null)
                     {
                         return Result<DocumentsGetDTOs>.Failure("Error occured while mapping");
@@ -159,6 +162,7 @@ namespace Project.BLL.Services.Implementation
                         documentsData.CreatedAt,
                         documentsData.SignitureId,
                         documentsData.CitizenshipId,
+                        documentsData.UserDataId,
                         certificateDocuments.Select(x=>x.CertificateId).ToList()
 
                         );

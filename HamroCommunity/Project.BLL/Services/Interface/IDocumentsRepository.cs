@@ -10,7 +10,7 @@ namespace Project.BLL.Services.Interface
 {
     public interface IDocumentsRepository
     {
-        Task<Result<DocumentsGetDTOs>> SaveDocuments(DocumentsCreateDTOs documentsCreateDTOs);
+        Task<Result<DocumentsGetDTOs>> SaveDocuments(DocumentsCreateDTOs documentsCreateDTOs, string userId);
         Task<Result<DocumentsGetDTOs>> GetById(string DocumentsId, CancellationToken cancellationToken);
         Task<Result<DocumentsGetDTOs>> DeleteDocuments(string DocumentsId); 
         Task<Result<DocumentsGetDTOs>> UpdateDocuments(string DocumentsId, DocumentsUpdateDTOs documentsUpdateDTOs);

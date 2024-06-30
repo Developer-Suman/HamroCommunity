@@ -13,6 +13,7 @@ namespace Project.BLL.DTOs.DocumentsDTOs
         string CreatedBy,
         string SignitureId,
         string CitizenshiId,
+        string UserDatasId,
         List<string> certificateIds);
   
 }

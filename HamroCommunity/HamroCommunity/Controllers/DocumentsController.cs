@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HamroCommunity.Configs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ namespace HamroCommunity.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class DocumentsController : HamroCommunityBaseController
     {
         private readonly IDocumentsRepository _documentsRepository;
@@ -24,7 +26,8 @@ namespace HamroCommunity.Controllers
         [HttpPost("SaveDocuments")]
         public async Task<IActionResult> SaveDocuments([FromForm] DocumentsCreateDTOs documentsCreateDTOs)
         {
-            var saveDocumentseResult = await _documentsRepository.SaveDocuments(documentsCreateDTOs);
+            await GetCurrentUser();
+            var saveDocumentseResult = await _documentsRepository.SaveDocuments(documentsCreateDTOs, _currentUser!.Id);
             #region switch
             return saveDocumentseResult switch
             {

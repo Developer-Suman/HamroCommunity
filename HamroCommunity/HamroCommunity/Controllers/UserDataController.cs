@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HamroCommunity.Configs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,8 @@ namespace HamroCommunity.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    [Authorize]
     public class UserDataController : HamroCommunityBaseController
     {
         private readonly IUserDataRepository _userDataRepository;
@@ -26,7 +29,8 @@ namespace HamroCommunity.Controllers
         [HttpPost("SaveUserData")]
         public async Task<IActionResult> SaveUserData([FromForm] CreateUserDataDTOs createUserDataDTOs, IFormFile imagefiles)
         {
-            var saveUserDataResult = await _userDataRepository.SaveUserData(createUserDataDTOs, imagefiles);
+            await GetCurrentUser();
+            var saveUserDataResult = await _userDataRepository.SaveUserData(createUserDataDTOs, imagefiles, _currentUser!.Id);
             #region switch
             return saveUserDataResult switch
             {

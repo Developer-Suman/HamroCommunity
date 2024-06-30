@@ -11,6 +11,7 @@ using Project.DLL.RepoInterface;
 using Project.DLL.Static.Cache;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -74,6 +75,16 @@ namespace Project.BLL.Services.Implementation
                 //var imgs = await _context.certificates.Include(x => x.CertificateImages).ToListAsync();
                 var userData = await _unitOfWork.Repository<UserData>().GetAllAsyncWithPagination();
                 var userDataPagedResult = await userData
+                                        .Select(x => new GetUserDataDTOs(
+                                            x.Id,
+                                            x.FatherName,
+                                            x.MotherName,
+                                            x.GrandFatherName,  
+                                            x.GrandMotherName,
+                                            x.Address,
+                                            x.UserId,
+                                            x.ImageURL
+                                        ))
                                         .ToPagedResultAsync(page, pageSize);
 
 
@@ -110,16 +121,28 @@ namespace Project.BLL.Services.Implementation
                 {
                     return Result<GetUserDataDTOs>.Success(cacheData);
                 }
-                var certificateData = await _unitOfWork.Repository<UserData>().GetByIdAsync(UserDataId);
-                if (certificateData is null)
+                var userData = await _unitOfWork.Repository<UserData>().GetByIdAsync(UserDataId);
+                if (userData is null)
                 {
                     return Result<GetUserDataDTOs>.Failure("NotFound", "User Data are not Found");
                 }
-                await _memoryCacheRepository.SetAsync(cacheKey, certificateData, new Microsoft.Extensions.Caching.Memory.MemoryCacheEntryOptions
+                await _memoryCacheRepository.SetAsync(cacheKey, userData, new Microsoft.Extensions.Caching.Memory.MemoryCacheEntryOptions
                 {
 
                 }, cancellationToken);
-                return Result<GetUserDataDTOs>.Success(_mapper.Map<GetUserDataDTOs>(certificateData));
+
+                var resultDTO = new GetUserDataDTOs(
+                         userData.Id,
+                         userData.FatherName,
+                         userData.MotherName,
+                         userData.GrandFatherName,
+                         userData.GrandMotherName,
+                         userData.Address,
+                         userData.UserId,
+                         userData.ImageURL
+                     );
+
+                return Result<GetUserDataDTOs>.Success(_mapper.Map<GetUserDataDTOs>(resultDTO));
 
             }
             catch (Exception ex)
@@ -128,7 +151,7 @@ namespace Project.BLL.Services.Implementation
             }
         }
 
-        public async Task<Result<GetUserDataDTOs>> SaveUserData(CreateUserDataDTOs createUserDataDTOs, IFormFile imageUrl)
+        public async Task<Result<GetUserDataDTOs>> SaveUserData(CreateUserDataDTOs createUserDataDTOs, IFormFile imageUrl, string UserId)
         {
             try
             {
@@ -145,8 +168,9 @@ namespace Project.BLL.Services.Implementation
                             createUserDataDTOs.motherName,
                             createUserDataDTOs.grandFatherName,
                             createUserDataDTOs.grandMotherName,
-                            createUserDataDTOs.address
-                            
+                            createUserDataDTOs.address,
+                            UserId,
+                            await _iimageRepository.AddSingle(imageUrl)
                         );
 
                         if (userData == null)
@@ -154,8 +178,6 @@ namespace Project.BLL.Services.Implementation
                             return Result<GetUserDataDTOs>.Failure("NotFound", "Error occurred while mapping");
                         }
 
-
-                        userData.ImageURL = await _iimageRepository.AddSingle(imageUrl);
                         await _unitOfWork.Repository<UserData>().AddAsync(userData);
                         await _unitOfWork.SaveChangesAsync();
 
@@ -169,7 +191,9 @@ namespace Project.BLL.Services.Implementation
                             userData.MotherName,
                             userData.GrandFatherName,
                             userData.GrandMotherName,
-                            userData.Address
+                            userData.Address,
+                            userData.UserId,
+                            userData.ImageURL
                         );
 
                         scope.Complete();
@@ -232,7 +256,9 @@ namespace Project.BLL.Services.Implementation
                             userDataToBeUpdated.MotherName,
                             userDataToBeUpdated.GrandFatherName,
                             userDataToBeUpdated.GrandMotherName,
-                            userDataToBeUpdated.Address
+                            userDataToBeUpdated.Address,
+                            userDataToBeUpdated.UserId,
+                            userDataToBeUpdated.ImageURL
                   );
 
 
