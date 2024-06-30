@@ -11,6 +11,7 @@ namespace HamroCommunity.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowAllOrigins")]
     //[EnableCors("AllowAllOrigins")]
     public class LocationController : HamroCommunityBaseController
     {

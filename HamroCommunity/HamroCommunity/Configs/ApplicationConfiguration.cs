@@ -48,42 +48,7 @@ namespace HamroCommunity.Configs
 
             #endregion
 
-            // Use Serilog for logging
-            //app.UseSerilogRequestLogging(options =>
-            //{
-            //    options.GetLevel = (httpContext, elapsed, ex) =>
-            //    {
-            //        // Customize log level based on request
-            //        if (httpContext.Response.StatusCode > 499)
-            //        {
-            //            return LogEventLevel.Error;
-            //        }
-            //        else if (httpContext.Response.StatusCode > 399)
-            //        {
-            //            return LogEventLevel.Warning;
-            //        }
-
-            //        return LogEventLevel.Information;
-            //    };
-
-            //    options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
-            //    {
-            //        // Include custom properties in the log context
-            //        // Include properties you need
-            //        diagnosticContext.Set("RequestHost", httpContext.Request.Host);
-            //        diagnosticContext.Set("RequestMethod", httpContext.Request.Method);
-            //        diagnosticContext.Set("RequestPath", httpContext.Request.Path);
-            //        diagnosticContext.Set("StatusCode", httpContext.Response.StatusCode);
-            //        diagnosticContext.Set("ElapsedMilliseconds", httpContext.Response.Headers["X-Request-ElapsedMs"]);
-
-            //        // Add more properties as needed
-            //    };
-
-            //});
-
-            // Configure the HTTP request pipeline.
-
-            
+      
 
             app.UseStaticFiles();
             app.UseHttpsRedirection();

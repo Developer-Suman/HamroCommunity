@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using HamroCommunity.Configs;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,7 @@ namespace HamroCommunity.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowAllOrigins")]
     [Authorize(AuthenticationSchemes = "Bearer")]
     [Authorize]
     public class UserDataController : HamroCommunityBaseController

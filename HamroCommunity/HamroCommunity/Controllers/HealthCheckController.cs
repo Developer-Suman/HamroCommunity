@@ -12,6 +12,7 @@ namespace HamroCommunity.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowAllOrigins")]
     public class HealthCheckController : ControllerBase
     {
         private readonly HttpClient _httpClient;

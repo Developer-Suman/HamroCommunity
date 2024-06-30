@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HamroCommunity.Configs;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ namespace HamroCommunity.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowAllOrigins")]
     public class BranchController : HamroCommunityBaseController
     {
         private readonly IBranchRepository _branchRepository;
@@ -24,22 +26,22 @@ namespace HamroCommunity.Controllers
             
         }
 
-        [HttpPost("SaveBranch")]
-        public async Task<IActionResult> SaveBranch([FromBody] BranchCreateDTOs branchCreateDTOs)
+        [HttpPost]
+        public async Task<IActionResult> Save([FromBody] BranchCreateDTOs branchCreateDTOs)
         {
             var saveBranchResult = await _branchRepository.SaveBranch(branchCreateDTOs);
             #region switch
             return saveBranchResult switch
             {
-                { IsSuccess: true, Data: not null } => CreatedAtAction(nameof(SaveBranch), saveBranchResult.Data),
+                { IsSuccess: true, Data: not null } => CreatedAtAction(nameof(Save), saveBranchResult.Data),
                 { IsSuccess: false, Errors: not null } => HandleFailureResult(saveBranchResult.Errors),
                 _ => BadRequest("Invalid Some Fields")
             };
             #endregion
         }
 
-        [HttpGet("DeleteBranch/{BranchId}")]
-        public async Task<IActionResult> DeleteBranch([FromRoute] string BranchId, CancellationToken cancellationToken)
+        [HttpDelete("{BranchId}")]
+        public async Task<IActionResult> Delete([FromRoute] string BranchId, CancellationToken cancellationToken)
         {
             var deleteBranchResult = await _branchRepository.DeleteBranch(BranchId, cancellationToken);
 
@@ -53,8 +55,8 @@ namespace HamroCommunity.Controllers
             #endregion
         }
 
-        [HttpPatch("UpdateBranch/{BranchId}")]
-        public async Task<IActionResult> UpdateCertificate([FromRoute] string BranchId, [FromBody] BranchUpdateDTOs branchUpdateDTOs)
+        [HttpPatch("{BranchId}")]
+        public async Task<IActionResult> Update([FromRoute] string BranchId, [FromBody] BranchUpdateDTOs branchUpdateDTOs)
         {
             var updateBranchResult = await _branchRepository.UpdateBranch(BranchId, branchUpdateDTOs);
 
@@ -72,7 +74,7 @@ namespace HamroCommunity.Controllers
         }
 
 
-        [HttpGet("get-all-branchData")]
+        [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] int pageIndex, [FromQuery] int PageSize, CancellationToken cancellationToken)
         {
             var getAllbranchData = await _branchRepository.GetAll(pageIndex, PageSize, cancellationToken);
@@ -92,7 +94,7 @@ namespace HamroCommunity.Controllers
 
         }
 
-        [HttpGet("get-branchdata-byId/{BranchId}")]
+        [HttpGet("{BranchId}")]
         public async Task<IActionResult> GetById([FromRoute] string BranchId, CancellationToken cancellationToken)
         {
             var getByIdResultData = await _branchRepository.GetById(BranchId, cancellationToken);

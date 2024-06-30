@@ -13,8 +13,9 @@ using System.Text.Json;
 namespace HamroCommunity.Controllers
 {
     [Route("api/[controller]")]
-    [EnableCors("AllowAllOrigins")]
     [ApiController]
+    [EnableCors("AllowAllOrigins")]
+
     public class NijamatiController : HamroCommunityBaseController
     {
         private readonly INijamatiRepository _nijamatiRepository;

@@ -59,11 +59,6 @@ namespace HamroCommunity.Configs
             );
             #endregion
 
-
-
-
-
-
         }
     }
 }

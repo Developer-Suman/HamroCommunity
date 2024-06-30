@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HamroCommunity.Configs;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ namespace HamroCommunity.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowAllOrigins")]
     public class CertificateController : HamroCommunityBaseController
     {
         private readonly ICertificateRepository _certificateRepository;
